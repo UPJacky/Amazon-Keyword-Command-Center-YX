@@ -20,10 +20,30 @@ from worker.security.path_guard import contains_link_or_reparse, is_link_or_repa
 
 ROOT = Path(__file__).resolve().parents[1]
 FRONTEND_FILES = ("index.html", "login.html", "workspace.html", "tasks.html", "strategy.html", "report.html", "styles.css", "app.js", "report.js", "tasks.js", "strategy.js", "client.js", "public-config.js")
-CANONICAL_ROUTES = ("tool/index.html", "tool/tool.js", "report/index.html")
+REPORT_PAGES = ("index", "rank", "negative", "competitors", "listing", "optimization")
+CANONICAL_ROUTES = (
+    "tool/index.html", "tool/tool.js",
+    *(f"report/{name}.html" for name in REPORT_PAGES),
+    *(f"report/{name}.js" for name in REPORT_PAGES if name != "index"),
+    "report/shared.js",
+)
 ROOT_ASSETS = ("styles.css", "app.js", "report.js", "tasks.js", "strategy.js", "client.js")
 DEMO_PUBLIC_CONFIG = 'window.KWCC_PUBLIC_CONFIG = Object.freeze({mode: "demo"});\n'
 DEMO_DIRS = ("market-demo-report", "market-demo-modules")
+DEMO_FILES = {
+    "market-demo-report": ("master-table.json", "action-results.json", "report-meta.json"),
+    "market-demo-modules": ("rank-benchmark.json", "negative-keywords.json", "competitors.json",
+                            "listing-diagnostics.json", "optimization-plan.json"),
+}
+# Alias documents redirect before fetching data, so all report modules resolve
+# scripts and fixture paths from the canonical report/ directory. Query strings
+# and fragments survive historical bookmarked URLs and task report links.
+LEGACY_ROUTES = {
+    **{f"frontend/{name}": f"../../{name}" for name in CANONICAL_ROUTES if name.endswith(".html")},
+    "frontend/report.html": "../report/index.html",
+    "report.html": "report/index.html",
+    **{name: f"frontend/{name}" for name in ("login.html", "workspace.html", "tasks.html", "strategy.html")},
+}
 SECRET_PATTERN = re.compile(
     # Denial code may name forbidden key types; detect credential values or
     # assignments, not those standalone validation literals.
@@ -35,7 +55,25 @@ SECRET_PATTERN = re.compile(
     re.I,
 )
 EXTERNAL_URL_PATTERN = re.compile(r"https?://", re.I)
-HTML_REFERENCE_PATTERN = re.compile(r"(?:href|src)=\"([^\"]+)\"", re.I)
+HTML_REFERENCE_PATTERN = re.compile(r"(?:href|src|data-(?:login|post-login|report)-url)\s*=\s*[\"']([^\"']+)[\"']", re.I)
+
+
+def expected_demo_files() -> set[str]:
+    """The reviewed boundary, shared by packaging and downstream audits."""
+    return {
+        *(f"frontend/{name}" for name in FRONTEND_FILES),
+        *CANONICAL_ROUTES, *ROOT_ASSETS, *LEGACY_ROUTES,
+        *(f"data/golden/{directory}/{name}" for directory, names in DEMO_FILES.items() for name in names),
+        "public-config.js", "rules/defaults/stable.json", "index.html", ".nojekyll",
+    }
+
+
+def _alias_document(target: str) -> str:
+    return ('<!doctype html>\n<html lang="zh-CN"><meta charset="utf-8">'
+            '<title>工作台入口</title>'
+            f'<a href="{target}">进入工作台</a>'
+            f'<script>location.replace({json.dumps(target)} + location.search + location.hash);</script>'
+            '</html>\n')
 
 
 def _contains_symlink(path: Path) -> bool:
@@ -82,6 +120,10 @@ def build(output: str | Path) -> Path:
         target = destination / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
+    for name, target in LEGACY_ROUTES.items():
+        alias = destination / name
+        alias.parent.mkdir(parents=True, exist_ok=True)
+        alias.write_text(_alias_document(target), encoding="utf-8")
     for name in ROOT_ASSETS:
         source = ROOT / "frontend" / name
         _assert_no_symlinks(source)
@@ -96,7 +138,10 @@ def build(output: str | Path) -> Path:
         _assert_no_symlinks(source)
         if not source.is_dir():
             raise FileNotFoundError(source)
-        shutil.copytree(source, demo_root / directory)
+        target = demo_root / directory
+        target.mkdir()
+        for name in DEMO_FILES[directory]:
+            shutil.copy2(source / name, target / name)
     rules = destination / "rules" / "defaults"
     rules.mkdir(parents=True)
     if _contains_symlink(rules) or not rules.is_dir():
@@ -121,12 +166,17 @@ def audit_demo_output(output: str | Path) -> list[str]:
     public_configs = (destination / "frontend" / "public-config.js", destination / "public-config.js")
     if any(is_link_or_reparse(path) or not path.is_file() or path.read_text(encoding="utf-8") != DEMO_PUBLIC_CONFIG for path in public_configs):
         errors.append("demo public configuration must be the canonical offline config")
+    expected = expected_demo_files()
+    present: set[str] = set()
     for path in destination.rglob("*"):
         relative = path.relative_to(destination).as_posix()
         if is_link_or_reparse(path):
             errors.append(f"symlink is not allowed: {relative}")
             continue
         if path.is_file():
+            present.add(relative)
+            if relative not in expected:
+                errors.append(f"file outside static allowlist: {relative}")
             if path.suffix.lower() in {".xlsx", ".csv", ".tsv", ".env"} or "private" in relative.lower():
                 errors.append(f"forbidden file: {relative}")
             try:
@@ -141,7 +191,8 @@ def audit_demo_output(output: str | Path) -> list[str]:
                 for reference in HTML_REFERENCE_PATTERN.findall(content):
                     if reference.startswith(("#", "mailto:", "tel:", "javascript:")):
                         continue
-                    target = (path.parent / reference.split("#", 1)[0]).resolve()
+                    local_path = reference.split("#", 1)[0].split("?", 1)[0]
+                    target = (path.parent / local_path).resolve() if local_path else path
                     try:
                         target.relative_to(destination)
                     except ValueError:
@@ -149,6 +200,7 @@ def audit_demo_output(output: str | Path) -> list[str]:
                     else:
                         if not target.is_file():
                             errors.append(f"broken local HTML reference: {relative} -> {reference}")
+    errors.extend(f"missing allowlisted file: {relative}" for relative in sorted(expected - present))
     return errors
 
 

@@ -1,0 +1,61 @@
+{
+  "cache_key": "competitors-6c8aaafcbe872722aae2493b29c713afe94391348ab1fd415f13f4919c045bf1",
+  "competitors": [
+    {
+      "asin": "B000000002",
+      "brand": "Demo A",
+      "core_keywords": [
+        "led light",
+        "room decor"
+      ],
+      "image_urls": [],
+      "missing_fields": [],
+      "role": "competitor",
+      "title": "Demo competitor A"
+    },
+    {
+      "asin": "B000000003",
+      "brand": "Demo B",
+      "core_keywords": [
+        "led light",
+        "room decor"
+      ],
+      "image_urls": [],
+      "missing_fields": [],
+      "role": "competitor",
+      "title": "Demo competitor B"
+    },
+    {
+      "asin": "B000000004",
+      "brand": "Demo C",
+      "core_keywords": [
+        "led light",
+        "room decor"
+      ],
+      "image_urls": [],
+      "missing_fields": [],
+      "role": "competitor",
+      "title": "Demo competitor C"
+    }
+  ],
+  "demo": true,
+  "external_calls": 0,
+  "fixture_builders": [
+    "worker.competitors.profile.build_competitor_profile"
+  ],
+  "fixture_inputs": [
+    {
+      "hash_normalization": "utf8-lf",
+      "path": "data/golden/competitor-input-demo.json",
+      "sha256": "909ab1f7f388ef72ebc8e1a952b5d9e3af53eba3c82a0f8ccf939ae6fee857c1"
+    }
+  ],
+  "fixture_source": "data/golden/competitor-input-demo.json",
+  "local_only": true,
+  "marketplace": "US",
+  "network_calls": 0,
+  "provider_calls": 0,
+  "schema_version": "competitors-0.1",
+  "self_asin": "B000000001",
+  "snapshot_version": "fixture-competitor-v1"
+}

@@ -1,0 +1,2895 @@
+{
+  "actions": [
+    {
+      "action_group": "defend_rank",
+      "action_type": "core_defense",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "acos": {
+          "break_even": 0.35,
+          "target": 0.2,
+          "tolerance": 0.3
+        },
+        "config_version": "stable-v1-template",
+        "organic_defense": {
+          "core_max_rank": 10,
+          "max_defense_acos": 0.3
+        }
+      },
+      "data_facts": {
+        "acos": 0.2031242348562754,
+        "ad_rank": 3,
+        "clicks": 131,
+        "cpc": 0.6332824427480916,
+        "ctr": 0.008609358569926394,
+        "cvr": 0.22900763358778625,
+        "impressions": 15216,
+        "market_opportunity_score": 0.92,
+        "market_search_volume": 10000,
+        "orders": 30,
+        "organic_rank": 5,
+        "roas": 4.9230954676952745,
+        "sales": 408.42,
+        "spend": 82.96
+      },
+      "keyword": "led light",
+      "next_action_text": "保持防守投放，复核自然位与成本边界",
+      "rule_hits": [
+        "organic_rank_in_defense_zone",
+        "cost_within_defense_boundary"
+      ],
+      "ui_conclusion": "defend"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.22920980245061265,
+        "ad_rank": null,
+        "clicks": 3418,
+        "cpc": 0.5363428905792861,
+        "ctr": 0.01066718265287652,
+        "cvr": 0.17905207723815098,
+        "impressions": 320422,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 612,
+        "organic_rank": null,
+        "roas": 4.362815155845998,
+        "sales": 7998,
+        "spend": 1833.22
+      },
+      "keyword": "led lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.323120045181668,
+        "ad_rank": null,
+        "clicks": 1206,
+        "cpc": 0.6404394693200663,
+        "ctr": 0.00993197503005946,
+        "cvr": 0.15671641791044777,
+        "impressions": 121426,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 189,
+        "organic_rank": null,
+        "roas": 3.094825019097065,
+        "sales": 2390.35,
+        "spend": 772.37
+      },
+      "keyword": "led lights for bedroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.23090338332752006,
+        "ad_rank": null,
+        "clicks": 437,
+        "cpc": 0.651395881006865,
+        "ctr": 0.007236297400231827,
+        "cvr": 0.2036613272311213,
+        "impressions": 60390,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 89,
+        "organic_rank": null,
+        "roas": 4.330815709969788,
+        "sales": 1232.81,
+        "spend": 284.66
+      },
+      "keyword": "led strip lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.23124719173246036,
+        "ad_rank": null,
+        "clicks": 321,
+        "cpc": 0.5611526479750779,
+        "ctr": 0.011600173460537728,
+        "cvr": 0.19314641744548286,
+        "impressions": 27672,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 62,
+        "organic_rank": null,
+        "roas": 4.3243768389496475,
+        "sales": 778.95,
+        "spend": 180.13
+      },
+      "keyword": "lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.2238170872796439,
+        "ad_rank": null,
+        "clicks": 166,
+        "cpc": 0.6875903614457831,
+        "ctr": 0.006479818877351862,
+        "cvr": 0.21084337349397592,
+        "impressions": 25618,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 35,
+        "organic_rank": null,
+        "roas": 4.467934115997897,
+        "sales": 509.97,
+        "spend": 114.14
+      },
+      "keyword": "led",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.35029149016482825,
+        "ad_rank": null,
+        "clicks": 116,
+        "cpc": 0.72,
+        "ctr": 0.005523809523809524,
+        "cvr": 0.16379310344827586,
+        "impressions": 21000,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 19,
+        "organic_rank": null,
+        "roas": 2.854765325670498,
+        "sales": 238.43,
+        "spend": 83.52
+      },
+      "keyword": "b0991q94kp",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.13890631534922626,
+        "ad_rank": null,
+        "clicks": 171,
+        "cpc": 0.46614035087719297,
+        "ctr": 0.018518518518518517,
+        "cvr": 0.25146198830409355,
+        "impressions": 9234,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 43,
+        "organic_rank": null,
+        "roas": 7.19909672563041,
+        "sales": 573.84,
+        "spend": 79.71
+      },
+      "keyword": "luces led para cuarto",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.4737861570247934,
+        "ad_rank": null,
+        "clicks": 99,
+        "cpc": 0.7412121212121212,
+        "ctr": 0.010869565217391304,
+        "cvr": 0.12121212121212122,
+        "impressions": 9108,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 12,
+        "organic_rank": null,
+        "roas": 2.110656854728809,
+        "sales": 154.88,
+        "spend": 73.38
+      },
+      "keyword": "strip lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.23575418994413408,
+        "ad_rank": null,
+        "clicks": 112,
+        "cpc": 0.5463392857142857,
+        "ctr": 0.007941572715025172,
+        "cvr": 0.16964285714285715,
+        "impressions": 14103,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 19,
+        "organic_rank": null,
+        "roas": 4.241706161137441,
+        "sales": 259.55,
+        "spend": 61.19
+      },
+      "keyword": "leds",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.11959705057638384,
+        "ad_rank": null,
+        "clicks": 150,
+        "cpc": 0.3838666666666667,
+        "ctr": 0.015832805573147563,
+        "cvr": 0.26,
+        "impressions": 9474,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 39,
+        "organic_rank": null,
+        "roas": 8.361410211879125,
+        "sales": 481.45,
+        "spend": 57.58
+      },
+      "keyword": "lights for bedroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.20310048561822935,
+        "ad_rank": null,
+        "clicks": 91,
+        "cpc": 0.5974725274725274,
+        "ctr": 0.006963042313872523,
+        "cvr": 0.2087912087912088,
+        "impressions": 13069,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 19,
+        "organic_rank": null,
+        "roas": 4.923671142173993,
+        "sales": 267.7,
+        "spend": 54.37
+      },
+      "keyword": "led light strip",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.1133692951630593,
+        "ad_rank": null,
+        "clicks": 123,
+        "cpc": 0.4117886178861789,
+        "ctr": 0.017604121940747102,
+        "cvr": 0.25203252032520324,
+        "impressions": 6987,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 31,
+        "organic_rank": null,
+        "roas": 8.820730503455083,
+        "sales": 446.77,
+        "spend": 50.65
+      },
+      "keyword": "led lights strip",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.25968097105107685,
+        "ad_rank": null,
+        "clicks": 95,
+        "cpc": 0.5089473684210526,
+        "ctr": 0.009500950095009501,
+        "cvr": 0.1368421052631579,
+        "impressions": 9999,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 13,
+        "organic_rank": null,
+        "roas": 3.850879007238883,
+        "sales": 186.19,
+        "spend": 48.35
+      },
+      "keyword": "room lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.17755157543028088,
+        "ad_rank": null,
+        "clicks": 76,
+        "cpc": 0.6013157894736842,
+        "ctr": 0.006969280146721687,
+        "cvr": 0.23684210526315788,
+        "impressions": 10905,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 18,
+        "organic_rank": null,
+        "roas": 5.632166301969366,
+        "sales": 257.39,
+        "spend": 45.7
+      },
+      "keyword": "led strip",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.09641453092440225,
+        "ad_rank": null,
+        "clicks": 106,
+        "cpc": 0.42339622641509433,
+        "ctr": 0.018603018603018603,
+        "cvr": 0.32075471698113206,
+        "impressions": 5698,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 34,
+        "organic_rank": null,
+        "roas": 10.371880570409981,
+        "sales": 465.49,
+        "spend": 44.88
+      },
+      "keyword": "led lights for room",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.24447536877261342,
+        "ad_rank": null,
+        "clicks": 87,
+        "cpc": 0.5048275862068966,
+        "ctr": 0.010348519091233495,
+        "cvr": 0.14942528735632185,
+        "impressions": 8407,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 13,
+        "organic_rank": null,
+        "roas": 4.090391621129326,
+        "sales": 179.65,
+        "spend": 43.92
+      },
+      "keyword": "led strips",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 2.8781144781144783,
+        "ad_rank": null,
+        "clicks": 31,
+        "cpc": 1.3787096774193548,
+        "ctr": 0.01021753460777851,
+        "cvr": 0.03225806451612903,
+        "impressions": 3034,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 0.3474496958352831,
+        "sales": 14.85,
+        "spend": 42.74
+      },
+      "keyword": "string lights indoor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.4224317617866005,
+        "ad_rank": null,
+        "clicks": 58,
+        "cpc": 0.7337931034482759,
+        "ctr": 0.009435496990401823,
+        "cvr": 0.13793103448275862,
+        "impressions": 6147,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 8,
+        "organic_rank": null,
+        "roas": 2.367246240601504,
+        "sales": 100.75,
+        "spend": 42.56
+      },
+      "keyword": "fairy lights for bedroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3333333333333333,
+        "ad_rank": null,
+        "clicks": 50,
+        "cpc": 0.7904,
+        "ctr": 0.012683916793505834,
+        "cvr": 0.16,
+        "impressions": 3942,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 8,
+        "organic_rank": null,
+        "roas": 3.0,
+        "sales": 118.56,
+        "spend": 39.52
+      },
+      "keyword": "smart home",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.4719669729657744,
+        "ad_rank": null,
+        "clicks": 76,
+        "cpc": 0.4663157894736842,
+        "ctr": 0.0008267699403855359,
+        "cvr": 0.06578947368421052,
+        "impressions": 91924,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 5,
+        "organic_rank": null,
+        "roas": 2.1187923250564333,
+        "sales": 75.09,
+        "spend": 35.44
+      },
+      "keyword": "home decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.1762375244495712,
+        "ad_rank": null,
+        "clicks": 79,
+        "cpc": 0.4448101265822785,
+        "ctr": 0.009611874923956685,
+        "cvr": 0.17721518987341772,
+        "impressions": 8219,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 14,
+        "organic_rank": null,
+        "roas": 5.674160500853728,
+        "sales": 199.39,
+        "spend": 35.14
+      },
+      "keyword": "luces led",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.08976950037094834,
+        "ad_rank": null,
+        "clicks": 92,
+        "cpc": 0.3814130434782609,
+        "ctr": 0.02084277299501586,
+        "cvr": 0.29347826086956524,
+        "impressions": 4414,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 27,
+        "organic_rank": null,
+        "roas": 11.139640923339982,
+        "sales": 390.89,
+        "spend": 35.09
+      },
+      "keyword": "string lights for bedroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3456545436527599,
+        "ad_rank": null,
+        "clicks": 62,
+        "cpc": 0.5625806451612904,
+        "ctr": 0.012759827124922823,
+        "cvr": 0.12903225806451613,
+        "impressions": 4859,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 8,
+        "organic_rank": null,
+        "roas": 2.8930619266055047,
+        "sales": 100.91,
+        "spend": 34.88
+      },
+      "keyword": "light strip",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.10454228659737584,
+        "ad_rank": null,
+        "clicks": 89,
+        "cpc": 0.38764044943820225,
+        "ctr": 0.017403206883066093,
+        "cvr": 0.2696629213483146,
+        "impressions": 5114,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 24,
+        "organic_rank": null,
+        "roas": 9.56550724637681,
+        "sales": 330.01,
+        "spend": 34.5
+      },
+      "keyword": "led strip lights for bedroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.10662016565983683,
+        "ad_rank": null,
+        "clicks": 77,
+        "cpc": 0.44467532467532467,
+        "ctr": 0.019974059662775615,
+        "cvr": 0.2987012987012987,
+        "impressions": 3855,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 23,
+        "organic_rank": null,
+        "roas": 9.37908878504673,
+        "sales": 321.14,
+        "spend": 34.24
+      },
+      "keyword": "rgb led strip",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.43390420123093393,
+        "ad_rank": null,
+        "clicks": 67,
+        "cpc": 0.48402985074626864,
+        "ctr": 0.012914417887432536,
+        "cvr": 0.08955223880597014,
+        "impressions": 5188,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 6,
+        "organic_rank": null,
+        "roas": 2.304656182547024,
+        "sales": 74.74,
+        "spend": 32.43
+      },
+      "keyword": "bedroom lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.11000756065708983,
+        "ad_rank": null,
+        "clicks": 83,
+        "cpc": 0.3856626506024096,
+        "ctr": 0.014646197282512794,
+        "cvr": 0.24096385542168675,
+        "impressions": 5667,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 20,
+        "organic_rank": null,
+        "roas": 9.090284286160575,
+        "sales": 290.98,
+        "spend": 32.01
+      },
+      "keyword": "led light strips",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.10680968387657212,
+        "ad_rank": null,
+        "clicks": 72,
+        "cpc": 0.3927777777777778,
+        "ctr": 0.017964071856287425,
+        "cvr": 0.2916666666666667,
+        "impressions": 4008,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 21,
+        "organic_rank": null,
+        "roas": 9.362446958981613,
+        "sales": 264.77,
+        "spend": 28.28
+      },
+      "keyword": "led string lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.11564738520144094,
+        "ad_rank": null,
+        "clicks": 70,
+        "cpc": 0.399,
+        "ctr": 0.016328434802892467,
+        "cvr": 0.22857142857142856,
+        "impressions": 4287,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 16,
+        "organic_rank": null,
+        "roas": 8.646974579305406,
+        "sales": 241.51,
+        "spend": 27.93
+      },
+      "keyword": "led strip lights for home",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.40903054448871184,
+        "ad_rank": null,
+        "clicks": 42,
+        "cpc": 0.66,
+        "ctr": 0.004772727272727273,
+        "cvr": 0.11904761904761904,
+        "impressions": 8800,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 5,
+        "organic_rank": null,
+        "roas": 2.4448051948051948,
+        "sales": 67.77,
+        "spend": 27.72
+      },
+      "keyword": "b08b1f2gxy",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.4919786096256685,
+        "ad_rank": null,
+        "clicks": 42,
+        "cpc": 0.5695238095238095,
+        "ctr": 0.004941757853865161,
+        "cvr": 0.09523809523809523,
+        "impressions": 8499,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 4,
+        "organic_rank": null,
+        "roas": 2.032608695652174,
+        "sales": 48.62,
+        "spend": 23.92
+      },
+      "keyword": "rgb lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 25,
+        "cpc": 0.9496,
+        "ctr": 0.002631578947368421,
+        "cvr": 0.0,
+        "impressions": 9500,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 23.74
+      },
+      "keyword": "outdoor led lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.11354681169876242,
+        "ad_rank": null,
+        "clicks": 52,
+        "cpc": 0.3934615384615385,
+        "ctr": 0.018011776931070315,
+        "cvr": 0.2692307692307692,
+        "impressions": 2887,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 14,
+        "organic_rank": null,
+        "roas": 8.8069403714565,
+        "sales": 180.19,
+        "spend": 20.46
+      },
+      "keyword": "luces para cuarto",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 22,
+        "cpc": 0.9286363636363636,
+        "ctr": 0.0017482517482517483,
+        "cvr": 0.0,
+        "impressions": 12584,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 20.43
+      },
+      "keyword": "cutecore room decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 23,
+        "cpc": 0.8539130434782609,
+        "ctr": 0.001893939393939394,
+        "cvr": 0.0,
+        "impressions": 12144,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 19.64
+      },
+      "keyword": "home decor clearance",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 26,
+        "cpc": 0.69,
+        "ctr": 0.004193548387096774,
+        "cvr": 0.0,
+        "impressions": 6200,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 17.94
+      },
+      "keyword": "b07n1cmgqq",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.41605839416058393,
+        "ad_rank": null,
+        "clicks": 23,
+        "cpc": 0.7682608695652174,
+        "ctr": 0.013403263403263404,
+        "cvr": 0.13043478260869565,
+        "impressions": 1716,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 2.4035087719298245,
+        "sales": 42.47,
+        "spend": 17.67
+      },
+      "keyword": "leds lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.08723978215503639,
+        "ad_rank": null,
+        "clicks": 44,
+        "cpc": 0.38954545454545453,
+        "ctr": 0.018557570645297342,
+        "cvr": 0.29545454545454547,
+        "impressions": 2371,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 13,
+        "organic_rank": null,
+        "roas": 11.462660443407234,
+        "sales": 196.47,
+        "spend": 17.14
+      },
+      "keyword": "led room lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 23,
+        "cpc": 0.7156521739130435,
+        "ctr": 0.0012594458438287153,
+        "cvr": 0.0,
+        "impressions": 18262,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 16.46
+      },
+      "keyword": "rope led lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 26,
+        "cpc": 0.6069230769230769,
+        "ctr": 0.0011976047904191617,
+        "cvr": 0.0,
+        "impressions": 21710,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 15.78
+      },
+      "keyword": "rope lights indoor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3832752613240418,
+        "ad_rank": null,
+        "clicks": 20,
+        "cpc": 0.77,
+        "ctr": 0.005858230814294083,
+        "cvr": 0.15,
+        "impressions": 3414,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 2.609090909090909,
+        "sales": 40.18,
+        "spend": 15.4
+      },
+      "keyword": "room stuff",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.5549132947976878,
+        "ad_rank": null,
+        "clicks": 24,
+        "cpc": 0.64,
+        "ctr": 0.004897959183673469,
+        "cvr": 0.08333333333333333,
+        "impressions": 4900,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 1.8020833333333333,
+        "sales": 27.68,
+        "spend": 15.36
+      },
+      "keyword": "b09kg2p1qq",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 25,
+        "cpc": 0.5984,
+        "ctr": 0.0012853470437017994,
+        "cvr": 0.0,
+        "impressions": 19450,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 14.96
+      },
+      "keyword": "led rope light",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.350930945086024,
+        "ad_rank": null,
+        "clicks": 19,
+        "cpc": 0.7836842105263158,
+        "ctr": 0.012048192771084338,
+        "cvr": 0.15789473684210525,
+        "impressions": 1577,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 2.849563465413029,
+        "sales": 42.43,
+        "spend": 14.89
+      },
+      "keyword": "room lighting",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.517120894479385,
+        "ad_rank": null,
+        "clicks": 27,
+        "cpc": 0.5481481481481482,
+        "ctr": 0.0011295653265280508,
+        "cvr": 0.07407407407407407,
+        "impressions": 23903,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 1.9337837837837837,
+        "sales": 28.62,
+        "spend": 14.8
+      },
+      "keyword": "room decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 17,
+        "cpc": 0.8588235294117647,
+        "ctr": 0.001218026796589525,
+        "cvr": 0.0,
+        "impressions": 13957,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 14.6
+      },
+      "keyword": "led lights battery operated",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 20,
+        "cpc": 0.709,
+        "ctr": 0.0015105740181268882,
+        "cvr": 0.0,
+        "impressions": 13240,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 14.18
+      },
+      "keyword": "dorm decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3334154756037457,
+        "ad_rank": null,
+        "clicks": 21,
+        "cpc": 0.6442857142857142,
+        "ctr": 0.013680781758957655,
+        "cvr": 0.14285714285714285,
+        "impressions": 1535,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 2.999260901699926,
+        "sales": 40.58,
+        "spend": 13.53
+      },
+      "keyword": "led strip light",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 15,
+        "cpc": 0.8953333333333333,
+        "ctr": 0.001443001443001443,
+        "cvr": 0.0,
+        "impressions": 10395,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 13.43
+      },
+      "keyword": "christmas decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.33308176100628933,
+        "ad_rank": null,
+        "clicks": 19,
+        "cpc": 0.6968421052631579,
+        "ctr": 0.011020881670533642,
+        "cvr": 0.15789473684210525,
+        "impressions": 1724,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 3.0022658610271904,
+        "sales": 39.75,
+        "spend": 13.24
+      },
+      "keyword": "led light strips with remote",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3408736349453978,
+        "ad_rank": null,
+        "clicks": 18,
+        "cpc": 0.7283333333333334,
+        "ctr": 0.007506255212677231,
+        "cvr": 0.16666666666666666,
+        "impressions": 2398,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 2.933638443935927,
+        "sales": 38.46,
+        "spend": 13.11
+      },
+      "keyword": "tv lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.21695925803246108,
+        "ad_rank": null,
+        "clicks": 24,
+        "cpc": 0.5458333333333333,
+        "ctr": 0.004493540535480247,
+        "cvr": 0.16666666666666666,
+        "impressions": 5341,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 4,
+        "organic_rank": null,
+        "roas": 4.6091603053435115,
+        "sales": 60.38,
+        "spend": 13.1
+      },
+      "keyword": "bedroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.49540581929555894,
+        "ad_rank": null,
+        "clicks": 17,
+        "cpc": 0.7611764705882353,
+        "ctr": 0.010539367637941723,
+        "cvr": 0.11764705882352941,
+        "impressions": 1613,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 2.01854714064915,
+        "sales": 26.12,
+        "spend": 12.94
+      },
+      "keyword": "bedroom lighting",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 25,
+        "cpc": 0.5164,
+        "ctr": 0.002008032128514056,
+        "cvr": 0.0,
+        "impressions": 12450,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 12.91
+      },
+      "keyword": "led rope lights for bedroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 14,
+        "cpc": 0.9178571428571428,
+        "ctr": 0.001201923076923077,
+        "cvr": 0.0,
+        "impressions": 11648,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 12.85
+      },
+      "keyword": "govee led strip lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 24,
+        "cpc": 0.4841666666666667,
+        "ctr": 0.0027624309392265192,
+        "cvr": 0.0,
+        "impressions": 8688,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 11.62
+      },
+      "keyword": "led strip lights battery powered",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.18287876399180197,
+        "ad_rank": null,
+        "clicks": 26,
+        "cpc": 0.4461538461538462,
+        "ctr": 0.013171225937183385,
+        "cvr": 0.19230769230769232,
+        "impressions": 1974,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 5,
+        "organic_rank": null,
+        "roas": 5.468103448275862,
+        "sales": 63.43,
+        "spend": 11.6
+      },
+      "keyword": "luz led",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 13,
+        "cpc": 0.8869230769230769,
+        "ctr": 0.0017699115044247787,
+        "cvr": 0.0,
+        "impressions": 7345,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 11.53
+      },
+      "keyword": "bedroom decor aesthetic",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 15,
+        "cpc": 0.7653333333333333,
+        "ctr": 0.003484320557491289,
+        "cvr": 0.0,
+        "impressions": 4305,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 11.48
+      },
+      "keyword": "rope lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.7902542372881356,
+        "ad_rank": null,
+        "clicks": 18,
+        "cpc": 0.6216666666666667,
+        "ctr": 0.011029411764705883,
+        "cvr": 0.05555555555555555,
+        "impressions": 1632,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 1.2654155495978552,
+        "sales": 14.16,
+        "spend": 11.19
+      },
+      "keyword": "100 ft led strip lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 15,
+        "cpc": 0.744,
+        "ctr": 0.002898550724637681,
+        "cvr": 0.0,
+        "impressions": 5175,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 11.16
+      },
+      "keyword": "led rope lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 12,
+        "cpc": 0.9141666666666667,
+        "ctr": 0.0017035775127768314,
+        "cvr": 0.0,
+        "impressions": 7044,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 10.97
+      },
+      "keyword": "dorm room decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3915077365958978,
+        "ad_rank": null,
+        "clicks": 18,
+        "cpc": 0.6044444444444445,
+        "ctr": 0.009884678747940691,
+        "cvr": 0.1111111111111111,
+        "impressions": 1821,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 2.5542279411764706,
+        "sales": 27.79,
+        "spend": 10.88
+      },
+      "keyword": "led lights 100 ft",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.2823529411764706,
+        "ad_rank": null,
+        "clicks": 26,
+        "cpc": 0.4153846153846154,
+        "ctr": 0.0077450104259755735,
+        "cvr": 0.11538461538461539,
+        "impressions": 3357,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 3.5416666666666665,
+        "sales": 38.25,
+        "spend": 10.8
+      },
+      "keyword": "classroom lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3589125946317963,
+        "ad_rank": null,
+        "clicks": 20,
+        "cpc": 0.5215,
+        "ctr": 0.012578616352201259,
+        "cvr": 0.1,
+        "impressions": 1590,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 2.7861936720997122,
+        "sales": 29.06,
+        "spend": 10.43
+      },
+      "keyword": "luz led para cuarto",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 17,
+        "cpc": 0.61,
+        "ctr": 0.0044736842105263155,
+        "cvr": 0.0,
+        "impressions": 3800,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 10.37
+      },
+      "keyword": "b08m9c4mmm",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.3892145369284877,
+        "ad_rank": null,
+        "clicks": 17,
+        "cpc": 0.5858823529411765,
+        "ctr": 0.010773130544993664,
+        "cvr": 0.11764705882352941,
+        "impressions": 1578,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 2.569277108433735,
+        "sales": 25.59,
+        "spend": 9.96
+      },
+      "keyword": "100ft led strip lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 16,
+        "cpc": 0.606875,
+        "ctr": 0.002044989775051125,
+        "cvr": 0.0,
+        "impressions": 7824,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 9.71
+      },
+      "keyword": "grunge room decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.7200598802395209,
+        "ad_rank": null,
+        "clicks": 14,
+        "cpc": 0.6871428571428572,
+        "ctr": 0.00954328561690525,
+        "cvr": 0.07142857142857142,
+        "impressions": 1467,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 1.3887733887733889,
+        "sales": 13.36,
+        "spend": 9.62
+      },
+      "keyword": "led lights for bathroom",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.34964512514008217,
+        "ad_rank": null,
+        "clicks": 18,
+        "cpc": 0.52,
+        "ctr": 0.010982306284319707,
+        "cvr": 0.1111111111111111,
+        "impressions": 1639,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 2.860042735042735,
+        "sales": 26.77,
+        "spend": 9.36
+      },
+      "keyword": "cool things",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.6247436773752563,
+        "ad_rank": null,
+        "clicks": 14,
+        "cpc": 0.6528571428571428,
+        "ctr": 0.00903225806451613,
+        "cvr": 0.07142857142857142,
+        "impressions": 1550,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 1.600656455142232,
+        "sales": 14.63,
+        "spend": 9.14
+      },
+      "keyword": "￼led lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.30805848350901055,
+        "ad_rank": null,
+        "clicks": 15,
+        "cpc": 0.604,
+        "ctr": 0.007462686567164179,
+        "cvr": 0.13333333333333333,
+        "impressions": 2010,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 3.246136865342163,
+        "sales": 29.41,
+        "spend": 9.06
+      },
+      "keyword": "lighting & ceiling fans",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 20,
+        "cpc": 0.451,
+        "ctr": 0.0029411764705882353,
+        "cvr": 0.0,
+        "impressions": 6800,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 9.02
+      },
+      "keyword": "battery powered led strip lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.5852687458526875,
+        "ad_rank": null,
+        "clicks": 17,
+        "cpc": 0.5188235294117647,
+        "ctr": 0.000529562021057878,
+        "cvr": 0.058823529411764705,
+        "impressions": 32102,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 1.7086167800453516,
+        "sales": 15.07,
+        "spend": 8.82
+      },
+      "keyword": "bedroom decor",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.03396603396603397,
+        "ad_rank": null,
+        "clicks": 49,
+        "cpc": 0.17346938775510204,
+        "ctr": 0.04083333333333333,
+        "cvr": 0.40816326530612246,
+        "impressions": 1200,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 20,
+        "organic_rank": null,
+        "roas": 29.441176470588236,
+        "sales": 250.25,
+        "spend": 8.5
+      },
+      "keyword": "ksipze 100ft led strip lights rgb music sync",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.6816693944353519,
+        "ad_rank": null,
+        "clicks": 17,
+        "cpc": 0.49,
+        "ctr": 0.01103896103896104,
+        "cvr": 0.058823529411764705,
+        "impressions": 1540,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 1.4669867947178872,
+        "sales": 12.22,
+        "spend": 8.33
+      },
+      "keyword": "bedroom accessories",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.19382744914659808,
+        "ad_rank": null,
+        "clicks": 17,
+        "cpc": 0.48764705882352943,
+        "ctr": 0.011913104414856343,
+        "cvr": 0.17647058823529413,
+        "impressions": 1427,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 3,
+        "organic_rank": null,
+        "roas": 5.159227985524729,
+        "sales": 42.77,
+        "spend": 8.29
+      },
+      "keyword": "lights for room",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 11,
+        "cpc": 0.7181818181818181,
+        "ctr": 0.0018726591760299626,
+        "cvr": 0.0,
+        "impressions": 5874,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 7.9
+      },
+      "keyword": "outdoor led strip lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 11,
+        "cpc": 0.6554545454545454,
+        "ctr": 0.0013869625520110957,
+        "cvr": 0.0,
+        "impressions": 7931,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 7.21
+      },
+      "keyword": "outdoor led strip lights waterproof",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 10,
+        "cpc": 0.693,
+        "ctr": 0.0019157088122605363,
+        "cvr": 0.0,
+        "impressions": 5220,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 6.93
+      },
+      "keyword": "rope light",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.21153846153846154,
+        "ad_rank": null,
+        "clicks": 12,
+        "cpc": 0.5316666666666666,
+        "ctr": 0.005961251862891207,
+        "cvr": 0.16666666666666666,
+        "impressions": 2013,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 4.7272727272727275,
+        "sales": 30.16,
+        "spend": 6.38
+      },
+      "keyword": "luces",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.2082182320441989,
+        "ad_rank": null,
+        "clicks": 15,
+        "cpc": 0.402,
+        "ctr": 0.010238907849829351,
+        "cvr": 0.13333333333333333,
+        "impressions": 1465,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 2,
+        "organic_rank": null,
+        "roas": 4.802653399668325,
+        "sales": 28.96,
+        "spend": 6.03
+      },
+      "keyword": "led lights for tv",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 10,
+        "cpc": 0.529,
+        "ctr": 0.0018867924528301887,
+        "cvr": 0.0,
+        "impressions": 5300,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 5.29
+      },
+      "keyword": "led light rope",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.35168616655196144,
+        "ad_rank": null,
+        "clicks": 8,
+        "cpc": 0.63875,
+        "ctr": 0.0041841004184100415,
+        "cvr": 0.125,
+        "impressions": 1912,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 2.843444227005871,
+        "sales": 14.53,
+        "spend": 5.11
+      },
+      "keyword": "indoor string lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "hold_steady",
+      "action_type": "next_cycle_review",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template"
+      },
+      "data_facts": {
+        "acos": 0.315284441398218,
+        "ad_rank": null,
+        "clicks": 8,
+        "cpc": 0.575,
+        "ctr": 0.004427227448810182,
+        "cvr": 0.125,
+        "impressions": 1807,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 1,
+        "organic_rank": null,
+        "roas": 3.1717391304347826,
+        "sales": 14.59,
+        "spend": 4.6
+      },
+      "keyword": "room led lights",
+      "next_action_text": "保持当前策略，进入下一周期复盘",
+      "rule_hits": [
+        "no_higher_priority_rule_hit"
+      ],
+      "ui_conclusion": "keep"
+    },
+    {
+      "action_group": "continue_observation",
+      "action_type": "observation_exit_check",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template",
+        "evidence": {
+          "insufficient_clicks_max": 9,
+          "preliminary_clicks_min": 10,
+          "preliminary_orders_min": 1,
+          "sufficient_clicks_min": 20,
+          "sufficient_orders_min": 2
+        }
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 9,
+        "cpc": 0.8144444444444444,
+        "ctr": 0.002631578947368421,
+        "cvr": 0.0,
+        "impressions": 3420,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 7.33
+      },
+      "keyword": "govee led lights",
+      "next_action_text": "继续观察，不做强动作",
+      "rule_hits": [
+        "evidence_insufficient"
+      ],
+      "ui_conclusion": "cautious"
+    },
+    {
+      "action_group": "continue_observation",
+      "action_type": "observation_exit_check",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template",
+        "evidence": {
+          "insufficient_clicks_max": 9,
+          "preliminary_clicks_min": 10,
+          "preliminary_orders_min": 1,
+          "sufficient_clicks_min": 20,
+          "sufficient_orders_min": 2
+        }
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 9,
+        "cpc": 0.7422222222222222,
+        "ctr": 0.0027548209366391185,
+        "cvr": 0.0,
+        "impressions": 3267,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 6.68
+      },
+      "keyword": "battery led lights",
+      "next_action_text": "继续观察，不做强动作",
+      "rule_hits": [
+        "evidence_insufficient"
+      ],
+      "ui_conclusion": "cautious"
+    },
+    {
+      "action_group": "continue_observation",
+      "action_type": "observation_exit_check",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template",
+        "evidence": {
+          "insufficient_clicks_max": 9,
+          "preliminary_clicks_min": 10,
+          "preliminary_orders_min": 1,
+          "sufficient_clicks_min": 20,
+          "sufficient_orders_min": 2
+        }
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 8,
+        "cpc": 0.73125,
+        "ctr": 0.0013351134846461949,
+        "cvr": 0.0,
+        "impressions": 5992,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 5.85
+      },
+      "keyword": "spiderman bedroom decor",
+      "next_action_text": "继续观察，不做强动作",
+      "rule_hits": [
+        "evidence_insufficient"
+      ],
+      "ui_conclusion": "cautious"
+    },
+    {
+      "action_group": "continue_observation",
+      "action_type": "observation_exit_check",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "config_version": "stable-v1-template",
+        "evidence": {
+          "insufficient_clicks_max": 9,
+          "preliminary_clicks_min": 10,
+          "preliminary_orders_min": 1,
+          "sufficient_clicks_min": 20,
+          "sufficient_orders_min": 2
+        }
+      },
+      "data_facts": {
+        "acos": null,
+        "ad_rank": null,
+        "clicks": 9,
+        "cpc": 0.5688888888888889,
+        "ctr": 0.0016181229773462784,
+        "cvr": 0.0,
+        "impressions": 5562,
+        "market_opportunity_score": null,
+        "market_search_volume": null,
+        "orders": 0,
+        "organic_rank": null,
+        "roas": 0.0,
+        "sales": 0,
+        "spend": 5.12
+      },
+      "keyword": "hello kitty room decor",
+      "next_action_text": "继续观察，不做强动作",
+      "rule_hits": [
+        "evidence_insufficient"
+      ],
+      "ui_conclusion": "cautious"
+    },
+    {
+      "action_group": "optimize_bid",
+      "action_type": "bid_adjustment",
+      "ai_may_change_action": false,
+      "ai_status": "not_requested",
+      "config_refs": {
+        "acos": {
+          "break_even": 0.35,
+          "target": 0.2,
+          "tolerance": 0.3
+        },
+        "config_version": "stable-v1-template",
+        "diagnostics": {
+          "low_ctr": 0.005,
+          "low_cvr": 0.05
+        }
+      },
+      "data_facts": {
+        "acos": 0.5356037151702786,
+        "ad_rank": null,
+        "clicks": 43,
+        "cpc": 0.7241860465116279,
+        "ctr": 0.01267688679245283,
+        "cvr": 0.09302325581395349,
+        "impressions": 3392,
+        "market_opportunity_score": 0.85,
+        "market_search_volume": 5000,
+        "orders": 4,
+        "organic_rank": null,
+        "roas": 1.8670520231213872,
+        "sales": 58.14,
+        "spend": 31.14
+      },
+      "keyword": "room accessories",
+      "next_action_text": "调整竞价并复核 CPC / ACOS",
+      "rule_hits": [
+        "high_opportunity_cost_not_healthy"
+      ],
+      "ui_conclusion": "optimize"
+    }
+  ],
+  "ai_may_change_action": false,
+  "demo": true,
+  "external_calls": 0,
+  "fixture_builders": [
+    "worker.diagnostics.optimization.build_optimization_plan"
+  ],
+  "fixture_inputs": [
+    {
+      "hash_normalization": "utf8-lf",
+      "path": "data/golden/market-demo-report/master-table.json",
+      "sha256": "5c8771d0a99ff382f33dbd78c7f15e4321304e0cc2374566bda56f23372b1f53"
+    },
+    {
+      "hash_normalization": "utf8-lf",
+      "path": "rules/defaults/stable.json",
+      "sha256": "ee80b89e4de034e0421c7b43a95d3c16485c1f6a1f993e4606b0324357033d87"
+    }
+  ],
+  "fixture_source": "data/golden/market-demo-report/master-table.json",
+  "local_only": true,
+  "network_calls": 0,
+  "provider_calls": 0,
+  "schema_version": "optimization-plan-0.1"
+}

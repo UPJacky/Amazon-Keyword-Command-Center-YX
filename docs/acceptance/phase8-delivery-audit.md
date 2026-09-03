@@ -24,7 +24,7 @@
 
 - 真实任务运行报告现在使用 `report-` 加 48 位十六进制随机串，例如 `report-<随机串>.json`，并在 `run-meta.json.report_path` 固化为 `task_id/run_id/随机文件名`。同一运行目录不会生成可猜的 `master-table.json`；演示黄金目录保留固定名仅用于离线 Pages 示例。
 - 报告页通过 `fetch()` 读取 JSON 后在线渲染表格，不把文件柜 URL 裸贴到页面；私有读取链路先用当前登录用户查任务元数据，再用同一用户令牌读取对象。
-- `frontend/tool/index.html`、`frontend/report/index.html` 与根登录入口是独立 HTML 地址；Pages 构建审计固定核对 31 个文件、无断链、无网络调用。
+- `frontend/tool/index.html`、`frontend/report/index.html` 与根登录入口是独立 HTML 地址；Pages 构建审计固定核对 57 个文件、无断链、无网络调用。
 - 页面源码已有未登录门禁：`app.js` 检查会话标记，缺失时跳转到登录入口；乙线 API 继续由 Auth/RLS 拒绝匿名调用。
 
 ## 线上浏览器复核（2026-09-03）

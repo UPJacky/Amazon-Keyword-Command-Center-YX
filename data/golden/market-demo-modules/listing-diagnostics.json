@@ -1,0 +1,110 @@
+{
+  "checklist": {
+    "ai_status": "not_requested",
+    "competitor_group_id": "competitor-images",
+    "image_group_id": "self-images",
+    "items": [
+      {
+        "category": "message",
+        "check_id": "hero_value_prop",
+        "evidence": [],
+        "question": "主图是否在首屏表达核心价值",
+        "severity": "high",
+        "status": "unknown"
+      },
+      {
+        "category": "image",
+        "check_id": "mobile_readability",
+        "evidence": [],
+        "question": "移动端缩略图是否仍可读",
+        "severity": "medium",
+        "status": "unknown"
+      },
+      {
+        "category": "proof",
+        "check_id": "benefit_proof",
+        "evidence": [],
+        "question": "卖点是否有清晰场景或证据支撑",
+        "severity": "high",
+        "status": "unknown"
+      },
+      {
+        "category": "positioning",
+        "check_id": "competitor_difference",
+        "evidence": [],
+        "question": "是否能看出与竞品的关键差异",
+        "severity": "medium",
+        "status": "unknown"
+      }
+    ],
+    "schema_version": "listing-checklist-0.1"
+  },
+  "competitor_images": {
+    "group_id": "competitor-images",
+    "images": [
+      {
+        "image_id": "image-1",
+        "observations": [],
+        "position": 1,
+        "provider_calls": 0,
+        "url": null
+      }
+    ],
+    "provider_calls": 0,
+    "schema_version": "image-group-0.1"
+  },
+  "conversion_diagnostics": [
+    {
+      "checklist_refs": [
+        "hero_value_prop",
+        "benefit_proof"
+      ],
+      "facts": {
+        "cvr": 0.01,
+        "market_opportunity_score": 0.9
+      },
+      "keyword": "led light",
+      "provider_calls": 0,
+      "reason": "high_opportunity_low_cvr",
+      "triggered": true
+    }
+  ],
+  "demo": true,
+  "external_calls": 0,
+  "fixture_builders": [
+    "worker.diagnostics.listing_checklist.build_image_group",
+    "worker.diagnostics.listing_checklist.build_checklist",
+    "worker.diagnostics.listing_checklist.diagnose_conversion_gap"
+  ],
+  "fixture_inputs": [
+    {
+      "hash_normalization": "utf8-lf",
+      "path": "data/golden/listing-diagnostics-input-demo.json",
+      "sha256": "3e3b2f095f7c3647e9dd3d2d82c812234209e53d73e4dcff544b75d9e1d2e851"
+    },
+    {
+      "hash_normalization": "utf8-lf",
+      "path": "rules/defaults/stable.json",
+      "sha256": "ee80b89e4de034e0421c7b43a95d3c16485c1f6a1f993e4606b0324357033d87"
+    }
+  ],
+  "fixture_source": "data/golden/listing-diagnostics-input-demo.json",
+  "local_only": true,
+  "network_calls": 0,
+  "provider_calls": 0,
+  "schema_version": "listing-diagnostics-0.1",
+  "self_images": {
+    "group_id": "self-images",
+    "images": [
+      {
+        "image_id": "image-1",
+        "observations": [],
+        "position": 1,
+        "provider_calls": 0,
+        "url": null
+      }
+    ],
+    "provider_calls": 0,
+    "schema_version": "image-group-0.1"
+  }
+}

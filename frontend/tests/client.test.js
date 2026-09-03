@@ -186,8 +186,8 @@ test('page scripts await auth and do not fetch demo artifacts when live or block
   for (const name of ['tasks', 'strategy', 'report']) for (const ready of [false, true]) {
     const element = () => ({ children: [], textContent: '', replaceChildren() { this.children = []; }, append(item) { this.children.push(item); } });
     const nodes = new Map();
-    const context = { fetch: globalThis.fetch,
-      document: { querySelector(selector) { if (!nodes.has(selector)) nodes.set(selector, element()); return nodes.get(selector); }, createElement: element },
+    const context = { fetch: globalThis.fetch, URL,
+      document: { currentScript: {src: 'https://demo.invalid/report.js'}, querySelector(selector) { if (!nodes.has(selector)) nodes.set(selector, element()); return nodes.get(selector); }, createElement: element },
       KWCC: { ready: Promise.resolve(ready), mode: 'live', tasks: { list: async () => [] }, strategies: { list: async () => [] }, showError: error => { throw error; } } };
     await vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', `${name}.js`), 'utf8'), context);
     if (!ready) assert.equal(nodes.size, 0);

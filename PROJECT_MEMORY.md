@@ -7,6 +7,8 @@ updated_at: 2026-09-03
 status: current
 language: zh-CN
 
+- 2026-09-03 六模块工作台修订：原计划六模块未被前端完整呈现，本轮补独立页面/脚本、共享蓝色样式/导航/门禁及三份可重建演示数据。41个Node场景、Pages57文件；真实图片、完整标杆/竞对指标、广告结构优化/退出阈值和生产上传→Worker→私有报告链仍不能冒充完成。完整差异见 `docs/acceptance/six-module-workbench.md`。
+
 - 2026-09-03：阶段 8 交付审计补齐真实任务报告对象名：任务运行使用 `report-` 加 48 位十六进制随机串，`run-meta.json.report_path` 记录 task/run/对象路径；演示黄金报告仍固定名仅用于离线 Pages。解析器新增 `reconciliation.header_mapping`，本地 6a 对账为 91 行、五项差值为零；完整 UAT 已复验 Worker 207 项、前端 7 项、20/20 Gate。
 
 - 2026-09-03：阶段 8 前端整改已完成本地验证：登录、工具、报告为独立 HTML/地址；工具页具备 B0+10 位 ASIN、XLSX/CSV/10MB、固定阶段顺序、防重复提交、30 秒/手动刷新和失败原因展示；报告页 fetch 在线渲染并有登录门禁；Pages 构建输出更新为 31 个 allowlist 文件，线上旧站尚待重新发布复验。

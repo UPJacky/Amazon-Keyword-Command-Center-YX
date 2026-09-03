@@ -7,8 +7,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-PAGES = ("index.html", "login.html", "workspace.html", "tasks.html", "strategy.html", "report.html", "tool/index.html", "report/index.html")
-PROTECTED_PAGES = ("workspace.html", "tasks.html", "strategy.html", "report.html", "tool/index.html", "report/index.html")
+MODULE_PAGES = tuple(f"report/{name}.html" for name in ("rank", "negative", "competitors", "listing", "optimization"))
+PAGES = ("index.html", "login.html", "workspace.html", "tasks.html", "strategy.html", "report.html", "tool/index.html", "report/index.html") + MODULE_PAGES
+PROTECTED_PAGES = ("workspace.html", "tasks.html", "strategy.html", "report.html", "tool/index.html", "report/index.html") + MODULE_PAGES
 SECRET_PATTERN = re.compile(r"service_role|sb_secret_|AKIA[0-9A-Z]{16}|豆包 API Key|MCP Token", re.I)
 SESSION_GUARD_MARKERS = ("kwcc_demo_session", "window.location.replace(loginUrl)")
 LOGOUT_MARKER = "a[href=\"login.html\"]"
@@ -36,7 +37,9 @@ def check() -> list[str]:
                 errors.append(f"{page} missing local asset reference: {asset}")
         if SECRET_PATTERN.search(text):
             errors.append(f"secret-like text in {page}")
-    for path in ROOT.glob("*.js"):
+    for path in ROOT.rglob("*.js"):
+        if "tests" in path.parts:
+            continue
         if has_secret_like_text(path.read_text(encoding="utf-8"), path.name):
             errors.append(f"secret-like text in {path.name}")
     report_text = (ROOT / "report.html").read_text(encoding="utf-8") + (ROOT / "report" / "index.html").read_text(encoding="utf-8")

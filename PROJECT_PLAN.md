@@ -1244,8 +1244,8 @@ Worker：云服务器后台进程
 
 ### 当前执行状态（2026-09-03）
 
-- 本地 Phase 8 Gate 已通过：完整 UAT 20/20 Gate、Worker 207 项（12 项因当前 Windows 符号链接能力跳过）、前端 7 项（含 Node 26 场景）、UAT 编排契约 25 项、连续执行契约 63 项（状态机/持续目标 15 项、项目监督器 48 项）、Pages 31 文件、迁移 21 项/动作/连续监督契约、Smoke、Phase 4～7 CLI、Python/PowerShell loop 进程 Gate、Phase 8 静态审计、compileall 和文档契约 15 项均通过；network_calls=0、external_calls=0、Secret value 命中为 0。
-- Pages demo 已完成安全打包并通过本地 allowlist 审计；本次构建新增根目录登录入口以及独立 `tool/`、`report/` 路由，共 31 个 allowlist 文件。本地打包仍固定生成离线 public-config，不携带 live Secret；线上旧 Pages 内容尚待重新发布后复验。
+- 本地 Phase 8 Gate 已通过：完整 UAT 20/20 Gate、Worker 207 项（12 项因当前 Windows 符号链接能力跳过）、前端 7 项（含 Node 41 场景）、UAT 编排契约 25 项、连续执行契约 63 项（状态机/持续目标 15 项、项目监督器 48 项）、Pages 57 文件、迁移 21 项/动作/连续监督契约、Smoke、Phase 4～7 CLI、Python/PowerShell loop 进程 Gate、Phase 8 静态审计、compileall 和文档契约 15 项均通过；network_calls=0、external_calls=0、Secret value 命中为 0。
+- Pages demo 已完成安全打包并通过本地 allowlist 审计；本次构建新增根目录登录入口以及独立 `tool/`、`report/` 路由，共 57 个 allowlist 文件。本地打包仍固定生成离线 public-config，不携带 live Secret；线上当前仍是改版前演示站，新六模块版本待发布与复验。
 - 真实任务报告对象名使用 `report-` 加 48 位十六进制随机串，`run-meta.json.report_path` 固化 task/run/对象路径；解析器在 `reconciliation.header_mapping` 留存实际表头与列序号，6a/6b 本地证据见 `docs/acceptance/phase8-delivery-audit.md`。
 - 前端 live Auth/任务/策略读取、私有报告 Gateway、Provider 缓存/预算/流水线注入均有 fake 集成证据；上传、策略写入、真实私有报告前端尚未配置，保持明确禁用。
 - Supabase 003 已执行且 public schema 匿名七表/辅助函数全部拒绝；双用户 RLS 与私有 reports Storage 读取矩阵已通过，GitHub Pages HTTPS Smoke Test 已通过。Provider 只读 `tools/list` 已返回 29 个工具，并完成 6 次只读业务样本（均状态 200、各 1 credit，边界字段保持 null）；官方 MCP 页面确认注册用户每月 20,000 Credit、VIP 每月 40,000 Credit、Free 每自然周 7,000 Credit，且公开了 28 个数据工具的具体 Credit 计算规则及失败扣费边界；OpenAPI v2 另有相近的错误通常不产生业务扣费文档证据，但不外推到 MCP；未完成外部 Gate 仅剩 MCP 端点缓存/重复、429/5xx 实际响应和独立版本字段验证，货币换算在免费额度场景下不适用但仍不作付费价格推断。
@@ -1329,6 +1329,14 @@ Worker：云服务器后台进程
 ---
 
 # 10. 前端设计要求
+
+## 2026-09-03 用户参考图修订（优先于下方旧视觉约束）
+
+用户明确指出界面难看及模块缺页。本次采用深蓝标题区、蓝色主按钮、浅灰蓝页面底、白色内容卡与侧栏；保留固定列宽、表头居中、内容左对齐、表内横向滚动、五色结论与灰色缺失状态。`DESIGN-airtable.md` 保留为原始参考，不直接覆盖其营销页规范；它的黑色主按钮、纯白 hero、96px 大段距不再约束数据工作台。
+
+六模块分别交付 `report/index.html`、`report/rank.html`、`report/negative.html`、`report/competitors.html`、`report/listing.html`、`report/optimization.html`，每个模块拥有独立脚本，共享样式/导航/登录校验；不使用大 HTML 切屏，也不以 iframe 嵌套整个应用。文件拆分降低修改耦合，但数据权限仍由后端/RLS保证。
+
+缺口纠正：此前本地 Gate 通过证明计算器/契约可运行，不代表六模块前端已交付，更不代表生产链路完成。独立页面补齐须验证实际数据行、筛选、加载/空/失败和登录门禁。演示数据与真实数据分开，真实图片/视觉事实未接入时明确待补，不能以截图中的商品值填充。两份《实施计划》《分阶段验收与优化指南》仅作参考，不覆盖本计划的 V1 六模块及私有报告架构。
 
 正式前端必须读取并记录 `DESIGN-airtable.md` 的版本/哈希后开发；Phase 0 若发现缺失或与本计划术语冲突，先形成差异清单，不允许前端自行猜。
 

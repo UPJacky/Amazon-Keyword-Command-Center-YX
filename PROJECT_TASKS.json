@@ -2,6 +2,44 @@
   "schema_version": 1,
   "tasks": [
     {
+      "id": "six-module-workbench",
+      "title": "按原计划补齐六模块独立页面并重设计蓝色工作台",
+      "status": "running",
+      "execution": "local",
+      "depends_on": [],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "scripts"
+        },
+        {
+          "kind": "path",
+          "path": "PROJECT_PLAN.md"
+        },
+        {
+          "kind": "path",
+          "path": "DESIGN-airtable.md"
+        },
+        {
+          "kind": "path",
+          "path": "data/golden"
+        }
+      ],
+      "input_fingerprint": "sha256:42d63b98f4d78c5e3e28079fec312745c1bfb627f184bddb0be8abd118d4be24",
+      "verified_fingerprint": "",
+      "acceptance": [
+        "六个报告模块为独立HTML与独立脚本，共享导航、样式和登录门禁",
+        "按用户参考图实现深蓝标题、蓝色主按钮、浅灰蓝背景和不挤压的宽表格",
+        "复用现有模块计算产物，无数据明确待补，不伪造商品图片、指标或真实接入",
+        "Pages allowlist、页面数据渲染、未登录保护及回归验证通过，并记录原计划与实际缺口"
+      ],
+      "verification": []
+    },
+    {
       "id": "production-adapters-local",
       "title": "真实接入前的 Auth、私有报告和 Provider 本地链路",
       "status": "completed",
@@ -237,7 +275,7 @@
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
-        "Pages allowlist 31 文件（含根登录、独立 tool/report 路由）、文档契约 15 项、Python 编译和 Python/PowerShell 双入口检查通过",
+        "Pages allowlist 57 文件（含根登录、独立 tool/report 六模块路由及兼容入口）、文档契约 15 项、Python 编译和 Python/PowerShell 双入口检查通过",
         "network_calls=0、external_calls=0、Secret value 命中数=0"
       ],
       "verification": [

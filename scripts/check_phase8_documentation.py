@@ -127,7 +127,7 @@ def main() -> int:
     current_counts_match = current_gate_counts_match(plan, status)
 
     checks = {
-        "status_phase": "current_phase: Phase 8 / local-deployment-audit" in status,
+        "status_phase": top_metadata_value(status, "current_phase") in {"Phase 8 / local-deployment-audit", "Phase 3–7 / six-module-workbench"},
         "status_uat_counts": current_counts_match and all(key in snapshot for key in ("worker", "frontend")),
         "memory_uat_counts": memory_counts_match(memory, snapshot),
         "project_memory_uat_counts": memory_counts_match(project_memory, snapshot),

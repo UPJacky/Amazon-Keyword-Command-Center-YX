@@ -2,17 +2,31 @@
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>关键词作战总表 · 登录</title><link rel="stylesheet" href="styles.css"></head>
 <body class="auth-page" data-login-url="index.html" data-post-login-url="tool/index.html">
-  <main class="auth-card" aria-labelledby="login-title">
-    <div class="eyebrow">AMAZON KEYWORD COMMAND CENTER</div>
-    <h1 id="login-title">把关键词，变成下一步动作。</h1>
-    <p class="lede">登录后上传搜索词报表，查看可追溯的加投、防守、保持、优化和止损结论。</p>
-    <form id="login-form" class="stack-form">
-      <label>邮箱<input name="email" type="email" autocomplete="email" placeholder="you@company.com" required></label>
-      <label>密码<input name="password" type="password" autocomplete="current-password" placeholder="••••••••" required minlength="6"></label>
-      <button class="button primary" type="submit">登录工作台</button>
-      <p id="login-message" class="form-message" role="status"></p>
-    </form>
-    <div class="auth-note"><span class="status-dot"></span>演示界面 · 正式鉴权将接入 Supabase Auth</div>
+  <main class="auth-shell" aria-labelledby="login-title">
+    <section class="auth-panel auth-panel--brand" aria-label="工作台介绍">
+      <a class="brand brand--light" href="index.html"><span class="brand-mark brand-mark--light">YX</span><span>关键词作战总表</span></a>
+      <div class="auth-panel__message">
+        <p class="eyebrow eyebrow--light">AMAZON KEYWORD COMMAND CENTER</p>
+        <h1 id="login-title">把关键词，<br>变成下一步动作。</h1>
+        <p>从广告数据到运营决策，在同一个工作台查看关键词、自然排名、竞品与优化建议。</p>
+        <div class="auth-features" aria-label="分析原则"><span>数据先对账</span><span>判断有依据</span><span>结论可追溯</span></div>
+      </div>
+      <div class="auth-note"><span class="status-dot status-dot--mint"></span><span>运行模式与登录状态以页面顶部提示为准</span></div>
+    </section>
+    <section class="auth-panel auth-panel--form" aria-labelledby="sign-in-title">
+      <div class="auth-form-wrap">
+        <p class="eyebrow">WELCOME BACK</p>
+        <h2 id="sign-in-title">登录工作台</h2>
+        <p class="muted">输入邮箱和密码，开始你的关键词分析。</p>
+        <form id="login-form" class="stack-form">
+          <label>邮箱<input name="email" type="email" autocomplete="email" placeholder="you@company.com" required></label>
+          <label>密码<input name="password" type="password" autocomplete="current-password" placeholder="输入密码" required minlength="6"></label>
+          <button class="button primary" type="submit">登录工作台 <span aria-hidden="true">→</span></button>
+          <p id="login-message" class="form-message" role="status"></p>
+        </form>
+        <div class="security-callout"><strong>开始前请确认运行模式</strong><span>Demo 仅供本地演示；Live 需验证身份。当前上传功能尚未开放。</span></div>
+      </div>
+    </section>
   </main>
   <script src="public-config.js"></script><script src="client.js"></script><script src="app.js"></script>
 </body>

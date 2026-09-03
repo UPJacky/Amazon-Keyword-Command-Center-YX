@@ -1,3 +1,4 @@
+const reportScriptURL = new URL(document.currentScript.src);
 (async function () {
   if (!await globalThis.KWCC?.ready) return;
   if (globalThis.KWCC.mode === 'live') {
@@ -8,12 +9,14 @@
     main.append(notice);
     return;
   }
-  const dataPath = name => `${window.location.pathname.includes('/frontend/') ? '../../' : '../'}data/golden/${name}`;
+  const dataPath = name => new URL(`${reportScriptURL.pathname.includes('/frontend/') ? '../' : './'}data/golden/${name}`, reportScriptURL).href;
   const reportUrl = dataPath('market-demo-report/master-table.json');
   const tableBody = document.querySelector('#report-rows');
   if (!tableBody) return;
 
-  const state = { report: null, filter: 'all', currency: null };
+  const state = { report: null, filter: 'all', query: '', currency: null };
+  const labels = { add: '加投', defend: '防守', keep: '保持', cautious: '谨慎', optimize: '优化', stop_loss: '止损/暂停', data_missing: '数据待补' };
+  const stages = { new: '新品期', growth: '上升期', stable: '稳定期', clearance: '清货期', seasonal_restart: '季节性重启' };
   const headers = ['搜索词', '角色 / 阶段', '结论', '展示', '点击', 'CTR', 'CPC', '花费', '订单', '销售额', 'CVR', 'ACOS', 'ROAS', '证据', '搜索量', '难度', '建议竞价', '自然位', '广告位', '下一步', '缺失字段'];
   const filterGroups = {
     add: ['scale_up'],
@@ -35,7 +38,7 @@
   const conclusion = row => row.ui_conclusion || ({ scale_up: 'add', defend_rank: 'defend', hold_steady: 'keep', cautious_test: 'cautious', continue_observation: 'cautious', optimize_listing: 'optimize', optimize_bid: 'optimize', optimize_structure: 'optimize', stop_loss: 'stop_loss', reduce_or_pause: 'stop_loss', data_missing: 'data_missing' }[row.action_group] || text(row.action_group, 'unknown'));
 
   function matches(row) {
-    return state.filter === 'all' || (filterGroups[state.filter] || []).includes(row.action_group);
+    return (state.filter === 'all' || (filterGroups[state.filter] || []).includes(row.action_group)) && String(row.keyword || '').toLowerCase().includes(state.query);
   }
 
   function cell(value, className) {
@@ -57,18 +60,19 @@
       small.textContent = row.rule_hits?.join(' · ') || '规则原因待补';
       keyword.append(strong, small);
       tr.append(keyword);
-      tr.append(cell(`${text(row.keyword_role)} · ${text(row.product_stage)}`));
+      tr.append(cell(`${text(row.keyword_role)} · ${stages[row.product_stage] || text(row.product_stage)}`));
       const result = document.createElement('td');
       const badge = document.createElement('span');
-      badge.className = `conclusion ${row.ui_color || 'gray'}`;
-      badge.textContent = conclusion(row);
+      badge.className = `conclusion ${['green','blue','yellow','orange','red','gray'].includes(row.ui_color) ? row.ui_color : 'gray'}`;
+      badge.textContent = labels[conclusion(row)] || '待确认';
       result.appendChild(badge);
     tr.append(result, cell(number(row.impressions)), cell(number(row.clicks)), cell(percent(row.ctr)), cell(money(row.cpc)), cell(money(row.spend)), cell(number(row.orders)), cell(money(row.sales)), cell(percent(row.cvr)), cell(percent(row.acos)), cell(isMissing(row.roas) || !Number.isFinite(Number(row.roas)) ? '—' : Number(row.roas).toFixed(2)), cell(row.evidence_level), cell(number(row.market_search_volume)), cell(percent(row.competitive_difficulty)), cell(money(row.suggested_bid)), cell(number(row.organic_rank)), cell(number(row.ad_rank)), cell(row.next_action_text), cell(missingFields(row.missing_fields)));
       tableBody.appendChild(tr);
     });
     document.querySelector('#keyword-count').textContent = `${number(rows.length)} 个搜索词`;
     document.querySelector('#report-filter-status').textContent = state.filter === 'all' ? '默认按结论组 → 搜索量 → 花费 → 关键词排序' : `当前筛选：${state.filter} · ${number(rows.length)} 个搜索词`;
-    document.querySelectorAll('[data-action-filter]').forEach(button => button.classList.toggle('active', button.dataset.actionFilter === state.filter));
+    document.querySelectorAll('[data-action-filter]').forEach(button => { button.classList.toggle('active', button.dataset.actionFilter === state.filter); button.setAttribute('aria-pressed', String(button.dataset.actionFilter === state.filter)); });
+    if (!rows.length) { const tr = document.createElement('tr'); const td = cell('没有符合条件的搜索词，请调整筛选或搜索。', 'table-empty'); td.colSpan = 21; tr.append(td); tableBody.append(tr); }
   }
 
   const headerRow = document.querySelector('.table-panel thead tr');
@@ -109,9 +113,11 @@
     const td = document.createElement('td');
     td.colSpan = 21;
     td.className = 'table-empty';
-    td.textContent = '本地报告 artifact 暂不可用，请先运行 scripts/smoke_test.py。';
+    td.textContent = '报告暂时无法读取，请刷新重试。持续失败请检查报告文件是否已生成。';
     tr.appendChild(td);
     tableBody.appendChild(tr);
+    document.querySelector('#keyword-count').textContent = '报告加载失败';
+    document.querySelector('#report-filter-status').textContent = '未生成分析结论';
   }
 
   document.querySelectorAll('[data-action-filter]').forEach(button => button.addEventListener('click', () => {
@@ -120,17 +126,19 @@
   }));
   document.querySelector('#export-report')?.addEventListener('click', () => {
     if (!state.report) return;
-    const blob = new Blob([JSON.stringify(state.report, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ ...state.report, rows: state.report.rows.filter(matches), export_scope: { filter: state.filter, query: state.query } }, null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'keyword-report.json';
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 0);
   });
+  document.querySelector('#keyword-search')?.addEventListener('input', event => { state.query = event.target.value.trim().toLowerCase(); if (state.report) render(); });
   fetch(reportUrl).then(response => {
     if (!response.ok) throw new Error(`report HTTP ${response.status}`);
     return response.json();
   }).then(report => {
+    if (!report || !Array.isArray(report.rows) || !report.rows.every(row => row && typeof row === 'object')) throw new Error('invalid report');
     state.report = report;
     document.querySelector('#report-rule-version').textContent = text(report.rule_version);
     document.querySelector('#report-config-version').textContent = text(report.config_version);
@@ -143,9 +151,14 @@
     document.querySelector('#report-missing-fields').textContent = missingFields(report.missing_fields);
     state.currency = /^[A-Z]{3}$/.test(report.currency_code || '') ? report.currency_code : null;
     document.querySelector('#report-reconciliation').textContent = report.reconciliation?.passed === true ? '通过 · 差值 0' : '失败';
+    const strategySummary = document.querySelector('#report-strategy-summary');
+    if (strategySummary) strategySummary.textContent = `当前策略：${text(report.config_version)} · 规则 ${text(report.rule_version)} · 对账${report.reconciliation?.passed === true ? '通过，差值 0' : '未通过，请勿执行建议'}`;
+    document.querySelector('#export-report').disabled = false;
+    const sum = key => report.rows.reduce((total, row) => total + (Number(row[key]) || 0), 0);
+    globalThis.ReportUI?.setMetrics([['搜索词', number(report.rows.length)], ['广告总花费', money(sum('spend'))], ['广告订单', number(sum('orders'))], ['整体 CTR', sum('impressions') ? percent(sum('clicks') / sum('impressions')) : '—']]);
     render();
   }).catch(showError);
-  Promise.all([
+  if (!globalThis.ReportUI) Promise.all([
     fetch(dataPath('market-demo-modules/rank-benchmark.json')).then(response => response.json()),
     fetch(dataPath('market-demo-modules/negative-keywords.json')).then(response => response.json()),
   ]).then(([rank, negative]) => renderPhase4Modules(rank, negative)).catch(() => {});

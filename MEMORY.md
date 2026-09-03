@@ -1,5 +1,7 @@
 # Amazon-Keyword-Command-Center-YX 项目记忆
 
+- 2026-09-03 六模块整改：按用户参考图改为蓝色工作台，新增五个独立报告HTML/JS及共享导航。原计划本就要求六模块，旧状态“只差截图”不完整；数据/规则缺口详见 `docs/acceptance/six-module-workbench.md`。本轮完成的是演示前端交付，不是生产链路完成；不能把placeholder图片或unknown checklist当成视觉分析成功。
+
 - 2026-09-03：阶段 8 交付审计补齐真实任务报告随机对象名（48 位十六进制）、run-meta 相对路径追溯和解析器表头映射；演示黄金目录仍保留 `master-table.json` 作为离线 Pages fixture。6a 对账 91 行、五项差值零；完整 UAT Worker 207 项、前端 7 项、20/20 Gate 通过，network_calls=0、external_calls=0、Secret=0。
 
 ## 当前验证快照

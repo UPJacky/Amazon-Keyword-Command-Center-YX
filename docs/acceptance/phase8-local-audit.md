@@ -17,7 +17,7 @@ python scripts/run_uat.py
 - 未配置大陆服务器网页端口或公共报告桶；
 - 连续 Worker 入口存在；
 - Phase 8 计划、状态、记忆、UAT 数量和外部 Gate 定义一致；
-- `phase8_audit.py` 会实际构建临时 Pages 包，并精确核对 31 个 allowlist 文件（含根目录登录入口、独立 `tool/` 和 `report/` 路由）、固定离线 public-config、无外部调用和无断链；
+- `phase8_audit.py` 会实际构建临时 Pages 包，并精确核对 57 个 allowlist 文件（含根目录登录入口、独立 `tool/` 和 `report/` 路由）、固定离线 public-config、无外部调用和无断链；
 - Worker 连续入口同时检查 `run_worker_loop.py` 与 Windows 包装器 `run_worker_loop.ps1` 存在；两者均只调用本地 Worker，不负责发布或外部联调；
 - `scripts/check_worker_loops.py` 会实际运行 Python 与 PowerShell 两个入口各 2 个有限轮询周期，检查结构化周期摘要（`cycles=2`、`errors=0`、未提前停止）、至少 2 个心跳和退出码，不联网。
 - UAT 编排固定执行 20 个本地 Gate（含状态机/持续目标 15 项与项目监督器 48 项，共 63 项连续执行回归），并校验 Gate 数量、`network_calls=0`、`external_calls=0` 和 `local_only=true`；任何 Gate 失败、超时或启动异常均结构化汇总，不提前停止。

@@ -9,12 +9,24 @@
 <body class="app-shell" data-page="tool" data-login-url="../index.html" data-report-url="../report/index.html">
   <header class="topbar">
     <a class="brand" href="../index.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a>
-    <nav aria-label="主导航"><a class="active" href="index.html">工具</a><a href="../report/index.html">报告</a></nav>
+    <nav aria-label="主导航"><a class="active" href="index.html" aria-current="page">分析工作台</a><a href="../report/index.html">报告中心</a></nav>
     <button class="user-chip" id="logout" type="button">退出登录</button>
   </header>
   <main class="workspace">
     <div class="demo-banner" role="status"><span class="status-dot"></span><strong>Demo · 本地验收</strong><span>文件只在浏览器内做格式与大小校验；演示不会上传或创建真实任务。</span></div>
-    <section class="hero-row"><div><div class="eyebrow">TOOL / PHASE 3</div><h1>提交关键词分析任务</h1><p class="lede">先校验输入，再按固定阶段排队，避免重复提交。</p></div></section>
+    <section class="hero-row"><div><div class="eyebrow">KEYWORD WORKBENCH</div><h1>每一次分析，都有下一步方向。</h1><p class="lede">准备产品与广告报表，从六个分析模块查看数据依据和运营建议。</p></div><span class="hero-tag">数据 → 判断 → 行动</span></section>
+    <section class="module-entry-section" aria-labelledby="module-entry-title">
+      <div class="section-heading"><h2 id="module-entry-title">六大分析模块</h2><p>按分析目标进入报告，数据状态以各页提示为准</p></div>
+      <nav class="module-entry-grid" aria-label="六大分析模块">
+        <a class="module-entry" href="../report/index.html"><span class="module-entry-icon" aria-hidden="true">01</span><span><strong>关键词作战总表</strong><small>汇总表现、结论与下一步动作</small></span><span class="module-entry-arrow" aria-hidden="true">↗</span></a>
+        <a class="module-entry" href="../report/rank.html"><span class="module-entry-icon" aria-hidden="true">02</span><span><strong>自然位标杆</strong><small>对照自然排名与标杆差距</small></span><span class="module-entry-arrow" aria-hidden="true">↗</span></a>
+        <a class="module-entry" href="../report/negative.html"><span class="module-entry-icon" aria-hidden="true">03</span><span><strong>否定词清单</strong><small>复核候选词与否定依据</small></span><span class="module-entry-arrow" aria-hidden="true">↗</span></a>
+        <a class="module-entry" href="../report/competitors.html"><span class="module-entry-icon" aria-hidden="true">04</span><span><strong>竞对对比</strong><small>比较产品信息与竞争差异</small></span><span class="module-entry-arrow" aria-hidden="true">↗</span></a>
+        <a class="module-entry" href="../report/listing.html"><span class="module-entry-icon" aria-hidden="true">05</span><span><strong>图片与卖点诊断</strong><small>核对图片证据与转化承接</small></span><span class="module-entry-arrow" aria-hidden="true">↗</span></a>
+        <a class="module-entry" href="../report/optimization.html"><span class="module-entry-icon" aria-hidden="true">06</span><span><strong>广告诊断与优化方案</strong><small>查看优化动作与复盘条件</small></span><span class="module-entry-arrow" aria-hidden="true">↗</span></a>
+      </nav>
+    </section>
+    <div class="section-heading"><h2>提交关键词分析任务</h2><p>先校验输入，再进入分析流程</p></div>
     <section class="tool-grid">
       <form id="tool-form" class="panel task-form" novalidate>
         <h2>任务输入</h2>
@@ -25,7 +37,7 @@
         <p id="tool-form-status" class="form-status" role="status" aria-live="polite"></p>
         <div class="modal-actions"><button id="tool-submit" class="button primary" type="submit">提交分析任务</button></div>
       </form>
-      <aside class="panel phase-panel"><div class="eyebrow">FIXED ORDER</div><h2>阶段 3 固定顺序</h2><ol class="phase-list"><li><strong>ingestion</strong><span>接收并校验输入</span></li><li><strong>reconciliation</strong><span>透视对账差值必须为零</span></li><li><strong>config/provider</strong><span>绑定配置与 Provider 快照</span></li><li><strong>report</strong><span>生成可追溯报告</span></li></ol><p class="notice notice--soft">提交按钮会在请求期间锁定，任务列表每 30 秒自动刷新，也可手动刷新。</p></aside>
+      <aside class="panel phase-panel"><div class="eyebrow">ANALYSIS WORKFLOW</div><h2>从输入到报告</h2><ol class="phase-list"><li><strong>输入校验</strong><span>接收并检查产品与报表信息</span></li><li><strong>数据对账</strong><span>核对汇总数据，对账差值必须为零</span></li><li><strong>分析准备</strong><span>绑定本次策略配置与数据快照</span></li><li><strong>生成报告</strong><span>展示结论、依据与下一步动作</span></li></ol><p class="notice notice--soft">提交按钮会在请求期间锁定，任务列表每 30 秒自动刷新，也可手动刷新。</p></aside>
     </section>
     <section class="panel panel--large"><div class="toolbar"><div><div class="eyebrow">TASKS</div><h2>任务列表</h2></div><div class="toolbar-actions"><span class="muted" id="task-count">共 — 项</span><button id="refresh-tasks" class="button button--secondary button--small" type="button">手动刷新</button></div></div><div class="table-scroll"><table class="data-table data-table--tasks"><thead><tr><th>任务</th><th>输入文件</th><th>状态</th><th>创建时间</th><th>阶段</th><th>失败原因</th><th>操作</th></tr></thead><tbody id="task-rows"><tr><td colspan="7">正在读取任务 artifact…</td></tr></tbody></table></div></section>
   </main>

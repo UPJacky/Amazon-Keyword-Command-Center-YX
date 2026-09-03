@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 FRONTEND = ROOT / "frontend"
-SCRIPTS = ("app.js", "report.js", "tasks.js", "strategy.js", "client.js", "public-config.js", "tool/tool.js")
+SCRIPTS = ("app.js", "report.js", "tasks.js", "strategy.js", "client.js", "public-config.js", "tool/tool.js", "report/shared.js", "report/rank.js", "report/negative.js", "report/competitors.js", "report/listing.js", "report/optimization.js")
 
 
 def main() -> int:
