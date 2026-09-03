@@ -29,8 +29,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:a87a1a8b6c65e47c7064d08730197a3dc6f7447f3c2455e09a38ce61f30c480a",
-      "verified_fingerprint": "sha256:a87a1a8b6c65e47c7064d08730197a3dc6f7447f3c2455e09a38ce61f30c480a",
+      "input_fingerprint": "sha256:0a99a0f4e6e1ca116e00f18a11e802111c29b1035c183eaa04e510053440ca75",
+      "verified_fingerprint": "sha256:0a99a0f4e6e1ca116e00f18a11e802111c29b1035c183eaa04e510053440ca75",
       "acceptance": [
         "前端显式区分 demo/live，Auth、任务创建和策略接口可注入，失败或过期不伪报成功",
         "Supabase REST 明确 public schema，私有对象读取绑定已授权 task/run 路径并拒绝越界",
@@ -39,16 +39,28 @@
       ],
       "verification": [
         {
-          "kind": "uat",
+          "kind": "test",
           "source": "python scripts/run_uat.py",
           "result": "passed",
-          "summary": "20/20 local gates; Worker 207; frontend 7; continuous 63; orchestration 25; Pages 31; docs 15; network_calls=0; external_calls=0; local_only=true"
+          "summary": "20 gates passed; Worker 207, frontend 7, network_calls=0, external_calls=0, secret_value_hits=0."
         },
         {
-          "kind": "targeted",
-          "source": "python -m unittest worker.tests.test_private_report_gateway worker.tests.test_supabase_private_report worker.tests.test_provider_orchestrator worker.tests.test_provider_pipeline",
+          "kind": "contract",
+          "source": "scripts/phase8_audit.py",
           "result": "passed",
-          "summary": "fake Auth/private-report/provider integration boundaries passed; no real network or secrets"
+          "summary": "Pages 31-file allowlist, frontend session guard, private report contract, worker loop and local-only boundaries passed."
+        },
+        {
+          "kind": "contract",
+          "source": "scripts/check_phase8_documentation.py",
+          "result": "passed",
+          "summary": "Phase 8 documentation contract passed with 15 checks."
+        },
+        {
+          "kind": "runtime",
+          "source": "BrowserSkill isolated Edge session",
+          "result": "passed",
+          "summary": "Unauthenticated report route redirected to index; authenticated demo tool and report rendered with fetch and reconciliation zero."
         }
       ]
     },
@@ -220,8 +232,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:466a138113f9ad81549c9126dc05c72108470445cf0ae24db68ac7eac33708cf",
-      "verified_fingerprint": "sha256:466a138113f9ad81549c9126dc05c72108470445cf0ae24db68ac7eac33708cf",
+      "input_fingerprint": "sha256:e18c072abf5a71e60b8adfa3b953c21f11f84c548026b5d198b8a53009f82882",
+      "verified_fingerprint": "sha256:e18c072abf5a71e60b8adfa3b953c21f11f84c548026b5d198b8a53009f82882",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -230,16 +242,22 @@
       ],
       "verification": [
         {
-          "kind": "uat",
+          "kind": "test",
           "source": "python scripts/run_uat.py",
           "result": "passed",
-          "summary": "20/20 local gates; Worker 207; frontend 7; continuous 63; orchestration 25; Pages 31; docs 15; network_calls=0; external_calls=0; local_only=true"
+          "summary": "20/20 gates passed; Worker 207, frontend 7, continuous 63, orchestration 25, Pages 31, docs 15, network_calls=0, external_calls=0."
+        },
+        {
+          "kind": "audit",
+          "source": "scripts/phase8_audit.py",
+          "result": "passed",
+          "summary": "Phase 8 local checks passed with no missing files and no secret values."
         },
         {
           "kind": "contract",
-          "source": "python scripts/check_phase8_documentation.py && python scripts/phase8_audit.py",
+          "source": "scripts/check_phase8_documentation.py",
           "result": "passed",
-          "summary": "Phase 8 documentation and 31-file local Pages/route/security audit passed; network_calls=0; external_calls=0; local_only=true"
+          "summary": "Documentation contract passed with 15 checks."
         }
       ]
     },
@@ -773,8 +791,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:257928ee2cc1d31b3b7b84c9124931d7381be4b6863c538c34427328e453cc1a",
-      "verified_fingerprint": "sha256:257928ee2cc1d31b3b7b84c9124931d7381be4b6863c538c34427328e453cc1a",
+      "input_fingerprint": "sha256:6cc99d86b32bb142ecf1defc8e0fe7bf5e1e0bf955fd6566aac32a05ba276acc",
+      "verified_fingerprint": "sha256:6cc99d86b32bb142ecf1defc8e0fe7bf5e1e0bf955fd6566aac32a05ba276acc",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -786,19 +804,19 @@
           "kind": "acceptance",
           "source": "docs/acceptance/phase8-delivery-audit.md",
           "result": "passed",
-          "summary": "6a 91 rows and five reconciliation differences zero; 6b samples traceable; random real-run report filename, fetch rendering, route and user-operation boundaries documented; no secrets"
-        },
-        {
-          "kind": "uat",
-          "source": "python scripts/run_uat.py",
-          "result": "passed",
-          "summary": "20/20 local gates; Worker 207; frontend 7; continuous 63; orchestration 25; Pages 31; docs 15; network_calls=0; external_calls=0; local_only=true"
+          "summary": "6a reconciliation zero and 6b traceability documented; random real-run report names, fetch rendering, online routes and BrowserSkill unauthenticated report redirect are recorded; address-bar/API screenshots remain explicitly user-operation items."
         },
         {
           "kind": "audit",
           "source": "python scripts/phase8_audit.py",
           "result": "passed",
-          "summary": "31-file local Pages allowlist and phase8 delivery document present; network_calls=0; external_calls=0; local_only=true"
+          "summary": "31-file Pages allowlist and Phase 8 local security/document audit passed with network_calls=0 and external_calls=0."
+        },
+        {
+          "kind": "runtime",
+          "source": "BrowserSkill isolated Edge session",
+          "result": "passed",
+          "summary": "After demo logout, direct report access landed on index.html login; demo-authenticated tool and report pages rendered successfully."
         }
       ]
     }
