@@ -1245,10 +1245,10 @@ Worker：云服务器后台进程
 ### 当前执行状态（2026-09-03）
 
 - 本地 Phase 8 Gate 已通过：完整 UAT 20/20 Gate、Worker 207 项（12 项因当前 Windows 符号链接能力跳过）、前端 7 项（含 Node 41 场景）、UAT 编排契约 25 项、连续执行契约 63 项（状态机/持续目标 15 项、项目监督器 48 项）、Pages 57 文件、迁移 21 项/动作/连续监督契约、Smoke、Phase 4～7 CLI、Python/PowerShell loop 进程 Gate、Phase 8 静态审计、compileall 和文档契约 15 项均通过；network_calls=0、external_calls=0、Secret value 命中为 0。
-- Pages demo 已完成安全打包并通过本地 allowlist 审计；本次构建新增根目录登录入口以及独立 `tool/`、`report/` 路由，共 57 个 allowlist 文件。本地打包仍固定生成离线 public-config，不携带 live Secret；线上当前仍是改版前演示站，新六模块版本待发布与复验。
+- Pages demo 已完成安全打包并通过本地 allowlist 审计；本次构建新增根目录登录入口以及独立 `tool/`、`report/` 路由，共 57 个 allowlist 文件。新版已发布到 GitHub Pages `main` 的 `b42009a`，HTTPS 路由与资源返回 200；本地打包仍固定生成离线 public-config，不携带 live Secret。
 - 真实任务报告对象名使用 `report-` 加 48 位十六进制随机串，`run-meta.json.report_path` 固化 task/run/对象路径；解析器在 `reconciliation.header_mapping` 留存实际表头与列序号，6a/6b 本地证据见 `docs/acceptance/phase8-delivery-audit.md`。
 - 前端 live Auth/任务/策略读取、私有报告 Gateway、Provider 缓存/预算/流水线注入均有 fake 集成证据；上传、策略写入、真实私有报告前端尚未配置，保持明确禁用。
-- Supabase 003 已执行且 public schema 匿名七表/辅助函数全部拒绝；双用户 RLS 与私有 reports Storage 读取矩阵已通过，GitHub Pages HTTPS Smoke Test 已通过。Provider 只读 `tools/list` 已返回 29 个工具，并完成 6 次只读业务样本（均状态 200、各 1 credit，边界字段保持 null）；官方 MCP 页面确认注册用户每月 20,000 Credit、VIP 每月 40,000 Credit、Free 每自然周 7,000 Credit，且公开了 28 个数据工具的具体 Credit 计算规则及失败扣费边界；OpenAPI v2 另有相近的错误通常不产生业务扣费文档证据，但不外推到 MCP；未完成外部 Gate 仅剩 MCP 端点缓存/重复、429/5xx 实际响应和独立版本字段验证，货币换算在免费额度场景下不适用但仍不作付费价格推断。
+- 当前临时 Supabase 项目已执行 001–004；public schema 匿名七表/辅助函数全部拒绝；双用户 RLS 与私有 reports Storage 读取矩阵已通过，`reports.public=false`、自有对象 200、跨用户/匿名/无效 token 400，普通用户写入被拒。Auth Site URL 已设置为 Pages Origin；Pages CORS 预检仍返回平台 wildcard `*`，严格精确 Origin Gate 保留阻塞。Provider 只读 `tools/list` 已返回 29 个工具，并完成 6 次只读业务样本（均状态 200、各 1 credit，边界字段保持 null）；西柚无测试接口，5xx 以本地 fake transport 作为验收证据。
 - Provider 本地 HTTP transport 与一次性探测入口已通过离线验证；真实运行仍必须由服务器私有环境注入 `XYDC_MCP_URL`/`XYDC_MCP_TOKEN` 并获得明确外部授权。
 - 主 Agent 仍须在每个子 Agent 返回后重读状态、复核改动、运行相关 Gate、同步文档并清点下一项安全本地工作；不得因单个测试、UAT 或子 Agent 完成而结束项目。
 

@@ -7,6 +7,10 @@ updated_at: 2026-09-03
 status: current
 language: zh-CN
 
+- 2026-09-03 外部验收续办：GitHub Pages 已用审计后的 57 文件包发布到 `main`，远端提交为 `b42009a`；根入口、`tool/`、报告六模块和静态资源 HTTPS 均返回 200。Supabase Auth Site URL 已保存为正式 Pages Origin，登出后直达报告地址会回到登录入口。当前严格 Pages Gate 唯一阻塞是 Supabase 托管 API 的 CORS 预检返回 `Access-Control-Allow-Origin: *`，而项目验收要求精确 Origin；未把 wildcard 误记为通过。
+
+- 2026-09-03 当前临时 Supabase 项目复验：通过控制台执行 001–004 迁移；两组普通测试账号认证均为 200，各自仅读取 1 条所属 profile/store/membership/strategy/task/run/audit，跨店读取为 0，RPC 自己为 true/对方为 false，跨店任务写入 403。`reports` bucket 为 private；A/B 自有报告读取 200，跨用户/匿名/无效 token 400，普通用户 Storage 写入被拒；报告文件名均为 `report-` 加 48 位随机十六进制。凭据、令牌和 Secret 未写入文件、台账或聊天。
+
 - 2026-09-03 六模块工作台修订：原计划六模块未被前端完整呈现，本轮补独立页面/脚本、共享蓝色样式/导航/门禁及三份可重建演示数据。41个Node场景、Pages57文件；真实图片、完整标杆/竞对指标、广告结构优化/退出阈值和生产上传→Worker→私有报告链仍不能冒充完成。完整差异见 `docs/acceptance/six-module-workbench.md`。
 
 - 2026-09-03：阶段 8 交付审计补齐真实任务报告对象名：任务运行使用 `report-` 加 48 位十六进制随机串，`run-meta.json.report_path` 记录 task/run/对象路径；演示黄金报告仍固定名仅用于离线 Pages。解析器新增 `reconciliation.header_mapping`，本地 6a 对账为 91 行、五项差值为零；完整 UAT 已复验 Worker 207 项、前端 7 项、20/20 Gate。

@@ -6,9 +6,9 @@
 
 ## 当前验证快照
 
-- 2026-09-03：阶段 8 前端整改已完成本地验证：新增独立 `tool/` 与 `report/` 地址、工具输入边界/刷新/失败原因交互、报告 fetch 门禁与宽表格；Pages 本地构建输出 57 个文件，线上旧站尚待重新发布复验。
+- 2026-09-03：阶段 8 前端整改已完成本地验证：新增独立 `tool/` 与 `report/` 地址、工具输入边界/刷新/失败原因交互、报告 fetch 门禁与宽表格；Pages 57 文件包已发布到远端 `main` 提交 `b42009a`，HTTPS 路由复验通过；Supabase 托管 API 的精确 CORS 仍待解决。
 
-- 2026-09-02：GitHub Pages 曾通过旧版登录入口的 HTTPS Smoke Test；本次独立路由改版后的线上内容待重新发布复验。
+- 2026-09-03：GitHub Pages 新版独立路由 HTTPS Smoke Test 已通过；浏览器演示登录可渲染报告，登出后直达报告地址回到登录入口。截图为视口证据，不冒充无痕/生产验收。
 - 2026-09-02：Provider 本地安全 transport、一次性探测入口和受控响应头观测已补齐；最新完整 UAT 统计见本节 2026-09-03 条目。
 - 2026-09-02：从本地新 MCP 配置完成一次只读 `tools/list` live 验证：HTTP 200、JSON-RPC 有效、返回 29 个工具，1 次调用、0 失败、0 限流；未执行业务工具样本，Provider schema/成本/单位/限流仍待外部 Gate。
 - 2026-09-02：在已确认工具名后完成一次只读 `get_keyword_info` 样本：HTTP/业务状态 200，返回字段结构有效，观察到 `cost_credits=1`，业务调用 1 次、失败 0、限流 0；缓存/重复、429/5xx、成本单位和缺失值语义仍未实测。
@@ -17,7 +17,7 @@
 - 2026-09-03：完整本地 UAT 20/20 Gate，Worker 207 项（12 项环境跳过）、前端 7 项（含 Node 26 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages 57 文件/11 项测试、迁移 21 项、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增 Provider transport、一次性探测入口、响应头白名单观测和真实任务随机报告对象名已通过离线回归。
 - 真实 Supabase 已执行 003；显式 public schema 下七张表与 has_store_access 的匿名请求全部返回 401/42501。后置双用户复验已在临时项目通过：A/B 各自仅见授权店铺、任务和运行记录，跨店铺读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 的 A/B 自有读取、跨店/匿名/无效令牌拒绝矩阵也已通过；凭据未持久化。
 - 前端显式 live Auth/任务/策略读取、私有报告对象读取与 Gateway、Provider 缓存预算与流水线注入已实现并通过 fake 集成；上传、策略写入和真实私有报告前端仍明确禁用，不能假报上线。临时 Supabase 项目的历史 003/RLS/Storage 证据仍保留，但新版六模块尚未重新发布或做生产链复验；西柚无 5xx 测试接口，按用户确认以本地 fake transport 验收。
-- 本轮最终监督器：BLOCKED_EXTERNAL，本地任务无可执行项；Supabase RLS、私有 Storage 和新版 GitHub Pages 发布/复验仍是外部 Gate。`supabase-live-evidence-20260831.md` 仅作为已有证据，不把旧版线上结果冒充新版交付。
+- 本轮最终监督器：BLOCKED_EXTERNAL，本地任务无可执行项；Supabase RLS 与私有 Storage 已完成当前项目复验，GitHub Pages 严格精确 CORS 仍是唯一外部阻塞。`supabase-live-evidence-20260831.md` 已追加当前项目证据；不把平台 wildcard 冒充精确 Origin 配置。
 
 ## 历史执行记录
 

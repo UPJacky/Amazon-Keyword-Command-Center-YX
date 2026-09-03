@@ -2,6 +2,13 @@
 
 范围：用户已授权的临时项目，迁移、普通用户 RLS 与私有 Storage 边界验证；不包含真实 Provider 或生产发布。
 
+## 2026-09-03 当前项目复验
+
+- 当前控制台项目执行 001–004 迁移成功；两组普通测试用户认证均为 HTTP 200。A/B 各自只能看到所属 profile、store、membership、strategy、task、run、audit，各 1 行；跨店读取为 0，`has_store_access` 自己为 true、对方为 false。
+- 匿名业务表读取为 HTTP 401；跨店任务插入为 HTTP 403；未使用 service-role 证明普通用户读取权限。
+- `reports` bucket 为 private；A/B 自有报告读取 HTTP 200，跨用户、匿名、无效 token 读取 HTTP 400；普通用户 Storage 写入被拒。两个报告文件名均为 `report-` 加 48 位随机十六进制，路径绑定 task/run/report_path。
+- GitHub Pages 正式 Origin 的 Auth Site URL 已在控制台保存；Supabase Auth/REST 预检对该 Origin 返回 `Access-Control-Allow-Origin: *`。因此严格“精确 Origin CORS”仍记录为阻塞，不能把平台 wildcard 当作精确配置通过。
+
 ## 2026-09-02 私有 Storage Gate 完成
 
 - `reports` bucket 仍为 private；A/B 两个 `master-table.json` 已位于各自 task/run 目录，未生成永久公开链接。

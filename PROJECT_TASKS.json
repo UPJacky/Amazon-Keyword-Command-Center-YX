@@ -475,8 +475,8 @@
           "value": "authorization=granted-2026-08-29; temporary-project=configured; migrations=001,002,003-applied; public-schema-anonymous=8-denials-2026-08-31; post-003-authenticated-matrix=pending-user-cancelled-browser; secret-values=not-persisted"
         }
       ],
-      "input_fingerprint": "sha256:67f031bfebe787c26df92ff93fc78a35a7dff3908f1635a8785bfa275f8e0dfa",
-      "verified_fingerprint": "sha256:67f031bfebe787c26df92ff93fc78a35a7dff3908f1635a8785bfa275f8e0dfa",
+      "input_fingerprint": "sha256:4bd4edc39f15015766f4b1936b93d51461788d609ba9737aee54136d6d6892b0",
+      "verified_fingerprint": "sha256:4bd4edc39f15015766f4b1936b93d51461788d609ba9737aee54136d6d6892b0",
       "acceptance": [
         "在获授权的临时 Supabase 项目执行迁移并记录版本",
         "两个普通用户只能访问被授权店铺、任务、运行和报告记录",
@@ -485,22 +485,22 @@
       ],
       "verification": [
         {
-          "kind": "external_validation",
-          "source": "Supabase temporary project browser verification",
-          "result": "passed",
-          "summary": "Existing two ordinary-user matrix remains valid for public RLS after the additive private Storage migration: own-store reads passed, cross-store reads and writes were denied, and anonymous reads were denied; no credentials or tokens were persisted."
-        },
-        {
           "kind": "migration",
-          "source": "Supabase SQL Editor and Storage UI",
+          "source": "Supabase SQL Editor current project fcowa...",
           "result": "passed",
-          "summary": "004 private reports bucket and authenticated read policy were applied and verified in the current project; bucket remains private and the policy is scoped to task/run/report ownership plus store access."
+          "summary": "Migrations 001, 002, and 003 executed successfully; public tables are present and anonymous table reads return 401."
         },
         {
-          "kind": "secret_handling",
-          "source": "browser and bounded in-memory checks",
+          "kind": "rls_matrix",
+          "source": "authenticated REST probes using two ordinary test-user tokens",
           "result": "passed",
-          "summary": "No service key, password, private key, or access token was written to the repository or printed in verification output."
+          "summary": "Both users authenticated with status 200; each sees exactly one own profile/store/membership/strategy/task/run/audit row, cross-store and cross-task reads return zero, own-store RPC is true and other-store RPC is false."
+        },
+        {
+          "kind": "write_denial",
+          "source": "authenticated REST insert probe",
+          "result": "passed",
+          "summary": "Cross-store task insert is rejected with HTTP 403; no credentials or tokens were persisted or emitted."
         }
       ]
     },
@@ -530,7 +530,7 @@
           "value": "authorization=absent; deployment=not-published; https-cors-auth-redirect=unverified"
         }
       ],
-      "input_fingerprint": "sha256:bd4a37e0d20d9e78700432206ff69adb89cf6fa9906cc3f992aa8ad01ec35e14",
+      "input_fingerprint": "sha256:8902c88310e9ce6180f257ab333780cb00f0ef42c382b32f97907e1d5ed3ace8",
       "verified_fingerprint": "",
       "acceptance": [
         "获授权后发布已通过 allowlist 审计的 57 个 Pages 文件（含根登录、独立 tool/report 六模块路由）",
@@ -541,9 +541,9 @@
       "verification": [
         {
           "kind": "external_block",
-          "source": "live HTTP probe and browser automation status",
+          "source": "live CORS preflight against Supabase Auth and REST endpoints",
           "result": "passed",
-          "summary": "Remote main is published and /, /tool/, /report/ return HTTPS 200; browser automation has no attached session, so required address-bar screenshots and true incognito report-denial evidence remain unverified."
+          "summary": "Pages routes and Auth Site URL are live, but hosted Supabase returns Access-Control-Allow-Origin=* rather than an exact Pages Origin; current project has no configurable exact-Origin CORS surface, so the strict Pages CORS acceptance gate remains blocked."
         }
       ]
     },
@@ -573,8 +573,8 @@
           "value": "authorization=dashboard-session-required; bucket=private; objects=2; authorized-read=unverified; a-auth-failed; b-membership-missing"
         }
       ],
-      "input_fingerprint": "sha256:1a61f2d6269f28d3f93311c926ed6fb318a50343e03c519b28565f8feee8b8f5",
-      "verified_fingerprint": "sha256:1a61f2d6269f28d3f93311c926ed6fb318a50343e03c519b28565f8feee8b8f5",
+      "input_fingerprint": "sha256:9510fd34fa1a4d8cba93b865ec37d893386a873cc5af5686e79a75a72d990968",
+      "verified_fingerprint": "sha256:9510fd34fa1a4d8cba93b865ec37d893386a873cc5af5686e79a75a72d990968",
       "acceptance": [
         "报告与原始文件默认私有且不存在永久公共读取链接",
         "获授权用户可通过受控鉴权链路读取所属店铺文件",
@@ -583,16 +583,22 @@
       ],
       "verification": [
         {
-          "kind": "external_validation",
-          "source": "Supabase temporary project controlled Storage API",
+          "kind": "bucket",
+          "source": "Supabase Storage API current temporary project",
           "result": "passed",
-          "summary": "reports bucket remained private; A and B own-object reads returned 200; cross-store, anonymous, and invalid-token reads returned 400 after final cleanup."
+          "summary": "reports bucket metadata returns HTTP 200 with public=false; two fixture report objects use report- plus 48 lowercase hex characters and no permanent public URL was generated."
         },
         {
-          "kind": "secret_handling",
-          "source": "bounded in-memory verification",
+          "kind": "controlled_reads",
+          "source": "authenticated and unauthenticated Storage API probes",
           "result": "passed",
-          "summary": "No service-role key, password, private key, or access token was written to repository or printed."
+          "summary": "A/B own report reads return HTTP 200; cross-user, anonymous, and invalid-token reads return HTTP 400; ordinary user upload probe is rejected with HTTP 400."
+        },
+        {
+          "kind": "traceability",
+          "source": "task_runs report_path and private object binding",
+          "result": "passed",
+          "summary": "Each report path is recorded in its own task/run row and the Storage policy binds bucket, task, run, report_path, and store membership; no credentials or tokens were persisted."
         }
       ]
     },
