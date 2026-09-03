@@ -450,7 +450,7 @@
     {
       "id": "github-pages",
       "title": "GitHub Pages 正式发布验收",
-      "status": "completed",
+      "status": "blocked_external",
       "execution": "external",
       "depends_on": [
         "phase8-local-gate"
@@ -473,8 +473,8 @@
           "value": "authorization=absent; deployment=not-published; https-cors-auth-redirect=unverified"
         }
       ],
-      "input_fingerprint": "sha256:4e705c8906511c3443c36798ba32b4c8fbb54045792a31eedbd0255e23bbef28",
-      "verified_fingerprint": "sha256:4e705c8906511c3443c36798ba32b4c8fbb54045792a31eedbd0255e23bbef28",
+      "input_fingerprint": "sha256:bd4a37e0d20d9e78700432206ff69adb89cf6fa9906cc3f992aa8ad01ec35e14",
+      "verified_fingerprint": "",
       "acceptance": [
         "获授权后发布已通过 allowlist 审计的 31 个 Pages 文件（含根登录、独立 tool/report 路由）",
         "正式 URL 使用 HTTPS 且无断链、Secret 或未批准外部资源",
@@ -483,10 +483,10 @@
       ],
       "verification": [
         {
-          "kind": "external_probe",
-          "source": "github_pages_live_probe_20260902",
+          "kind": "external_block",
+          "source": "live HTTP probe and browser automation status",
           "result": "passed",
-          "summary": "Public repository contains the audited 21-file Pages allowlist; GitHub Pages source is main branch root; HTTPS URL https://upjacky.github.io/Amazon-Keyword-Command-Center-YX/ returned 200 and rendered the login entry page."
+          "summary": "Remote main is published and /, /tool/, /report/ return HTTPS 200; browser automation has no attached session, so required address-bar screenshots and true incognito report-denial evidence remain unverified."
         }
       ]
     },
