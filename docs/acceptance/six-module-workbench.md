@@ -37,6 +37,6 @@
 - 390px手机模拟下：页面宽390、表格容器356、表格宽3200；表头center、内容left、数值nowrap，未把整页撑宽。这是视口模拟，不冒充真机。
 - 退出演示账号后直达 `report/listing.html` 自动回到 `index.html`，不显示报告。BrowserSkill Agent Window共享浏览器存储，这不是无痕测试，也不是生产RLS验收。
 - 已保存登录、总表、否词的真实视口截图；截图工具不含地址栏，手机截图调用超时但已取得DOM布局测量。不以这些截图冒充阶段8完整交作业证据。
-- 完整UAT首轮19/20，唯一失败是状态文档 `local_safe_queue` 枚举写错，已改为 `in_progress` 并复验连续执行契约通过；最终完整UAT结果以监督器验证回执为准。所有本地UAT network_calls=0、external_calls=0、Secret命中0；浏览器只访问本机演示服务。
+- 初次完整UAT曾为19/20，唯一失败是状态文档 `local_safe_queue` 枚举写错；已改为 `in_progress` 并复验连续执行契约通过。修复后的最终完整UAT为20/20；所有本地UAT network_calls=0、external_calls=0、Secret命中0；浏览器只访问本机演示服务。
 
 最后据实际截图压缩报告标题与指标区高度、去除重复演示提示，让核心表格更早进入首屏；不改变数据与门禁。

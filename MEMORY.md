@@ -6,7 +6,7 @@
 
 ## 当前验证快照
 
-- 2026-09-03：阶段 8 前端整改已完成本地验证：新增独立 `tool/` 与 `report/` 地址、工具输入边界/刷新/失败原因交互、报告 fetch 门禁与宽表格；Pages 本地构建输出 31 个文件，线上旧站尚待重新发布复验。
+- 2026-09-03：阶段 8 前端整改已完成本地验证：新增独立 `tool/` 与 `report/` 地址、工具输入边界/刷新/失败原因交互、报告 fetch 门禁与宽表格；Pages 本地构建输出 57 个文件，线上旧站尚待重新发布复验。
 
 - 2026-09-02：GitHub Pages 曾通过旧版登录入口的 HTTPS Smoke Test；本次独立路由改版后的线上内容待重新发布复验。
 - 2026-09-02：Provider 本地安全 transport、一次性探测入口和受控响应头观测已补齐；最新完整 UAT 统计见本节 2026-09-03 条目。
@@ -14,7 +14,7 @@
 - 2026-09-02：在已确认工具名后完成一次只读 `get_keyword_info` 样本：HTTP/业务状态 200，返回字段结构有效，观察到 `cost_credits=1`，业务调用 1 次、失败 0、限流 0；缓存/重复、429/5xx、成本单位和缺失值语义仍未实测。
 - 2026-09-02：追加 5 次授权范围内只读调用（重复基础指标、ABA 趋势、ASIN 信息、两组无结果边界）；均状态 200、各 1 credit，累计业务调用 6 次、失败 0、限流 0；无结果字段保持 JSON `null`，详细快照见 `docs/provider-snapshots/xiyou-tools-list-20260902.md`。
 - 2026-09-02：用户新授权后完成 3 轮、5 次真实只读请求：重复 `get_keyword_info` 两次均状态 200、各 1 credit、`cache_hits=0`，响应摘要相同；没有触发 429/5xx，未观察到成本/限流/版本响应头。快照已更新，剩余真实 Gate 为成本货币换算、429/5xx 和独立版本字段。
-- 2026-09-03：完整本地 UAT 20/20 Gate，Worker 207 项（12 项环境跳过）、前端 7 项（含 Node 26 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages 31 文件/11 项测试、迁移 21 项、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增 Provider transport、一次性探测入口、响应头白名单观测和真实任务随机报告对象名已通过离线回归。
+- 2026-09-03：完整本地 UAT 20/20 Gate，Worker 207 项（12 项环境跳过）、前端 7 项（含 Node 26 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages 57 文件/11 项测试、迁移 21 项、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增 Provider transport、一次性探测入口、响应头白名单观测和真实任务随机报告对象名已通过离线回归。
 - 真实 Supabase 已执行 003；显式 public schema 下七张表与 has_store_access 的匿名请求全部返回 401/42501。后置双用户复验已在临时项目通过：A/B 各自仅见授权店铺、任务和运行记录，跨店铺读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 的 A/B 自有读取、跨店/匿名/无效令牌拒绝矩阵也已通过；凭据未持久化。
 - 前端显式 live Auth/任务/策略读取、私有报告对象读取与 Gateway、Provider 缓存预算与流水线注入已实现并通过 fake 集成；上传、策略写入和真实私有报告前端仍明确禁用，不能假报上线。临时 Supabase 项目的 003 迁移、双用户 RLS 与私有 Storage 读取矩阵已通过，GitHub Pages 已完成，真实 Provider Gate 仍需外部验收。
 - 本轮最终监督器：BLOCKED_EXTERNAL，当前本地任务回执有效、无 stale/running/runnable；仅真实 Provider 1 项外部 Gate 保留。Supabase 双用户与 Storage 证据见 `docs/acceptance/supabase-live-evidence-20260831.md`；不重复已通过的本地检查。
