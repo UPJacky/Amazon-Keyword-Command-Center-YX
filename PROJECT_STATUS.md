@@ -4,15 +4,15 @@ document_type: project_status
 version: 0.1
 updated_at: 2026-09-03
 current_phase: Phase 3–7 / six-module-workbench
-status: six_module_workbench_in_progress
-execution_state: RUNNING
+status: six_module_frontend_verified_project_incomplete
+execution_state: BLOCKED_EXTERNAL
 current_objective: "按原计划补齐六模块独立页面及蓝色工作台设计"
-next_safe_action: "six-module-workbench：实现共享导航、五个独立模块、蓝色设计和页面数据验证"
-stop_reason: ""
-last_action_fingerprint: "six-module-workbench:claimed; implementation in progress"
-verified_gate_snapshot_current: "browser=BrowserSkill_Edge_connected; isolated_agent_report_unauth_redirected_index; authenticated_demo_tool_report_rendered; live_hash_probe=6_key_files_match_audited_release; screenshots=viewport_only_no_address_bar"
-local_safe_queue: in_progress
-external_blockers_only: false
+next_safe_action: "none：监督器本地队列为空；等待真实接入/外部验收条件，六模块整改证据见 docs/acceptance/six-module-workbench.md"
+stop_reason: "本轮六模块演示前端整改与本地回归完成；不代表完整 V1 完成。未发布新版，未验证生产上传→Worker→私有报告；真实标杆/竞对/图片证据、广告结构数据及观察退出阈值仍缺，需真实数据与业务确认。外部 Supabase/Storage/Pages Gate 保留，不能以演示登录或视口截图冒充。"
+last_action_fingerprint: "six-module-workbench:verified; local-gate-chain-drained; commit=41f9a54"
+verified_gate_snapshot_current: "six_modules=local_demo_rendered; node=41; pages=57; full_uat=20/20; mobile=390px_body_3200px_table; logout_demo_listing_redirect=passed; live_v1=not_complete; public_release=previous_version"
+local_safe_queue: empty
+external_blockers_only: true
 verified_gate_snapshot: "worker=207; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; github_pages=remote_main_b00f9ef_published; live_pages_probe=https_200_root_tool_report; live_assets_probe=tool_js_report_js_styles_200; live_hash_probe=6_key_files_match_audited_release; report_runtime_probe=report_js_fetch_3_session_gate_present; browser_probe=isolated_agent_report_unauth_redirected_index_authenticated_demo_tool_report_rendered; browser_screenshots=viewport_only_no_address_bar; docs=15; reconciliation=zero_differences_91_rows; report_objects=random_48hex_name_for_real_runs; supabase_dual_user_rls=passed; reports_bucket=private; reports_objects=2; storage_matrix=passed_own_reads_200_cross_anonymous_invalid_400; provider_transport=offline_safe_ready; provider_response_metadata=allowlisted_local_regression_passed; provider_retry_after=bounded_and_tested; provider_probe_metadata_persistence=passed; provider_live_tools=29; provider_catalog_tools=28; provider_tool_catalog_reconciled=true; provider_public_quota=registered_monthly_20000; provider_vip_quota=monthly_40000; provider_weekly_quota=7000_official_page; provider_billing_rules=28_tools_documented; provider_failed_call_charge_boundary=official_page_valid_data_only; provider_live_calls=1; provider_live_failures=0; provider_business_sample=get_keyword_info_passed; provider_business_calls=11; provider_new_authorized_rounds=3; provider_new_actual_requests=5; provider_observed_cost_credits=1_each; provider_direct_repeat_cache_hits=0; provider_repeat_response_same=true; provider_no_result_null_semantics=observed; provider_initialize_server_version=v1; provider_initialize_protocol=2025-03-26; provider_rate_limit_probe_requests=45; provider_rate_limit_probe_200=36; provider_rate_limit_probe_429=9; provider_rate_limit_retry_after=5_to_6; provider_rate_limit_transport_errors=0; provider_5xx=local_fake_transport_passed_live_unavailable_by_provider; provider_call_failures=0; real_provider=completed_with_5xx_boundary; network_calls=0; external_calls=0; secrets=0"
 ---
 

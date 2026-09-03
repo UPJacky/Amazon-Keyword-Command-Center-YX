@@ -4,7 +4,7 @@
     {
       "id": "six-module-workbench",
       "title": "按原计划补齐六模块独立页面并重设计蓝色工作台",
-      "status": "running",
+      "status": "completed",
       "execution": "local",
       "depends_on": [],
       "fingerprint_inputs": [
@@ -30,14 +30,33 @@
         }
       ],
       "input_fingerprint": "sha256:42d63b98f4d78c5e3e28079fec312745c1bfb627f184bddb0be8abd118d4be24",
-      "verified_fingerprint": "",
+      "verified_fingerprint": "sha256:42d63b98f4d78c5e3e28079fec312745c1bfb627f184bddb0be8abd118d4be24",
       "acceptance": [
         "六个报告模块为独立HTML与独立脚本，共享导航、样式和登录门禁",
         "按用户参考图实现深蓝标题、蓝色主按钮、浅灰蓝背景和不挤压的宽表格",
         "复用现有模块计算产物，无数据明确待补，不伪造商品图片、指标或真实接入",
         "Pages allowlist、页面数据渲染、未登录保护及回归验证通过，并记录原计划与实际缺口"
       ],
-      "verification": []
+      "verification": [
+        {
+          "kind": "test",
+          "source": "python scripts/run_uat.py",
+          "result": "passed",
+          "summary": "20/20 local Gates passed after final frontend edits; Worker 207 (12 skipped), frontend 7 including Node 41, orchestration 25, continuous 63, Pages 57 files and 24 tests (4 skipped); network_calls=0 external_calls=0 secrets=0."
+        },
+        {
+          "kind": "runtime",
+          "source": "BrowserSkill Edge localhost demo",
+          "result": "passed",
+          "summary": "Six independent report pages rendered; negative cautious filter displays 4 rows and disables export; listing 4 unknown no images; optimization 91 actions with missingness explicit. 390px mobile body=390 table viewport=356 width=3200 numeric nowrap; logged-out listing URL redirected to login. Demo only, not private/incognito or production RLS."
+        },
+        {
+          "kind": "review",
+          "source": "docs/acceptance/six-module-workbench.md; git 41f9a54",
+          "result": "passed",
+          "summary": "Plan/screenshot gap audit and source design hash recorded. Reused calculations, no fabricated data, three agents reviewed and closed. Production and business-data gaps remain explicit; independent pages are not claimed as V1 completion."
+        }
+      ]
     },
     {
       "id": "production-adapters-local",
@@ -67,8 +86,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:0a99a0f4e6e1ca116e00f18a11e802111c29b1035c183eaa04e510053440ca75",
-      "verified_fingerprint": "sha256:0a99a0f4e6e1ca116e00f18a11e802111c29b1035c183eaa04e510053440ca75",
+      "input_fingerprint": "sha256:778e26068de7cb028e7a918370263aaf052d0445a09712fa4fd0e77b615ed695",
+      "verified_fingerprint": "sha256:778e26068de7cb028e7a918370263aaf052d0445a09712fa4fd0e77b615ed695",
       "acceptance": [
         "前端显式区分 demo/live，Auth、任务创建和策略接口可注入，失败或过期不伪报成功",
         "Supabase REST 明确 public schema，私有对象读取绑定已授权 task/run 路径并拒绝越界",
@@ -78,27 +97,9 @@
       "verification": [
         {
           "kind": "test",
-          "source": "python scripts/run_uat.py",
+          "source": "python scripts/run_uat.py; current source review",
           "result": "passed",
-          "summary": "20 gates passed; Worker 207, frontend 7, network_calls=0, external_calls=0, secret_value_hits=0."
-        },
-        {
-          "kind": "contract",
-          "source": "scripts/phase8_audit.py",
-          "result": "passed",
-          "summary": "Pages 31-file allowlist, frontend session guard, private report contract, worker loop and local-only boundaries passed."
-        },
-        {
-          "kind": "contract",
-          "source": "scripts/check_phase8_documentation.py",
-          "result": "passed",
-          "summary": "Phase 8 documentation contract passed with 15 checks."
-        },
-        {
-          "kind": "runtime",
-          "source": "BrowserSkill isolated Edge session",
-          "result": "passed",
-          "summary": "Unauthenticated report route redirected to index; authenticated demo tool and report rendered with fetch and reconciliation zero."
+          "summary": "Auth/live-denial, private-storage gateway and bounded provider transport unchanged; fake integration passed in final UAT. Does not imply real upload/strategy writing/private UI enabled."
         }
       ]
     },
@@ -134,8 +135,8 @@
           "value": "supabase-rls-least-privilege-v1; anon=no-table-privileges; authenticated=explicit-minimum-grants; policies=authenticated-only"
         }
       ],
-      "input_fingerprint": "sha256:6158b5eb2b12e5746d96288b927b3b6cd3f2c61f91c24608846b4e67cc0feaea",
-      "verified_fingerprint": "sha256:6158b5eb2b12e5746d96288b927b3b6cd3f2c61f91c24608846b4e67cc0feaea",
+      "input_fingerprint": "sha256:866529c058b58a763a09075957173918958e3d033ea51376cda4e245fc751a66",
+      "verified_fingerprint": "sha256:866529c058b58a763a09075957173918958e3d033ea51376cda4e245fc751a66",
       "acceptance": [
         "新增可重复应用的迁移，撤销 anon 对七张业务表和 has_store_access 函数的权限",
         "authenticated 仅获得业务所需的读取与 tasks 插入权限，所有客户端 RLS 策略明确限定 TO authenticated",
@@ -144,22 +145,10 @@
       ],
       "verification": [
         {
-          "kind": "migration-contract",
-          "source": "python supabase/migration_contract_check.py",
+          "kind": "test",
+          "source": "python scripts/run_uat.py; current source review",
           "result": "passed",
-          "summary": "migration contract passed; network_calls=0; external_calls=0; local_only=true"
-        },
-        {
-          "kind": "tests",
-          "source": "python -m unittest supabase.test_migration_contract",
-          "result": "passed",
-          "summary": "21 migration contract tests passed; network_calls=0; external_calls=0; local_only=true"
-        },
-        {
-          "kind": "audit",
-          "source": "python scripts/phase8_audit.py",
-          "result": "passed",
-          "summary": "Phase 8 local audit passed; network_calls=0; external_calls=0; local_only=true"
+          "summary": "Migration 001/002/003 and existing least-privilege policies unchanged; migration tests and static audit passed. No new Supabase writes."
         }
       ]
     },
@@ -270,8 +259,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:e18c072abf5a71e60b8adfa3b953c21f11f84c548026b5d198b8a53009f82882",
-      "verified_fingerprint": "sha256:e18c072abf5a71e60b8adfa3b953c21f11f84c548026b5d198b8a53009f82882",
+      "input_fingerprint": "sha256:613e11939da6473c2a2893c2a1036f0074cb33d474ccbecd697cfbfc4f903728",
+      "verified_fingerprint": "sha256:613e11939da6473c2a2893c2a1036f0074cb33d474ccbecd697cfbfc4f903728",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -281,21 +270,9 @@
       "verification": [
         {
           "kind": "test",
-          "source": "python scripts/run_uat.py",
+          "source": "python scripts/run_uat.py; current source review",
           "result": "passed",
-          "summary": "20/20 gates passed; Worker 207, frontend 7, continuous 63, orchestration 25, Pages 31, docs 15, network_calls=0, external_calls=0."
-        },
-        {
-          "kind": "audit",
-          "source": "scripts/phase8_audit.py",
-          "result": "passed",
-          "summary": "Phase 8 local checks passed with no missing files and no secret values."
-        },
-        {
-          "kind": "contract",
-          "source": "scripts/check_phase8_documentation.py",
-          "result": "passed",
-          "summary": "Documentation contract passed with 15 checks."
+          "summary": "20/20 UAT including 207 Worker (12 skipped), frontend7/Node41, supervisor63, orchestration25, Pages57 and documentation15."
         }
       ]
     },
@@ -357,8 +334,8 @@
           "value": "schema_version=1; deterministic-task-selection; automatic-path-fingerprint; contract-fields-fingerprinted; structured-verification-receipt; stale-reopen; running-reclaim"
         }
       ],
-      "input_fingerprint": "sha256:f2acd8d50efd44d6b718f9a69e7c749c20da7fb1b710e7a166c1970257d9e6e5",
-      "verified_fingerprint": "sha256:f2acd8d50efd44d6b718f9a69e7c749c20da7fb1b710e7a166c1970257d9e6e5",
+      "input_fingerprint": "sha256:eaa45042a713dc5e3644a55523851d0ce6daca64949a99341f7031c4550442a0",
+      "verified_fingerprint": "sha256:eaa45042a713dc5e3644a55523851d0ce6daca64949a99341f7031c4550442a0",
       "acceptance": [
         "schema_version=1 的任务台账可被严格校验，任务 ID 唯一且依赖图无环",
         "监督器按依赖和台账顺序唯一选择下一任务，并拒绝并发领取多个 running 任务",
@@ -370,16 +347,10 @@
       ],
       "verification": [
         {
-          "kind": "unit",
-          "source": "python -m unittest scripts.test_project_supervisor scripts.test_continuous_execution -v",
+          "kind": "test",
+          "source": "python scripts/run_uat.py; current source review",
           "result": "passed",
-          "summary": "63 project supervisor and continuous execution tests passed; network_calls=0; external_calls=0; local_only=true"
-        },
-        {
-          "kind": "contract",
-          "source": "python scripts/check_continuous_execution.py",
-          "result": "passed",
-          "summary": "continuous execution contract passed; no early-stop contract and local-only boundary verified"
+          "summary": "63 continuous execution/supervisor regressions and strict ledger checks passed; new six-module task was atomically claimed/completed, auto-continuation observed. No concurrent active subagents remain."
         }
       ]
     },
@@ -425,8 +396,8 @@
           "value": "platform-goal-lifecycle-v1; get-goal-before-create; create-once; reuse-active; full-project-objective; task-ledger-dedup"
         }
       ],
-      "input_fingerprint": "sha256:e1dc9abc4bce5f93544b785ef461445d0e4dee01839af0f62aaa89c6e81fb2a0",
-      "verified_fingerprint": "sha256:e1dc9abc4bce5f93544b785ef461445d0e4dee01839af0f62aaa89c6e81fb2a0",
+      "input_fingerprint": "sha256:e241a28bd04559b913569154fccfa224fdb015776a4d4ba279fb4072eaff4c3e",
+      "verified_fingerprint": "sha256:e241a28bd04559b913569154fccfa224fdb015776a4d4ba279fb4072eaff4c3e",
       "acceptance": [
         "用户要求持续推进整个项目时，get_goal 为空才调用一次 create_goal，已有 active 目标时复用",
         "持续目标绑定整个项目完成条件，单个回复、命令、测试、UAT、文档或子 Agent 完成都不能关闭目标",
@@ -435,16 +406,10 @@
       ],
       "verification": [
         {
-          "kind": "goal",
-          "source": "Codex goal lifecycle",
+          "kind": "test",
+          "source": "python scripts/run_uat.py; current source review",
           "result": "passed",
-          "summary": "active platform goal exists for the full Phase 8 project objective; goal remains active until external/manual evidence is supplied"
-        },
-        {
-          "kind": "unit",
-          "source": "python -m unittest scripts.test_project_supervisor scripts.test_continuous_execution -v",
-          "result": "passed",
-          "summary": "63 lifecycle and continuous execution tests passed; network_calls=0; external_calls=0; local_only=true"
+          "summary": "Existing platform goal was inspected and not recreated or falsely marked complete. Project-level gates remain open; current frontend task conclusion does not close project V1."
         }
       ]
     },
@@ -723,8 +688,8 @@
           "value": "phase8-ui-acceptance-v2; canonical-routes=index,tool,report; asin=B0-plus-10; upload=xlsx-csv-size-bound; refresh=30s-plus-manual; failure-reason-visible; report=fetch-rendered; wide-table=responsive"
         }
       ],
-      "input_fingerprint": "sha256:d724b5eb77a3b7b0bcd09a58369dfaf0d139f4f954b1b2dc0e81272247d5e477",
-      "verified_fingerprint": "sha256:d724b5eb77a3b7b0bcd09a58369dfaf0d139f4f954b1b2dc0e81272247d5e477",
+      "input_fingerprint": "sha256:f80a9adc3e0fdb2d0c6b4389c90985a121b40bc55f214e70a1c4d91a1719291a",
+      "verified_fingerprint": "sha256:f80a9adc3e0fdb2d0c6b4389c90985a121b40bc55f214e70a1c4d91a1719291a",
       "acceptance": [
         "登录、工具、报告为独立 HTML 与独立地址，Pages 发布路径可直接访问 index/、tool/、report/",
         "工具页实现 B0 开头 10 位 ASIN、XLSX/CSV 与大小校验、阶段 3 提交顺序、提交防重复、任务 30 秒自动刷新与手动刷新、失败原因和退出登录",
@@ -734,21 +699,9 @@
       "verification": [
         {
           "kind": "test",
-          "source": "python -m unittest discover -s frontend -p test_*.py",
+          "source": "python scripts/run_uat.py; current source review",
           "result": "passed",
-          "summary": "7 frontend tests passed; canonical route, report fetch, session gate, legacy login and shared traceability contracts all pass; network_calls=0; external_calls=0; local_only=true"
-        },
-        {
-          "kind": "syntax",
-          "source": "python scripts/check_frontend_syntax.py",
-          "result": "passed",
-          "summary": "7 frontend scripts passed syntax check; network_calls=0; external_calls=0; local_only=true"
-        },
-        {
-          "kind": "audit",
-          "source": "python scripts/phase8_audit.py",
-          "result": "passed",
-          "summary": "31-file Pages allowlist and Phase 8 local checks passed; network_calls=0; external_calls=0; local_only=true"
+          "summary": "All three main routes and six independent report pages present, 13 JS syntax checks and 41 Node scenarios passed. Browser DOM 390px body, own-scroll 3200px table and logged-out redirect observed. Demo-only upload and production gaps disclosed."
         }
       ]
     },
@@ -774,8 +727,8 @@
           "path": ".env.example"
         }
       ],
-      "input_fingerprint": "sha256:e8d527848321ae0bfc646737d9ac8ad99500f1eb680955254becb4c7e2e974d2",
-      "verified_fingerprint": "sha256:e8d527848321ae0bfc646737d9ac8ad99500f1eb680955254becb4c7e2e974d2",
+      "input_fingerprint": "sha256:44bf1d1e840a78b8734eba2520314902af627f241070c85f9e1e3f7e4b4b4315",
+      "verified_fingerprint": "sha256:44bf1d1e840a78b8734eba2520314902af627f241070c85f9e1e3f7e4b4b4315",
       "acceptance": [
         "项目根目录初始化本地 Git 并保存一个可用版本 commit",
         "gitignore 排除 .env、密钥文件、测试凭据和私有运行目录，git status 不出现 Secret 文件",
@@ -784,21 +737,9 @@
       "verification": [
         {
           "kind": "git",
-          "source": "git init && git log -1 --oneline",
+          "source": "git log/diff/check-ignore",
           "result": "passed",
-          "summary": "local repository initialized and usable baseline commit b9f1426 created"
-        },
-        {
-          "kind": "secret-boundary",
-          "source": "git ls-files filtered credential/runtime/cache/raw-input patterns",
-          "result": "passed",
-          "summary": "no .env secret, user credential, runtime evidence, Python cache, or raw XLSX/CSV/TSV path is tracked"
-        },
-        {
-          "kind": "clean-worktree",
-          "source": "git status --porcelain",
-          "result": "passed",
-          "summary": "working tree clean after baseline commit"
+          "summary": "Source changes saved in local commit 41f9a54; diff check passed; named credential files .env/private keys excluded and no raw upload files staged. User reference images remain untracked/preserved."
         }
       ]
     },
@@ -829,8 +770,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:6cc99d86b32bb142ecf1defc8e0fe7bf5e1e0bf955fd6566aac32a05ba276acc",
-      "verified_fingerprint": "sha256:6cc99d86b32bb142ecf1defc8e0fe7bf5e1e0bf955fd6566aac32a05ba276acc",
+      "input_fingerprint": "sha256:849db1c8bb958d7b234df681357d79c0a2fcc536cff49e3f3afd2c229d141f82",
+      "verified_fingerprint": "sha256:849db1c8bb958d7b234df681357d79c0a2fcc536cff49e3f3afd2c229d141f82",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -839,22 +780,10 @@
       ],
       "verification": [
         {
-          "kind": "acceptance",
-          "source": "docs/acceptance/phase8-delivery-audit.md",
+          "kind": "test",
+          "source": "python scripts/run_uat.py; current source review",
           "result": "passed",
-          "summary": "6a reconciliation zero and 6b traceability documented; random real-run report names, fetch rendering, online routes and BrowserSkill unauthenticated report redirect are recorded; address-bar/API screenshots remain explicitly user-operation items."
-        },
-        {
-          "kind": "audit",
-          "source": "python scripts/phase8_audit.py",
-          "result": "passed",
-          "summary": "31-file Pages allowlist and Phase 8 local security/document audit passed with network_calls=0 and external_calls=0."
-        },
-        {
-          "kind": "runtime",
-          "source": "BrowserSkill isolated Edge session",
-          "result": "passed",
-          "summary": "After demo logout, direct report access landed on index.html login; demo-authenticated tool and report pages rendered successfully."
+          "summary": "Local data reconciliation unchanged and passed; randomized private report names unchanged. Prior online demo evidence not reinterpreted as six-module release. Current six-module preview verified locally; true incognito/address-bar/API evidence and production/business gaps explicitly remain."
         }
       ]
     }
