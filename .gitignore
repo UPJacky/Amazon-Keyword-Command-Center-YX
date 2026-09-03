@@ -1,0 +1,37 @@
+# Runtime credentials and local environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+credentials*
+*_credentials.*
+*_secret.*
+private/
+runtime/private/
+
+# Local queues, generated storage and acceptance scratch data
+.local-acceptance-*/
+.local-worker-*/
+queue/
+storage/
+worker-storage/
+runtime/
+.PROJECT_TASKS.json.lock
+uat-output.json
+*.xlsx
+*.csv
+*.tsv
+*.log
+__pycache__/
+*.py[cod]
+
+# User-provided credential/test fixtures (never commit)
+西柚新的mcp.txt
+Supabase（密钥 → Settings → API）.agent.md
+用于测试的.txt
+*密钥*.txt
+*密码*.txt

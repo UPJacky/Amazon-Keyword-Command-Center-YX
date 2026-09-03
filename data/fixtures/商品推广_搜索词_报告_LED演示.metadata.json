@@ -1,0 +1,25 @@
+{
+  "fixture_type": "golden",
+  "source_file": "商品推广_搜索词_报告_LED演示.xlsx",
+  "source_note": "项目根目录提供的 Amazon SP 搜索词演示报表；内容未修改。",
+  "sanitized": "unknown",
+  "sha256": "c82da57f6fd44119f372dec923f6ac927c82ec37f0be900e06e04af1aa31fe26",
+  "parser_version": "ad-report-parser-0.1.0",
+  "sheet": "SP搜索词报告",
+  "required_baseline_keyword": "led light",
+  "baseline": {
+    "raw_rows": 118,
+    "unique_keywords": 91,
+    "impressions": 1230627,
+    "clicks": 9045,
+    "spend": 5123.10,
+    "sales": 20982.29,
+    "orders": 1578,
+    "led_light_rows": 4,
+    "led_light_impressions": 15216,
+    "led_light_clicks": 131,
+    "led_light_spend": 82.96,
+    "led_light_sales": 408.42,
+    "led_light_orders": 30
+  }
+}

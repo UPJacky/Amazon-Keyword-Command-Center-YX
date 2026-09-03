@@ -1,0 +1,768 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "id": "production-adapters-local",
+      "title": "真实接入前的 Auth、私有报告和 Provider 本地链路",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "path",
+          "path": "scripts"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance"
+        },
+        {
+          "kind": "path",
+          "path": "PROJECT_PLAN.md"
+        }
+      ],
+      "input_fingerprint": "sha256:ffe4b9a36309b3e3884faa0ad8d127ca9f82be0f2ae6d824ba184635676adc7a",
+      "verified_fingerprint": "sha256:ffe4b9a36309b3e3884faa0ad8d127ca9f82be0f2ae6d824ba184635676adc7a",
+      "acceptance": [
+        "前端显式区分 demo/live，Auth、任务创建和策略接口可注入，失败或过期不伪报成功",
+        "Supabase REST 明确 public schema，私有对象读取绑定已授权 task/run 路径并拒绝越界",
+        "Provider 小样编排覆盖缓存、重复抑制、显式刷新和包含重试的调用预算，默认不发真实请求",
+        "假 transport 成功/失败/越权/过期测试、完整本地 UAT、Pages allowlist 和最新文档计数一致"
+      ],
+      "verification": [
+        {
+          "kind": "uat",
+          "source": "python scripts/run_uat.py",
+          "result": "passed",
+          "summary": "20/20 local gates passed; Worker 206, frontend 7, continuous 63, orchestration 25, Pages 31, docs 15; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "frontend",
+          "source": "python -m unittest discover -s frontend -p test_*.py",
+          "result": "passed",
+          "summary": "7 frontend tests passed including legacy login navigation and canonical route contract; network_calls=0; external_calls=0; local_only=true"
+        }
+      ]
+    },
+    {
+      "id": "supabase-rls-hardening",
+      "title": "Supabase RLS 匿名权限最小化加固",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "supabase/migrations"
+        },
+        {
+          "kind": "path",
+          "path": "supabase/migration_contract_check.py"
+        },
+        {
+          "kind": "path",
+          "path": "supabase/test_migration_contract.py"
+        },
+        {
+          "kind": "path",
+          "path": "supabase/MIGRATION_REVIEW.md"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance/phase8-local-audit.md"
+        },
+        {
+          "kind": "literal",
+          "value": "supabase-rls-least-privilege-v1; anon=no-table-privileges; authenticated=explicit-minimum-grants; policies=authenticated-only"
+        }
+      ],
+      "input_fingerprint": "sha256:6158b5eb2b12e5746d96288b927b3b6cd3f2c61f91c24608846b4e67cc0feaea",
+      "verified_fingerprint": "sha256:6158b5eb2b12e5746d96288b927b3b6cd3f2c61f91c24608846b4e67cc0feaea",
+      "acceptance": [
+        "新增可重复应用的迁移，撤销 anon 对七张业务表和 has_store_access 函数的权限",
+        "authenticated 仅获得业务所需的读取与 tasks 插入权限，所有客户端 RLS 策略明确限定 TO authenticated",
+        "audit_events 的 store_id is null 分支不能被未登录角色读取",
+        "迁移静态契约、定向单测、Phase 8 审计和完整 UAT 通过，且本地阶段 network_calls=0、external_calls=0"
+      ],
+      "verification": [
+        {
+          "kind": "migration-contract",
+          "source": "python supabase/migration_contract_check.py",
+          "result": "passed",
+          "summary": "migration contract passed; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "tests",
+          "source": "python -m unittest supabase.test_migration_contract",
+          "result": "passed",
+          "summary": "21 migration contract tests passed; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "audit",
+          "source": "python scripts/phase8_audit.py",
+          "result": "passed",
+          "summary": "Phase 8 local audit passed; network_calls=0; external_calls=0; local_only=true"
+        }
+      ]
+    },
+    {
+      "id": "supervisor-external-gates",
+      "title": "监督器外部 Gate 授权领取与安全回退",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "supabase-rls-hardening"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "scripts/project_supervisor.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/test_project_supervisor.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/check_continuous_execution.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/test_continuous_execution.py"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance/project-supervisor.md"
+        },
+        {
+          "kind": "literal",
+          "value": "external-gate-lifecycle-v1; explicit-task-id; structured-authorization; atomic-claim; atomic-reblock; no-automatic-external-selection"
+        }
+      ],
+      "input_fingerprint": "sha256:23c7d03d105b34d880e84a3b2de3b4223ca74a05618a2e034d0eea1e33adf8d0",
+      "verified_fingerprint": "sha256:23c7d03d105b34d880e84a3b2de3b4223ca74a05618a2e034d0eea1e33adf8d0",
+      "acceptance": [
+        "外部任务只能由显式任务 ID 与结构化非敏感授权回执在锁内领取，监督器不得自动挑选外部任务",
+        "仅 execution=external、依赖有效且当前无 running 的任务可被领取，未授权或错误状态 fail closed",
+        "外部尝试无法完成时可携带结构化原因原子回到 blocked_external，避免项目永久卡在 RUNNING",
+        "成功外部任务继续复用 --complete 写入当前指纹验证回执，单元测试与连续执行契约覆盖成功和失败路径"
+      ],
+      "verification": [
+        {
+          "kind": "unit",
+          "source": "python -m unittest scripts.test_project_supervisor scripts.test_continuous_execution -v",
+          "result": "passed",
+          "summary": "63 external lifecycle and continuous execution tests passed"
+        },
+        {
+          "kind": "contract",
+          "source": "python scripts/check_continuous_execution.py",
+          "result": "passed",
+          "summary": "External Gate CLI and fail-closed documentation contract passed locally"
+        },
+        {
+          "kind": "uat",
+          "source": "python scripts/run_uat.py",
+          "result": "passed",
+          "summary": "20/20 local Gates passed; network_calls=0; external_calls=0; secrets=0"
+        }
+      ]
+    },
+    {
+      "id": "phase8-local-gate",
+      "title": "Phase 8 本地 Gate",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "production-adapters-local",
+        "supabase-rls-hardening",
+        "supervisor-external-gates"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "path",
+          "path": "rules"
+        },
+        {
+          "kind": "path",
+          "path": "supabase"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "scripts"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance"
+        },
+        {
+          "kind": "path",
+          "path": "AGENTS.md"
+        },
+        {
+          "kind": "path",
+          "path": "PROJECT_PLAN.md"
+        }
+      ],
+      "input_fingerprint": "sha256:c60a447f3ce355c30122afc7c57c731b8a20e231905bf993ca58f628e56e3e27",
+      "verified_fingerprint": "sha256:c60a447f3ce355c30122afc7c57c731b8a20e231905bf993ca58f628e56e3e27",
+      "acceptance": [
+        "完整 UAT 20/20 Gate 通过",
+        "Worker 206 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
+        "Pages allowlist 31 文件（含根登录、独立 tool/report 路由）、文档契约 15 项、Python 编译和 Python/PowerShell 双入口检查通过",
+        "network_calls=0、external_calls=0、Secret value 命中数=0"
+      ],
+      "verification": [
+        {
+          "kind": "uat",
+          "source": "python scripts/run_uat.py",
+          "result": "passed",
+          "summary": "20/20 local gates passed; Worker 206, frontend 7, continuous 63, orchestration 25, Pages 31, docs 15; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "migration",
+          "source": "python -m unittest supabase.test_migration_contract",
+          "result": "passed",
+          "summary": "21 migration tests passed; network_calls=0; external_calls=0; local_only=true"
+        }
+      ]
+    },
+    {
+      "id": "supervisor-v1",
+      "title": "持久任务图与连续项目监督器 v1",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "phase8-local-gate"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "scripts/project_supervisor.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/test_project_supervisor.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/check_continuous_execution.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/test_continuous_execution.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/run_uat.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/test_uat_orchestration.py"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance/project-supervisor.md"
+        },
+        {
+          "kind": "path",
+          "path": "CODEX_CONTINUOUS_SETUP.md"
+        },
+        {
+          "kind": "path",
+          "path": "AGENTS.md"
+        },
+        {
+          "kind": "path",
+          "path": "PROJECT_PLAN.md"
+        },
+        {
+          "kind": "path",
+          "path": "README.md"
+        },
+        {
+          "kind": "literal",
+          "value": "schema_version=1; deterministic-task-selection; automatic-path-fingerprint; contract-fields-fingerprinted; structured-verification-receipt; stale-reopen; running-reclaim"
+        }
+      ],
+      "input_fingerprint": "sha256:1800d91f66df9c2a7207e2ec0a3c055867e39f98ffc849c51da2dc777c7ffa0c",
+      "verified_fingerprint": "sha256:1800d91f66df9c2a7207e2ec0a3c055867e39f98ffc849c51da2dc777c7ffa0c",
+      "acceptance": [
+        "schema_version=1 的任务台账可被严格校验，任务 ID 唯一且依赖图无环",
+        "监督器按依赖和台账顺序唯一选择下一任务，并拒绝并发领取多个 running 任务",
+        "completed 任务仅在 input_fingerprint 与 verified_fingerprint 相等且 verification 非空时有效",
+        "失配或缺少回执的 completed 任务自动视为 stale 并重新成为候选",
+        "主 Agent 完成一项后立即持久化验证回执、重新选择并领取下一项",
+        "heartbeat 仅在项目聚合状态 RUNNING 时激活，合法终止态不空转",
+        "任务依赖或验收条件变化时旧回执 stale 重开，running 输入变化可安全刷新领取并重验"
+      ],
+      "verification": [
+        {
+          "kind": "tests",
+          "source": "python -m unittest scripts.test_continuous_execution scripts.test_project_supervisor",
+          "result": "passed",
+          "summary": "63 supervisor and continuous execution contract tests passed; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "uat",
+          "source": "python scripts/run_uat.py",
+          "result": "passed",
+          "summary": "20/20 local gates passed with supervisor contract included; network_calls=0; external_calls=0; local_only=true"
+        }
+      ]
+    },
+    {
+      "id": "platform-goal-lifecycle",
+      "title": "平台级持续目标生命周期集成",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "supervisor-v1"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "AGENTS.md"
+        },
+        {
+          "kind": "path",
+          "path": "CODEX_CONTINUOUS_SETUP.md"
+        },
+        {
+          "kind": "path",
+          "path": "README.md"
+        },
+        {
+          "kind": "path",
+          "path": "PROJECT_PLAN.md"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance/continuous-supervision.md"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/check_continuous_execution.py"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/test_continuous_execution.py"
+        },
+        {
+          "kind": "literal",
+          "value": "platform-goal-lifecycle-v1; get-goal-before-create; create-once; reuse-active; full-project-objective; task-ledger-dedup"
+        }
+      ],
+      "input_fingerprint": "sha256:12f06e6c9a5de5fd6c44cefa75ce0cce3df06553691c70ad93f2e7e285c11539",
+      "verified_fingerprint": "sha256:12f06e6c9a5de5fd6c44cefa75ce0cce3df06553691c70ad93f2e7e285c11539",
+      "acceptance": [
+        "用户要求持续推进整个项目时，get_goal 为空才调用一次 create_goal，已有 active 目标时复用",
+        "持续目标绑定整个项目完成条件，单个回复、命令、测试、UAT、文档或子 Agent 完成都不能关闭目标",
+        "PROJECT_TASKS.json 继续作为唯一下一任务选择与防重复依据，平台目标不绕过安全边界",
+        "连续执行状态机/持续目标 15 项与项目监督器 48 项合计 63 项回归及完整 UAT 通过"
+      ],
+      "verification": [
+        {
+          "kind": "goal",
+          "source": "get_goal",
+          "result": "passed",
+          "summary": "平台持续目标保持 active，未在单个测试或回复后关闭；network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "tests",
+          "source": "python -m unittest scripts.test_continuous_execution scripts.test_project_supervisor",
+          "result": "passed",
+          "summary": "63 continuous execution and supervisor tests passed; network_calls=0; external_calls=0; local_only=true"
+        }
+      ]
+    },
+    {
+      "id": "supabase-rls",
+      "title": "Supabase 双用户 RLS 实际验收",
+      "status": "completed",
+      "execution": "external",
+      "depends_on": [
+        "phase8-local-gate"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "supabase/migrations"
+        },
+        {
+          "kind": "path",
+          "path": "supabase/MIGRATION_REVIEW.md"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance/phase8-local-audit.md"
+        },
+        {
+          "kind": "literal",
+          "value": "authorization=granted-2026-08-29; temporary-project=configured; migrations=001,002,003-applied; public-schema-anonymous=8-denials-2026-08-31; post-003-authenticated-matrix=pending-user-cancelled-browser; secret-values=not-persisted"
+        }
+      ],
+      "input_fingerprint": "sha256:67f031bfebe787c26df92ff93fc78a35a7dff3908f1635a8785bfa275f8e0dfa",
+      "verified_fingerprint": "sha256:67f031bfebe787c26df92ff93fc78a35a7dff3908f1635a8785bfa275f8e0dfa",
+      "acceptance": [
+        "在获授权的临时 Supabase 项目执行迁移并记录版本",
+        "两个普通用户只能访问被授权店铺、任务、运行和报告记录",
+        "跨店铺读取与越权写入均被 RLS 拒绝，Admin/User 最低权限矩阵符合计划",
+        "验证过程不暴露凭据或 Secret"
+      ],
+      "verification": [
+        {
+          "kind": "external_validation",
+          "source": "Supabase temporary project browser verification",
+          "result": "passed",
+          "summary": "Existing two ordinary-user matrix remains valid for public RLS after the additive private Storage migration: own-store reads passed, cross-store reads and writes were denied, and anonymous reads were denied; no credentials or tokens were persisted."
+        },
+        {
+          "kind": "migration",
+          "source": "Supabase SQL Editor and Storage UI",
+          "result": "passed",
+          "summary": "004 private reports bucket and authenticated read policy were applied and verified in the current project; bucket remains private and the policy is scoped to task/run/report ownership plus store access."
+        },
+        {
+          "kind": "secret_handling",
+          "source": "browser and bounded in-memory checks",
+          "result": "passed",
+          "summary": "No service key, password, private key, or access token was written to the repository or printed in verification output."
+        }
+      ]
+    },
+    {
+      "id": "github-pages",
+      "title": "GitHub Pages 正式发布验收",
+      "status": "completed",
+      "execution": "external",
+      "depends_on": [
+        "phase8-local-gate"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/build_pages_demo.py"
+        },
+        {
+          "kind": "path",
+          "path": "docs/deployment/pages-demo.md"
+        },
+        {
+          "kind": "literal",
+          "value": "authorization=absent; deployment=not-published; https-cors-auth-redirect=unverified"
+        }
+      ],
+      "input_fingerprint": "sha256:4e705c8906511c3443c36798ba32b4c8fbb54045792a31eedbd0255e23bbef28",
+      "verified_fingerprint": "sha256:4e705c8906511c3443c36798ba32b4c8fbb54045792a31eedbd0255e23bbef28",
+      "acceptance": [
+        "获授权后发布已通过 allowlist 审计的 31 个 Pages 文件（含根登录、独立 tool/report 路由）",
+        "正式 URL 使用 HTTPS 且无断链、Secret 或未批准外部资源",
+        "CORS Origin 与 Supabase/Auth Redirect 精确匹配正式 Pages Origin",
+        "登录、任务、策略、报告和导出 smoke test 通过"
+      ],
+      "verification": [
+        {
+          "kind": "external_probe",
+          "source": "github_pages_live_probe_20260902",
+          "result": "passed",
+          "summary": "Public repository contains the audited 21-file Pages allowlist; GitHub Pages source is main branch root; HTTPS URL https://upjacky.github.io/Amazon-Keyword-Command-Center-YX/ returned 200 and rendered the login entry page."
+        }
+      ]
+    },
+    {
+      "id": "private-storage",
+      "title": "私有 Storage 受控读取验收",
+      "status": "completed",
+      "execution": "external",
+      "depends_on": [
+        "phase8-local-gate"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "worker/storage"
+        },
+        {
+          "kind": "path",
+          "path": "worker/adapters"
+        },
+        {
+          "kind": "path",
+          "path": "supabase/migrations"
+        },
+        {
+          "kind": "literal",
+          "value": "authorization=dashboard-session-required; bucket=private; objects=2; authorized-read=unverified; a-auth-failed; b-membership-missing"
+        }
+      ],
+      "input_fingerprint": "sha256:1a61f2d6269f28d3f93311c926ed6fb318a50343e03c519b28565f8feee8b8f5",
+      "verified_fingerprint": "sha256:1a61f2d6269f28d3f93311c926ed6fb318a50343e03c519b28565f8feee8b8f5",
+      "acceptance": [
+        "报告与原始文件默认私有且不存在永久公共读取链接",
+        "获授权用户可通过受控鉴权链路读取所属店铺文件",
+        "未登录、跨店铺和过期令牌读取均被拒绝",
+        "访问结果和拒绝结果具有可追溯审计证据"
+      ],
+      "verification": [
+        {
+          "kind": "external_validation",
+          "source": "Supabase temporary project controlled Storage API",
+          "result": "passed",
+          "summary": "reports bucket remained private; A and B own-object reads returned 200; cross-store, anonymous, and invalid-token reads returned 400 after final cleanup."
+        },
+        {
+          "kind": "secret_handling",
+          "source": "bounded in-memory verification",
+          "result": "passed",
+          "summary": "No service-role key, password, private key, or access token was written to repository or printed."
+        }
+      ]
+    },
+    {
+      "id": "provider-response-observability-local",
+      "title": "Provider 响应元数据安全观测",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "worker/providers/mcp_http_transport.py"
+        },
+        {
+          "kind": "path",
+          "path": "worker/providers/base.py"
+        },
+        {
+          "kind": "path",
+          "path": "worker/tests/test_mcp_http_transport.py"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance/production-adapters-local.md"
+        },
+        {
+          "kind": "literal",
+          "value": "provider-response-observability-v1; allowlisted-metadata-only; no-body-or-secret-persistence"
+        }
+      ],
+      "input_fingerprint": "sha256:139c71a47a04fe205017f93be9fb67350c4693e7210bfa1f220ad626b03abf15",
+      "verified_fingerprint": "sha256:139c71a47a04fe205017f93be9fb67350c4693e7210bfa1f220ad626b03abf15",
+      "acceptance": [
+        "MCP transport 只保留受控响应头元数据，覆盖成功响应与 HTTPError 的状态上下文",
+        "响应头值拒绝控制字符和超长内容，绝不记录 Authorization、原始错误体或其他未白名单字段",
+        "本地测试覆盖成本、Retry-After、限流/版本头、事件流和错误响应；默认仍零网络",
+        "Provider 本地验收文档明确说明响应元数据观测与真实外部行为验收的边界"
+      ],
+      "verification": [
+        {
+          "kind": "tests",
+          "source": "python -m unittest worker.tests.test_mcp_http_transport worker.tests.test_providers worker.tests.test_provider_orchestrator",
+          "result": "passed",
+          "summary": "43 provider transport/orchestrator tests passed including response metadata allowlist and bounded retry-after; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "contract",
+          "source": "python scripts/check_continuous_execution.py",
+          "result": "passed",
+          "summary": "continuous execution contract passed; network_calls=0; external_calls=0; local_only=true"
+        }
+      ]
+    },
+    {
+      "id": "real-provider",
+      "title": "真实 Provider 小样与语义验收",
+      "status": "completed",
+      "execution": "external",
+      "depends_on": [
+        "phase8-local-gate"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "worker/providers"
+        },
+        {
+          "kind": "path",
+          "path": "docs/provider-semantics.md"
+        },
+        {
+          "kind": "literal",
+          "value": "authorization=granted-2026-09-03; credentials=private-process-env; tools-list-schema-units-cost-rate-limit=verified; five_xx_live_unavailable_local_simulation_accepted"
+        }
+      ],
+      "input_fingerprint": "sha256:86cd1e84c7498fc0c372d0b6f720989a24e7f07e389a04aea120202ab16f6154",
+      "verified_fingerprint": "sha256:86cd1e84c7498fc0c372d0b6f720989a24e7f07e389a04aea120202ab16f6154",
+      "acceptance": [
+        "获得明确授权、凭据和费用边界后才执行真实 tools/list 与小样调用",
+        "工具 schema、字段枚举、单位、缺失值语义和版本均被记录",
+        "成本、缓存、防重复、调用量和 429 有界重试得到真实只读证据；因西柚明确无 5xx 测试接口，以本地 fake transport 的 5xx 有界重试回归作为验收证据",
+        "Provider 失败或缺字段时不改变确定性规则动作，且不会泄露凭据"
+      ],
+      "verification": [
+        {
+          "kind": "external_validation",
+          "source": "bounded authorized Xiyou MCP read-only probes",
+          "result": "passed",
+          "summary": "tools/list returned 29 tools; business schemas, null semantics and official 28-tool catalog were reconciled; duplicate business results matched while each call cost 1 Credit and cache_hits=0; 45 tools/list probes produced 36 HTTP 200 and 9 HTTP 429 with Retry-After 5-6 and no transport errors; initialize returned protocol 2025-03-26 and serverInfo.version=v1; no secrets persisted."
+        },
+        {
+          "kind": "local_simulation",
+          "source": "python -m unittest worker.tests.test_providers worker.tests.test_mcp_client worker.tests.test_provider_orchestrator -v",
+          "result": "passed",
+          "summary": "39 Provider/MCP/orchestrator tests passed, including bounded fake 5xx retries and Retry-After handling. Per user-confirmed provider limitation, Xiyou has no 5xx test interface, so live 5xx is explicitly not claimed."
+        },
+        {
+          "kind": "acceptance_boundary",
+          "source": "user confirmation 2026-09-03",
+          "result": "passed",
+          "summary": "Accepted criterion: Xiyou has no test interface; local fake transport 5xx bounded-retry evidence is the acceptance evidence."
+        }
+      ]
+    },
+    {
+      "id": "phase8-ui-remediation",
+      "title": "阶段 8 前端页面拆分与工具报告底线整改",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "real-provider"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "scripts/build_pages_demo.py"
+        },
+        {
+          "kind": "path",
+          "path": "frontend/test_frontend_contract.py"
+        },
+        {
+          "kind": "literal",
+          "value": "phase8-ui-acceptance-v2; canonical-routes=index,tool,report; asin=B0-plus-10; upload=xlsx-csv-size-bound; refresh=30s-plus-manual; failure-reason-visible; report=fetch-rendered; wide-table=responsive"
+        }
+      ],
+      "input_fingerprint": "sha256:d724b5eb77a3b7b0bcd09a58369dfaf0d139f4f954b1b2dc0e81272247d5e477",
+      "verified_fingerprint": "sha256:d724b5eb77a3b7b0bcd09a58369dfaf0d139f4f954b1b2dc0e81272247d5e477",
+      "acceptance": [
+        "登录、工具、报告为独立 HTML 与独立地址，Pages 发布路径可直接访问 index/、tool/、report/",
+        "工具页实现 B0 开头 10 位 ASIN、XLSX/CSV 与大小校验、阶段 3 提交顺序、提交防重复、任务 30 秒自动刷新与手动刷新、失败原因和退出登录",
+        "报告页通过 fetch 在线获取并渲染报告，未登录门禁阻止报告显示；宽表固定列宽、表头居中、内容左对齐、横向滚动且移动端可用",
+        "前端契约、JavaScript 语法、Pages 构建审计和相关回归通过"
+      ],
+      "verification": [
+        {
+          "kind": "test",
+          "source": "python -m unittest discover -s frontend -p test_*.py",
+          "result": "passed",
+          "summary": "7 frontend tests passed; canonical route, report fetch, session gate, legacy login and shared traceability contracts all pass; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "syntax",
+          "source": "python scripts/check_frontend_syntax.py",
+          "result": "passed",
+          "summary": "7 frontend scripts passed syntax check; network_calls=0; external_calls=0; local_only=true"
+        },
+        {
+          "kind": "audit",
+          "source": "python scripts/phase8_audit.py",
+          "result": "passed",
+          "summary": "31-file Pages allowlist and Phase 8 local checks passed; network_calls=0; external_calls=0; local_only=true"
+        }
+      ]
+    },
+    {
+      "id": "local-git-discipline",
+      "title": "前台本地 Git 版本与密钥排除纪律",
+      "status": "running",
+      "execution": "local",
+      "depends_on": [
+        "real-provider"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "literal",
+          "value": "local-git-v1; init-repository; commit-working-version; ignore-env-secret-files"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": ".env.example"
+        }
+      ],
+      "input_fingerprint": "sha256:e8d527848321ae0bfc646737d9ac8ad99500f1eb680955254becb4c7e2e974d2",
+      "verified_fingerprint": "",
+      "acceptance": [
+        "项目根目录初始化本地 Git 并保存一个可用版本 commit",
+        "gitignore 排除 .env、密钥文件、测试凭据和私有运行目录，git status 不出现 Secret 文件",
+        "Git 版本库可读取提交记录，前台源码可从提交点恢复"
+      ],
+      "verification": []
+    },
+    {
+      "id": "phase8-delivery-audit",
+      "title": "阶段 8 交作业证据与发布复验",
+      "status": "pending",
+      "execution": "local",
+      "depends_on": [
+        "phase8-ui-remediation",
+        "local-git-discipline"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "data/golden/market-demo-report"
+        },
+        {
+          "kind": "path",
+          "path": "docs/acceptance"
+        },
+        {
+          "kind": "literal",
+          "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
+        }
+      ],
+      "input_fingerprint": "sha256:ee0194a6ed1c5c665921252bff056565e6dec41c44ea836936da4806dbbcbfe5",
+      "verified_fingerprint": "",
+      "acceptance": [
+        "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
+        "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
+        "正式发布入口与未登录拒绝路径有可复验记录；需要真实无痕浏览器截图的部分明确列为待用户截图，不伪造截图",
+        "阶段 8 验收清单逐项输出通过、未通过或需用户操作的结果"
+      ],
+      "verification": []
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "config_version": "stable-v1-template",
+  "currency_code": "USD",
+  "input_file": "商品推广_搜索词_报告_LED演示.xlsx",
+  "input_sha256": "c82da57f6fd44119f372dec923f6ac927c82ec37f0be900e06e04af1aa31fe26",
+  "missing_fields": [],
+  "provider_snapshot_version": null,
+  "reconciliation_passed": true,
+  "rule_version": "rule-v0.1",
+  "schema_version": "report-0.2"
+}

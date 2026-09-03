@@ -1,0 +1,12 @@
+{
+  "template_version": "strategy-1.0",
+  "templates": {
+    "new_product_growth": {"product_stage": "new", "acos": {"target": 0.35, "tolerance": 0.50, "break_even": 0.60, "scale_up_max": 0.45, "optimize_start": 0.50, "strategic_loss": 0.75}},
+    "balanced_growth": {"product_stage": "growth", "acos": {"target": 0.30, "tolerance": 0.40, "break_even": 0.50, "scale_up_max": 0.35, "optimize_start": 0.40, "strategic_loss": 0.65}},
+    "stable_profit": {"product_stage": "stable", "acos": {"target": 0.25, "tolerance": 0.35, "break_even": 0.45, "scale_up_max": 0.30, "optimize_start": 0.35, "strategic_loss": 0.60}},
+    "strong_defense": {"product_stage": "stable", "organic_defense": {"max_defense_acos": 0.50, "max_defense_cpc_ratio": 1.30}},
+    "low_efficiency_cleanup": {"product_stage": "stable", "stop_loss": {"zero_order_clicks": 15, "zero_order_spend": 35.0}},
+    "clearance": {"product_stage": "clearance", "acos": {"target": 0.20, "tolerance": 0.30, "break_even": 0.40, "scale_up_max": 0.25, "optimize_start": 0.30, "strategic_loss": 0.50}},
+    "seasonal_restart": {"product_stage": "seasonal_restart", "acos": {"target": 0.35, "tolerance": 0.50, "break_even": 0.60, "scale_up_max": 0.45, "optimize_start": 0.50, "strategic_loss": 0.75}}
+  }
+}

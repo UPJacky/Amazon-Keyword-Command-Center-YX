@@ -1,0 +1,82 @@
+{
+  "schema_version": "config-1.0",
+  "required": ["product_stage", "acos", "evidence", "stop_loss", "conversion", "market", "organic_defense", "sorting"],
+  "properties": {
+    "product_stage": {"type": "string", "enum": ["new", "growth", "stable", "clearance", "seasonal_restart"]},
+    "acos": {
+      "type": "object",
+      "required": ["target", "tolerance", "break_even", "scale_up_max", "optimize_start", "strategic_loss"],
+      "properties": {
+        "target": {"type": "number", "min": 0, "max": 1},
+        "tolerance": {"type": "number", "min": 0, "max": 1},
+        "break_even": {"type": "number", "min": 0, "max": 1},
+        "scale_up_max": {"type": "number", "min": 0, "max": 1},
+        "optimize_start": {"type": "number", "min": 0, "max": 1},
+        "strategic_loss": {"type": "number", "min": 0, "max": 1}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["insufficient_clicks_max", "preliminary_clicks", "sufficient_clicks", "preliminary_orders", "sufficient_orders"],
+      "properties": {
+        "insufficient_clicks_max": {"type": "integer", "min": 0},
+        "preliminary_clicks": {"type": "integer", "min": 0},
+        "sufficient_clicks": {"type": "integer", "min": 0},
+        "preliminary_orders": {"type": "integer", "min": 0},
+        "sufficient_orders": {"type": "integer", "min": 0}
+      }
+    },
+    "stop_loss": {
+      "type": "object",
+      "required": ["zero_order_clicks", "zero_order_spend"],
+      "properties": {
+        "zero_order_clicks": {"type": "integer", "min": 0},
+        "zero_order_spend": {"type": "number", "min": 0}
+      }
+    },
+    "conversion": {
+      "type": "object",
+      "required": ["ctr_low", "cvr_low", "cpc_high_ratio", "suggested_bid_max_ratio"],
+      "properties": {
+        "ctr_low": {"type": "number", "min": 0, "max": 1},
+        "cvr_low": {"type": "number", "min": 0, "max": 1},
+        "cpc_high_ratio": {"type": "number", "min": 0},
+        "suggested_bid_max_ratio": {"type": "number", "min": 0}
+      }
+    },
+    "market": {
+      "type": "object",
+      "required": ["high_search_volume_percentile", "low_search_volume_percentile", "low_difficulty", "high_difficulty", "top3_open_threshold", "top3_concentrated_threshold", "trend_decline_threshold", "trend_window_weeks"],
+      "properties": {
+        "high_search_volume_percentile": {"type": "number", "min": 0, "max": 1},
+        "low_search_volume_percentile": {"type": "number", "min": 0, "max": 1},
+        "low_difficulty": {"type": "number", "min": 0},
+        "high_difficulty": {"type": "number", "min": 0},
+        "top3_open_threshold": {"type": "number", "min": 0, "max": 1},
+        "top3_concentrated_threshold": {"type": "number", "min": 0, "max": 1},
+        "trend_decline_threshold": {"type": "number", "min": -1, "max": 0},
+        "trend_window_weeks": {"type": "integer", "min": 1}
+      }
+    },
+    "organic_defense": {
+      "type": "object",
+      "required": ["top3", "top5", "top10", "max_defense_acos", "max_defense_cpc_ratio"],
+      "properties": {
+        "top3": {"type": "integer", "min": 1},
+        "top5": {"type": "integer", "min": 1},
+        "top10": {"type": "integer", "min": 1},
+        "max_defense_acos": {"type": "number", "min": 0, "max": 1},
+        "max_defense_cpc_ratio": {"type": "number", "min": 0}
+      }
+    },
+    "sorting": {
+      "type": "object",
+      "required": ["group_order", "primary_field", "direction"],
+      "properties": {
+        "group_order": {"type": "array", "items": {"type": "string", "enum": ["green", "cyan", "yellow", "orange", "red", "gray"]}},
+        "primary_field": {"type": "string", "enum": ["market_search_volume", "ad_spend"]},
+        "direction": {"type": "string", "enum": ["asc", "desc"]}
+      }
+    }
+  }
+}

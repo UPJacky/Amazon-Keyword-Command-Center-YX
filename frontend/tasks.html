@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>任务 · 关键词作战总表</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="tasks">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar"><a class="brand" href="workspace.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a><div class="store-switcher"><span class="label">当前店铺</span><strong>待接入店铺</strong><span class="muted">store_id · —</span></div><nav class="side-nav" aria-label="后台导航"><a data-nav="workspace" href="workspace.html"><span class="nav-icon">⌂</span>工作台</a><a data-nav="tasks" href="tasks.html"><span class="nav-icon">↗</span>任务</a><a data-nav="strategy" href="strategy.html"><span class="nav-icon">◌</span>策略中心</a><a data-nav="report" href="report.html"><span class="nav-icon">▤</span>报告</a></nav><div class="sidebar-foot"><span class="status-dot status-dot--mint"></span><span>静态预览模式</span></div></aside>
+    <main class="app-main"><header class="app-header"><button class="icon-button mobile-only" data-sidebar-toggle aria-label="打开导航">☰</button><div><p class="eyebrow">TASKS</p><h1>任务</h1></div><div class="header-actions"><a class="button button--secondary button--small" id="logout" href="login.html">退出预览</a><div class="avatar">Y</div></div></header>
+      <section class="page-intro"><div><p class="muted">一次提交对应一个 task_id；每次实际执行对应一个新的 run_id。</p></div><button class="button button--primary" data-open-upload>上传报表</button></section>
+      <section class="panel panel--large"><div class="toolbar"><div class="filter-group"><label class="sr-only" for="task-status">任务状态</label><select id="task-status"><option>全部状态</option><option>待处理</option><option>运行中</option><option>已完成</option><option>失败</option></select><label class="sr-only" for="task-search">搜索任务</label><input id="task-search" type="search" placeholder="搜索 task_id / 文件名"></div><div class="toolbar-actions"><span class="muted" id="task-count">共 — 项</span><button id="refresh-tasks" class="button button--secondary button--small" type="button">手动刷新</button></div></div><div class="table-wrap"><table class="data-table data-table--tasks"><thead><tr><th>任务</th><th>输入文件</th><th>状态</th><th>创建时间</th><th>最近运行</th><th>失败原因</th><th>操作</th></tr></thead><tbody id="task-rows"><tr><td colspan="7"><div class="table-empty"><strong>正在读取本地任务 artifact</strong><span>真实 Auth / Task API 接入后将替换此本地预览。</span></div></td></tr></tbody></table></div></section>
+      <section class="info-grid"><article class="notice notice--cream"><strong>支持的输入</strong><span>广告搜索词报表 · XLSX / CSV · 单任务单币种。</span></article><article class="notice notice--soft"><strong>安全边界</strong><span>原始报表进入私有文件柜，浏览器不接触 Provider Key 或对象存储 Secret。</span></article></section>
+    </main>
+  </div>
+  <dialog class="modal" id="upload-dialog"><form method="dialog" class="modal__content"><button class="icon-button modal__close" value="cancel" aria-label="关闭">×</button><p class="eyebrow">NEW TASK</p><h2>上传广告报表</h2><p class="muted">静态骨架只展示输入位，不会上传文件。</p><label class="dropzone" for="report-file"><span class="dropzone__icon">↑</span><strong>选择报表文件</strong><span>XLSX 或 CSV · 最大 10 MB</span><input id="report-file" type="file" accept=".xlsx,.csv"></label><div class="form-row form-row--end"><button class="button button--secondary" value="cancel">取消</button><button class="button button--primary" data-static-submit value="default">继续</button></div><p class="form-status" data-dialog-status hidden></p></form></dialog>
+  <script src="public-config.js" defer></script><script src="client.js" defer></script><script src="app.js" defer></script><script src="tasks.js" defer></script>
+</body>
+</html>

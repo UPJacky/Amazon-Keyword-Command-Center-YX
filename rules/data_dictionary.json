@@ -1,0 +1,58 @@
+{
+  "schema_version": "data-dictionary-1.0",
+  "description": "Versioned V1 rule-engine enums and normalized field semantics.",
+  "unknown_value": null,
+  "enums": {
+    "product_stage": ["new", "growth", "stable", "clearance", "seasonal_restart"],
+    "evidence_level": ["no_ads", "insufficient", "preliminary", "sufficient"],
+    "market_opportunity": ["unknown", "low", "medium", "high"],
+    "organic_defense_level": ["unknown", "none", "watch", "defend", "core_defend"],
+    "acos_pressure": ["unknown", "healthy", "watch", "high", "over_break_even"],
+    "action_group": [
+      "scale_up",
+      "defend_rank",
+      "hold_steady",
+      "cautious_test",
+      "continue_observation",
+      "optimize_listing",
+      "optimize_bid",
+      "optimize_structure",
+      "stop_loss",
+      "reduce_or_pause",
+      "data_missing"
+    ],
+    "ui_conclusion": ["add", "defend", "keep", "cautious", "optimize", "stop_loss", "data_missing"],
+    "ui_color": ["green", "cyan", "yellow", "orange", "red", "gray"],
+    "ai_status": ["not_requested", "success", "degraded", "unavailable"]
+  },
+  "required_keyword_fields": ["keyword", "product_stage", "ad_data_available"],
+  "ad_metric_fields": ["impressions", "clicks", "spend", "orders", "sales"],
+  "missing_field_names": [
+    "keyword",
+    "product_stage",
+    "ad_data_available",
+    "impressions",
+    "clicks",
+    "spend",
+    "orders",
+    "sales",
+    "search_volume",
+    "search_volume_percentile",
+    "competitive_difficulty",
+    "suggested_bid",
+    "aba_trend",
+    "top3_asins",
+    "top3_click_share",
+    "organic_rank",
+    "ad_rank",
+    "traffic_ratio",
+    "traffic_acquisition_rate"
+  ],
+  "derived_fields": {
+    "ctr": "clicks / impressions when impressions > 0, otherwise null",
+    "cpc": "spend / clicks when clicks > 0, otherwise null",
+    "cvr": "orders / clicks when clicks > 0, otherwise null",
+    "acos": "spend / sales when sales > 0, otherwise null",
+    "roas": "sales / spend when spend > 0, otherwise null"
+  }
+}

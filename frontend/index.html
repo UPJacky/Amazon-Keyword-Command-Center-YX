@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>关键词作战总表 · 登录</title><link rel="stylesheet" href="styles.css"></head>
+<body class="auth-page" data-login-url="index.html" data-post-login-url="tool/index.html">
+  <main class="auth-card" aria-labelledby="login-title">
+    <div class="eyebrow">AMAZON KEYWORD COMMAND CENTER</div>
+    <h1 id="login-title">把关键词，变成下一步动作。</h1>
+    <p class="lede">登录后上传搜索词报表，查看可追溯的加投、防守、保持、优化和止损结论。</p>
+    <form id="login-form" class="stack-form">
+      <label>邮箱<input name="email" type="email" autocomplete="email" placeholder="you@company.com" required></label>
+      <label>密码<input name="password" type="password" autocomplete="current-password" placeholder="••••••••" required minlength="6"></label>
+      <button class="button primary" type="submit">登录工作台</button>
+      <p id="login-message" class="form-message" role="status"></p>
+    </form>
+    <div class="auth-note"><span class="status-dot"></span>演示界面 · 正式鉴权将接入 Supabase Auth</div>
+  </main>
+  <script src="public-config.js"></script><script src="client.js"></script><script src="app.js"></script>
+</body>
+</html>

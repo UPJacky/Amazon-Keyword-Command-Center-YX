@@ -1,0 +1,2 @@
+"""Local task execution pipeline."""
+

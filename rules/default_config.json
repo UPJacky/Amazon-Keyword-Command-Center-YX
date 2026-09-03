@@ -1,0 +1,51 @@
+{
+  "config_version_basis": "config-1.0",
+  "product_stage": "stable",
+  "acos": {
+    "target": 0.25,
+    "tolerance": 0.35,
+    "break_even": 0.45,
+    "scale_up_max": 0.30,
+    "optimize_start": 0.35,
+    "strategic_loss": 0.60
+  },
+  "evidence": {
+    "insufficient_clicks_max": 9,
+    "preliminary_clicks": 10,
+    "sufficient_clicks": 20,
+    "preliminary_orders": 1,
+    "sufficient_orders": 2
+  },
+  "stop_loss": {
+    "zero_order_clicks": 20,
+    "zero_order_spend": 50.0
+  },
+  "conversion": {
+    "ctr_low": 0.005,
+    "cvr_low": 0.08,
+    "cpc_high_ratio": 1.20,
+    "suggested_bid_max_ratio": 1.25
+  },
+  "market": {
+    "high_search_volume_percentile": 0.75,
+    "low_search_volume_percentile": 0.25,
+    "low_difficulty": 35,
+    "high_difficulty": 70,
+    "top3_open_threshold": 0.45,
+    "top3_concentrated_threshold": 0.70,
+    "trend_decline_threshold": -0.10,
+    "trend_window_weeks": 4
+  },
+  "organic_defense": {
+    "top3": 3,
+    "top5": 5,
+    "top10": 10,
+    "max_defense_acos": 0.45,
+    "max_defense_cpc_ratio": 1.25
+  },
+  "sorting": {
+    "group_order": ["green", "cyan", "yellow", "orange", "red", "gray"],
+    "primary_field": "market_search_volume",
+    "direction": "desc"
+  }
+}

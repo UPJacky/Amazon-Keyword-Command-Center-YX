@@ -1,0 +1,76 @@
+{
+  "aggregated_rows": [
+    {
+      "acos": 0.175,
+      "clicks": 12,
+      "cpc": 0.2916666666666667,
+      "ctr": 0.1,
+      "cvr": 0.16666666666666666,
+      "impressions": 120,
+      "keyword": "alpha",
+      "orders": 2,
+      "roas": 5.714285714285714,
+      "sales": 20,
+      "spend": 3.5
+    },
+    {
+      "acos": null,
+      "clicks": 5,
+      "cpc": 0.25,
+      "ctr": 0.1,
+      "cvr": 0.2,
+      "impressions": 50,
+      "keyword": "beta",
+      "orders": 1,
+      "roas": 0.0,
+      "sales": 0,
+      "spend": 1.25
+    }
+  ],
+  "currency_code": "USD",
+  "input_file": "sample_dynamic_columns.csv",
+  "input_sha256": "f6479f664cafa4d859b63a00791389e9253a3233e82df75794542ef9bd3c44e2",
+  "parser_version": "ad-report-parser-0.1.0",
+  "reconciliation": {
+    "aggregated_totals": {
+      "clicks": "17",
+      "impressions": "170",
+      "orders": "3",
+      "sales": "20",
+      "spend": "4.75"
+    },
+    "currency_code": "USD",
+    "differences": {
+      "clicks": "0",
+      "impressions": "0",
+      "orders": "0",
+      "sales": "0.00",
+      "spend": "0.00"
+    },
+    "duplicate_row_count": 1,
+    "parser_version": "ad-report-parser-0.1.0",
+    "passed": true,
+    "ratio_recalculation": {
+      "checked_rows": 2,
+      "source": "aggregated_raw_metrics"
+    },
+    "raw_row_count": 3,
+    "raw_totals": {
+      "clicks": "17",
+      "impressions": "170",
+      "orders": "3",
+      "sales": "20.00",
+      "spend": "4.75"
+    },
+    "repeat_parse_consistent": true,
+    "repeated_keyword_count": 1,
+    "schema_version": "reconciliation-0.1",
+    "tolerances": {
+      "integer_metrics": "0",
+      "money_metrics": "0.01"
+    },
+    "unique_keyword_count": 2,
+    "valid_row_count": 3
+  },
+  "schema_version": "ad-aggregated-0.1"
+}

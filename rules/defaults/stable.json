@@ -1,0 +1,33 @@
+{
+  "schema_version": "config-0.1",
+  "config_version": "stable-v1-template",
+  "product_stage": "stable",
+  "evidence": {
+    "insufficient_clicks_max": 9,
+    "preliminary_clicks_min": 10,
+    "sufficient_clicks_min": 20,
+    "preliminary_orders_min": 1,
+    "sufficient_orders_min": 2
+  },
+  "acos": {
+    "target": 0.20,
+    "tolerance": 0.30,
+    "break_even": 0.35
+  },
+  "stop_loss": {
+    "zero_order_clicks": 20,
+    "zero_order_spend": 50.0
+  },
+  "market": {
+    "high_search_volume": 0.75,
+    "high_opportunity_min": 0.70
+  },
+  "organic_defense": {
+    "core_max_rank": 10,
+    "max_defense_acos": 0.30
+  },
+  "diagnostics": {
+    "low_ctr": 0.005,
+    "low_cvr": 0.05
+  }
+}

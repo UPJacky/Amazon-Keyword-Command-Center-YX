@@ -1,0 +1,41 @@
+{
+  "aggregated_totals": {
+    "clicks": "9045",
+    "impressions": "1230627",
+    "orders": "1578",
+    "sales": "20982.29",
+    "spend": "5123.10"
+  },
+  "currency_code": "USD",
+  "differences": {
+    "clicks": "0",
+    "impressions": "0",
+    "orders": "0",
+    "sales": "0.00",
+    "spend": "0.00"
+  },
+  "duplicate_row_count": 27,
+  "parser_version": "ad-report-parser-0.1.0",
+  "passed": true,
+  "ratio_recalculation": {
+    "checked_rows": 91,
+    "source": "aggregated_raw_metrics"
+  },
+  "raw_row_count": 118,
+  "raw_totals": {
+    "clicks": "9045",
+    "impressions": "1230627",
+    "orders": "1578",
+    "sales": "20982.29",
+    "spend": "5123.10"
+  },
+  "repeat_parse_consistent": true,
+  "repeated_keyword_count": 16,
+  "schema_version": "reconciliation-0.1",
+  "tolerances": {
+    "integer_metrics": "0",
+    "money_metrics": "0.01"
+  },
+  "unique_keyword_count": 91,
+  "valid_row_count": 118
+}

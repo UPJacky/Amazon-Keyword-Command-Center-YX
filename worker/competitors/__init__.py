@@ -1,0 +1,1 @@
+"""Local competitor profile contracts."""

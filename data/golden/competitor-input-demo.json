@@ -1,0 +1,11 @@
+{
+  "self_asin": "B000000001",
+  "competitors": [
+    {"asin": "B000000002", "brand": "Demo A", "title": "Demo competitor A", "image_urls": ["https://example.invalid/a.jpg"]},
+    {"asin": "B000000003", "brand": "Demo B", "title": "Demo competitor B", "image_urls": ["https://example.invalid/b.jpg"]},
+    {"asin": "B000000004", "brand": "Demo C", "title": "Demo competitor C", "image_urls": ["https://example.invalid/c.jpg"]}
+  ],
+  "core_keywords": ["led light", "room decor"],
+  "marketplace": "US",
+  "snapshot_version": "fixture-competitor-v1"
+}

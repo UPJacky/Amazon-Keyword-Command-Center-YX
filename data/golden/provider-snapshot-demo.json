@@ -1,0 +1,27 @@
+{
+  "schema_version": "provider-snapshot-0.1",
+  "provider": "fixture",
+  "snapshot_version": "fixture-market-v1",
+  "records": [
+    {
+      "keyword": "led light",
+      "organic_rank": 5,
+      "ad_rank": 3,
+      "market_search_volume": 10000,
+      "competitive_difficulty": 0.55,
+      "suggested_bid": 0.8,
+      "market_opportunity_score": 0.92,
+      "missing_fields": []
+    },
+    {
+      "keyword": "room accessories",
+      "organic_rank": null,
+      "ad_rank": null,
+      "market_search_volume": 5000,
+      "competitive_difficulty": 0.7,
+      "suggested_bid": 0.75,
+      "market_opportunity_score": 0.85,
+      "missing_fields": ["aba_trend", "organic_rank", "ad_rank"]
+    }
+  ]
+}

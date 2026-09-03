@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工具 · 关键词作战总表</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="app-shell" data-page="tool" data-login-url="../index.html" data-report-url="../report/index.html">
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a>
+    <nav aria-label="主导航"><a class="active" href="index.html">工具</a><a href="../report/index.html">报告</a></nav>
+    <button class="user-chip" id="logout" type="button">退出登录</button>
+  </header>
+  <main class="workspace">
+    <div class="demo-banner" role="status"><span class="status-dot"></span><strong>Demo · 本地验收</strong><span>文件只在浏览器内做格式与大小校验；演示不会上传或创建真实任务。</span></div>
+    <section class="hero-row"><div><div class="eyebrow">TOOL / PHASE 3</div><h1>提交关键词分析任务</h1><p class="lede">先校验输入，再按固定阶段排队，避免重复提交。</p></div></section>
+    <section class="tool-grid">
+      <form id="tool-form" class="panel task-form" novalidate>
+        <h2>任务输入</h2>
+        <label>ASIN <span class="required">必填</span><input id="tool-asin" name="asin" inputmode="latin" autocomplete="off" placeholder="B0XXXXXXXX" required><small class="field-help">必须是 10 位且以 B0 开头。</small></label>
+        <label>产品阶段 <span class="required">必选</span><select id="tool-stage" name="product_stage" required><option value="">请选择阶段</option><option value="new">新品期</option><option value="growth">上升期</option><option value="stable">稳定期</option><option value="clearance">清货期</option><option value="seasonal_restart">季节性老品重启</option></select></label>
+        <label>广告搜索词报表 <span class="required">必填</span><input id="tool-file" name="report_file" type="file" accept=".xlsx,.csv" required><small class="field-help">仅支持 .xlsx / .csv；最大 10 MB。</small></label>
+        <label class="check-row"><input id="tool-confirm" type="checkbox" required>我确认输入文件属于当前分析任务</label>
+        <p id="tool-form-status" class="form-status" role="status" aria-live="polite"></p>
+        <div class="modal-actions"><button id="tool-submit" class="button primary" type="submit">提交分析任务</button></div>
+      </form>
+      <aside class="panel phase-panel"><div class="eyebrow">FIXED ORDER</div><h2>阶段 3 固定顺序</h2><ol class="phase-list"><li><strong>ingestion</strong><span>接收并校验输入</span></li><li><strong>reconciliation</strong><span>透视对账差值必须为零</span></li><li><strong>config/provider</strong><span>绑定配置与 Provider 快照</span></li><li><strong>report</strong><span>生成可追溯报告</span></li></ol><p class="notice notice--soft">提交按钮会在请求期间锁定，任务列表每 30 秒自动刷新，也可手动刷新。</p></aside>
+    </section>
+    <section class="panel panel--large"><div class="toolbar"><div><div class="eyebrow">TASKS</div><h2>任务列表</h2></div><div class="toolbar-actions"><span class="muted" id="task-count">共 — 项</span><button id="refresh-tasks" class="button button--secondary button--small" type="button">手动刷新</button></div></div><div class="table-scroll"><table class="data-table data-table--tasks"><thead><tr><th>任务</th><th>输入文件</th><th>状态</th><th>创建时间</th><th>阶段</th><th>失败原因</th><th>操作</th></tr></thead><tbody id="task-rows"><tr><td colspan="7">正在读取任务 artifact…</td></tr></tbody></table></div></section>
+  </main>
+  <script src="../public-config.js" defer></script><script src="../client.js" defer></script><script src="../app.js" defer></script><script src="./tool.js" defer></script><script src="../tasks.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "schema_version": "action-mapping-0.1",
+  "action_group_to_ui": {
+    "scale_up": {"ui_conclusion": "add", "ui_color": "green"},
+    "defend_rank": {"ui_conclusion": "defend", "ui_color": "green"},
+    "hold_steady": {"ui_conclusion": "keep", "ui_color": "cyan"},
+    "cautious_test": {"ui_conclusion": "cautious", "ui_color": "yellow"},
+    "continue_observation": {"ui_conclusion": "cautious", "ui_color": "yellow"},
+    "optimize_listing": {"ui_conclusion": "optimize", "ui_color": "orange"},
+    "optimize_bid": {"ui_conclusion": "optimize", "ui_color": "orange"},
+    "optimize_structure": {"ui_conclusion": "optimize", "ui_color": "orange"},
+    "stop_loss": {"ui_conclusion": "stop_loss", "ui_color": "red"},
+    "reduce_or_pause": {"ui_conclusion": "stop_loss", "ui_color": "red"},
+    "data_missing": {"ui_conclusion": "data_missing", "ui_color": "gray"}
+  },
+  "display_order": ["green", "cyan", "yellow", "orange", "red", "gray"]
+}

@@ -1,0 +1,5 @@
+{
+  "self_images": [{"url": "https://example.invalid/self-1.jpg", "position": 1}],
+  "competitor_images": [{"url": "https://example.invalid/competitor-1.jpg", "position": 1}],
+  "keyword_rows": [{"keyword": "led light", "market_opportunity_score": 0.9, "cvr": 0.01}]
+}
