@@ -16,8 +16,8 @@
 - 2026-09-02：用户新授权后完成 3 轮、5 次真实只读请求：重复 `get_keyword_info` 两次均状态 200、各 1 credit、`cache_hits=0`，响应摘要相同；没有触发 429/5xx，未观察到成本/限流/版本响应头。快照已更新，剩余真实 Gate 为成本货币换算、429/5xx 和独立版本字段。
 - 2026-09-03：完整本地 UAT 20/20 Gate，Worker 207 项（12 项环境跳过）、前端 7 项（含 Node 26 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages 57 文件/11 项测试、迁移 21 项、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增 Provider transport、一次性探测入口、响应头白名单观测和真实任务随机报告对象名已通过离线回归。
 - 真实 Supabase 已执行 003；显式 public schema 下七张表与 has_store_access 的匿名请求全部返回 401/42501。后置双用户复验已在临时项目通过：A/B 各自仅见授权店铺、任务和运行记录，跨店铺读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 的 A/B 自有读取、跨店/匿名/无效令牌拒绝矩阵也已通过；凭据未持久化。
-- 前端显式 live Auth/任务/策略读取、私有报告对象读取与 Gateway、Provider 缓存预算与流水线注入已实现并通过 fake 集成；上传、策略写入和真实私有报告前端仍明确禁用，不能假报上线。临时 Supabase 项目的 003 迁移、双用户 RLS 与私有 Storage 读取矩阵已通过，GitHub Pages 已完成，真实 Provider Gate 仍需外部验收。
-- 本轮最终监督器：BLOCKED_EXTERNAL，当前本地任务回执有效、无 stale/running/runnable；仅真实 Provider 1 项外部 Gate 保留。Supabase 双用户与 Storage 证据见 `docs/acceptance/supabase-live-evidence-20260831.md`；不重复已通过的本地检查。
+- 前端显式 live Auth/任务/策略读取、私有报告对象读取与 Gateway、Provider 缓存预算与流水线注入已实现并通过 fake 集成；上传、策略写入和真实私有报告前端仍明确禁用，不能假报上线。临时 Supabase 项目的历史 003/RLS/Storage 证据仍保留，但新版六模块尚未重新发布或做生产链复验；西柚无 5xx 测试接口，按用户确认以本地 fake transport 验收。
+- 本轮最终监督器：BLOCKED_EXTERNAL，本地任务无可执行项；Supabase RLS、私有 Storage 和新版 GitHub Pages 发布/复验仍是外部 Gate。`supabase-live-evidence-20260831.md` 仅作为已有证据，不把旧版线上结果冒充新版交付。
 
 ## 历史执行记录
 
