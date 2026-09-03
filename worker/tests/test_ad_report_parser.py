@@ -21,6 +21,10 @@ class AdReportParserTests(unittest.TestCase):
         self.assertEqual(reconciliation["unique_keyword_count"], 91)
         self.assertEqual(reconciliation["repeated_keyword_count"], 16)
         self.assertEqual(reconciliation["duplicate_row_count"], 27)
+        self.assertEqual(
+            {field: reconciliation["header_mapping"][field]["label"] for field in ("keyword", "impressions", "clicks", "spend", "sales", "orders")},
+            {"keyword": "客户搜索词", "impressions": "展示量", "clicks": "点击量", "spend": "花费", "sales": "7天总销售额", "orders": "7天总订单数(#)"},
+        )
         self.assertEqual(reconciliation["raw_totals"]["impressions"], "1230627")
         self.assertEqual(reconciliation["raw_totals"]["clicks"], "9045")
         self.assertEqual(reconciliation["raw_totals"]["spend"], "5123.10")

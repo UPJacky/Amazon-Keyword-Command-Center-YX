@@ -247,6 +247,10 @@ def _parse_once(path: Path) -> dict[str, Any]:
         "repeated_keyword_count": sum(1 for count in keyword_counts.values() if count > 1),
         "duplicate_row_count": len(raw_keywords) - len(set(raw_keywords)),
         "currency_code": currency_code,
+        "header_mapping": {
+            field: {"index": columns[field], "label": str(headers[columns[field]])}
+            for field in metric_fields + ("keyword",)
+        },
         "raw_totals": {field: str(raw_totals[field]) for field in raw_totals},
         "aggregated_totals": {field: str(aggregate_totals[field]) for field in aggregate_totals},
         "differences": {field: str(differences[field]) for field in differences},

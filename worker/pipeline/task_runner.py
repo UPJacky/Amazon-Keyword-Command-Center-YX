@@ -11,6 +11,7 @@ from typing import Any, Callable, Mapping
 
 from worker.ingestion.ad_report_parser import ParseError, parse_report
 from worker.report.generate_report import build_report, shared_traceability
+from worker.report.generate_report import random_report_artifact_name
 from worker.providers.config_validation import validate_config
 from worker.rule_engine.engine import load_default_config
 from worker.report.modules import build_negative_keywords, build_rank_benchmark
@@ -128,7 +129,15 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
             _write(root / "failure.json", reason)
             return TaskExecutionResult(task_id, run_id, "failed", "provider", reason)
     try:
-        report = build_report(input_path, root, effective_config, market_rows, provider_snapshot_version)
+        report_artifact_name = random_report_artifact_name()
+        report = build_report(
+            input_path,
+            root,
+            effective_config,
+            market_rows,
+            provider_snapshot_version,
+            report_artifact_name=report_artifact_name,
+        )
     except (ParseError, ValueError) as exc:
         reason = {"code": "REPORT_GENERATION_FAILED", "message": str(exc), "stage": "report", "retryable": False}
         _write(root / "failure.json", reason)
@@ -152,7 +161,8 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
         **shared_traceability(report),
         "task_id": task_id,
         "run_id": run_id,
+        "report_path": f"{task_id}/{run_id}/{report_artifact_name}",
         "status": "completed",
         "current_stage": "report",
     })
-    return TaskExecutionResult(task_id, run_id, "completed", "report", report_path=str(root / "master-table.json"))
+    return TaskExecutionResult(task_id, run_id, "completed", "report", report_path=str(root / report_artifact_name))

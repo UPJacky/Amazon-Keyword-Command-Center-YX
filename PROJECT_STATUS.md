@@ -4,15 +4,15 @@ document_type: project_status
 version: 0.1
 updated_at: 2026-09-03
 current_phase: Phase 8 / local-deployment-audit
-status: phase8_ui_remediation_in_progress
-execution_state: RUNNING
+status: phase8_delivery_audit_blocked_external
+execution_state: BLOCKED_EXTERNAL
 current_objective: "按阶段 8 交作业清单完成独立页面、工具/报告底线、Git 存档和最终交付审计"
-next_safe_action: "由 PROJECT_TASKS.json 与 project_supervisor.py 选择下一项本地任务"
-stop_reason: "仍有本地任务待执行；线上旧 Pages 需重新发布后复验，真实无痕窗口截图由用户提供。"
-last_action_fingerprint: "platform-goal-lifecycle:sha256:6474ac3cefc5bd0a7e6db6a865feb1304898a0973088b78ba5ef5031c3eca751"
-local_safe_queue: in_progress
-external_blockers_only: false
-verified_gate_snapshot: "worker=206; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=31; github_pages=old_published_content_requires_republish; docs=15; supabase_dual_user_rls=passed; reports_bucket=private; reports_objects=2; storage_matrix=passed_own_reads_200_cross_anonymous_invalid_400; provider_transport=offline_safe_ready; provider_response_metadata=allowlisted_local_regression_passed; provider_retry_after=bounded_and_tested; provider_probe_metadata_persistence=passed; provider_live_tools=29; provider_catalog_tools=28; provider_tool_catalog_reconciled=true; provider_public_quota=registered_monthly_20000; provider_vip_quota=monthly_40000; provider_weekly_quota=7000_official_page; provider_billing_rules=28_tools_documented; provider_failed_call_charge_boundary=official_page_valid_data_only; provider_live_calls=1; provider_live_failures=0; provider_business_sample=get_keyword_info_passed; provider_business_calls=11; provider_new_authorized_rounds=3; provider_new_actual_requests=5; provider_observed_cost_credits=1_each; provider_direct_repeat_cache_hits=0; provider_repeat_response_same=true; provider_no_result_null_semantics=observed; provider_initialize_server_version=v1; provider_initialize_protocol=2025-03-26; provider_rate_limit_probe_requests=45; provider_rate_limit_probe_200=36; provider_rate_limit_probe_429=9; provider_rate_limit_retry_after=5_to_6; provider_rate_limit_transport_errors=0; provider_5xx=local_fake_transport_passed_live_unavailable_by_provider; provider_call_failures=0; real_provider=completed_with_5xx_boundary; network_calls=0; external_calls=0; secrets=0"
+next_safe_action: "等待用户完成线上重发布并提供登录页、工具页、报告页及未登录拒绝截图；收到后只复验对应外部 Gate"
+stop_reason: "本地安全队列已清空；唯一未完成项是线上旧 Pages 重发布、真实无痕报告门禁/匿名 API 截图和历史外部 Gate 复验，需要用户浏览器/第三方权限。"
+last_action_fingerprint: "platform-goal-lifecycle:sha256:e1dc9abc4bce5f93544b785ef461445d0e4dee01839af0f62aaa89c6e81fb2a"
+local_safe_queue: empty
+external_blockers_only: true
+verified_gate_snapshot: "worker=207; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=31; github_pages=old_published_content_requires_republish; docs=15; reconciliation=zero_differences_91_rows; report_objects=random_48hex_name_for_real_runs; supabase_dual_user_rls=passed; reports_bucket=private; reports_objects=2; storage_matrix=passed_own_reads_200_cross_anonymous_invalid_400; provider_transport=offline_safe_ready; provider_response_metadata=allowlisted_local_regression_passed; provider_retry_after=bounded_and_tested; provider_probe_metadata_persistence=passed; provider_live_tools=29; provider_catalog_tools=28; provider_tool_catalog_reconciled=true; provider_public_quota=registered_monthly_20000; provider_vip_quota=monthly_40000; provider_weekly_quota=7000_official_page; provider_billing_rules=28_tools_documented; provider_failed_call_charge_boundary=official_page_valid_data_only; provider_live_calls=1; provider_live_failures=0; provider_business_sample=get_keyword_info_passed; provider_business_calls=11; provider_new_authorized_rounds=3; provider_new_actual_requests=5; provider_observed_cost_credits=1_each; provider_direct_repeat_cache_hits=0; provider_repeat_response_same=true; provider_no_result_null_semantics=observed; provider_initialize_server_version=v1; provider_initialize_protocol=2025-03-26; provider_rate_limit_probe_requests=45; provider_rate_limit_probe_200=36; provider_rate_limit_probe_429=9; provider_rate_limit_retry_after=5_to_6; provider_rate_limit_transport_errors=0; provider_5xx=local_fake_transport_passed_live_unavailable_by_provider; provider_call_failures=0; real_provider=completed_with_5xx_boundary; network_calls=0; external_calls=0; secrets=0"
 ---
 
 ## 历史中间状态（2026-09-01）

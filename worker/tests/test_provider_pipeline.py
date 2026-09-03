@@ -44,7 +44,7 @@ class ProviderPipelineTests(unittest.TestCase):
             self.assertEqual("completed", result.status)
             root = Path(directory) / "task/run"
             usage = json.loads((root / "provider-usage.json").read_text(encoding="utf-8"))
-            report = json.loads((root / "master-table.json").read_text(encoding="utf-8"))
+            report = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
             self.assertEqual(report["provider_snapshot_version"], usage["provider_snapshot_version"])
             self.assertEqual(0, usage["usage"]["actual_calls"])
         self.assertEqual(before, json.dumps(config, sort_keys=True))
@@ -78,7 +78,7 @@ class ProviderPipelineTests(unittest.TestCase):
             result = run_task(FIXTURE, directory, "task", "run", provider_enricher=Mock(side_effect=RuntimeError(marker)))
             self.assertEqual("provider", result.current_stage)
             self.assertNotIn(marker, (Path(directory) / "task/run/failure.json").read_text())
-            self.assertFalse((Path(directory) / "task/run/master-table.json").exists())
+            self.assertFalse(list((Path(directory) / "task/run").glob("report-*.json")))
 
     def test_invalid_enrichment_fails_closed(self):
         invalid = [None, {}, {**self.payload(), "market_rows": [{}], "usage": {"actual_calls": True}}, {**self.payload(), "usage": {"actual_calls": -1}}, {**self.payload(), "provider_snapshot_version": "../invalid"}, {**self.payload(), "market_rows": [{"rank": float("nan")}]}, {**self.payload(), "unexpected": "value"}]

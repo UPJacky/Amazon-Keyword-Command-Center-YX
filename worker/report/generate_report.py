@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import secrets
 import uuid
 import unicodedata
 from pathlib import Path
@@ -14,10 +15,14 @@ from worker.rule_engine.engine import evaluate_keyword, load_default_config, loa
 from worker.providers.market_merge import merge_market_data
 from worker.providers.config_validation import validate_config
 from worker.report.traceability import normalise_missing_fields
+from worker.storage.artifacts import RANDOM_REPORT_ARTIFACT
 
 
 RULE_VERSION = "rule-v0.1"
 REPORT_SCHEMA_VERSION = "report-0.2"
+def random_report_artifact_name() -> str:
+    """Return an unpredictable report object name for a real task run."""
+    return f"report-{secrets.token_hex(24)}.json"
 
 
 def shared_traceability(report: Mapping[str, Any]) -> dict[str, Any]:
@@ -77,7 +82,7 @@ def _sort_key(row: Mapping[str, Any], group_order: Mapping[str, int]) -> tuple[A
     )
 
 
-def build_report(input_path: str | Path, output_dir: str | Path, config: Mapping[str, Any] | None = None, market_rows: list[Mapping[str, Any]] | None = None, provider_snapshot_version: str | None = None) -> dict[str, Any]:
+def build_report(input_path: str | Path, output_dir: str | Path, config: Mapping[str, Any] | None = None, market_rows: list[Mapping[str, Any]] | None = None, provider_snapshot_version: str | None = None, report_artifact_name: str = "master-table.json") -> dict[str, Any]:
     parsed = parse_report(input_path)
     if not parsed["reconciliation"]["passed"]:
         raise ValueError("reconciliation failed; report generation stopped")
@@ -111,7 +116,9 @@ def build_report(input_path: str | Path, output_dir: str | Path, config: Mapping
     report["missing_fields"] = report_missing_fields(report)
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
-    _write_new_json(destination / "master-table.json", report)
+    if report_artifact_name != "master-table.json" and not RANDOM_REPORT_ARTIFACT.fullmatch(report_artifact_name):
+        raise ValueError("invalid report artifact name")
+    _write_new_json(destination / report_artifact_name, report)
     shared = shared_traceability(report)
     action_results = {
         **shared,

@@ -18,6 +18,13 @@ class ArtifactTests(unittest.TestCase):
             self.assertEqual(path.name, "run-meta.json")
             self.assertEqual(read_json(directory, "task-1", "run-1", "run-meta.json"), {"status": "completed"})
 
+    def test_random_report_artifact_is_allowlisted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            name = "report-" + "a" * 48 + ".json"
+            path = write_json(directory, "task-1", "run-1", name, {"rows": []})
+            self.assertEqual(path.name, name)
+            self.assertEqual(read_json(directory, "task-1", "run-1", name), {"rows": []})
+
     def test_rejects_traversal_and_unknown_artifact(self):
         with tempfile.TemporaryDirectory() as directory:
             with self.assertRaises(ArtifactError):

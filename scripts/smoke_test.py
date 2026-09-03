@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -27,13 +28,16 @@ def main() -> int:
         storage_root = root / "storage"
         FileQueue(queue_root).enqueue({"task_id": "smoke-task", "run_id": "smoke-run", "input_path": str(fixture)})
         result = run_one(queue_root, storage_root)
-        report = storage_root / "smoke-task" / "smoke-run" / "master-table.json"
-        passed = bool(result and result["status"] == "completed" and report.is_file())
-        output = {"passed": passed, "result": result, "report_exists": report.is_file(), "network_calls": 0}
+        run_root = storage_root / "smoke-task" / "smoke-run"
+        reports = sorted(
+            path for path in run_root.glob("report-*.json")
+            if re.fullmatch(r"report-[0-9a-f]{48}\.json", path.name)
+        )
+        passed = bool(result and result["status"] == "completed" and len(reports) == 1)
+        output = {"passed": passed, "result": result, "report_exists": len(reports) == 1, "network_calls": 0}
         print(json.dumps(output, ensure_ascii=False, indent=2))
         return 0 if passed else 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

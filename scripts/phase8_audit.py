@@ -25,7 +25,7 @@ def audit() -> dict[str, object]:
         "supabase/migrations/002_indexes.sql", "supabase/migrations/003_authenticated_only.sql",
         "scripts/check_continuous_execution.py",
         "scripts/check_phase8_documentation.py", "scripts/check_frontend_syntax.py",
-        "docs/acceptance/phase8-local-audit.md", "docs/acceptance/continuous-supervision.md",
+        "docs/acceptance/phase8-local-audit.md", "docs/acceptance/phase8-delivery-audit.md", "docs/acceptance/continuous-supervision.md",
         "docs/acceptance/uat-local.md", "docs/deployment/pages-demo.md",
         "frontend/login.html", "frontend/report.html", "frontend/tool/index.html", "frontend/tool/tool.js", "frontend/report/index.html", "frontend/app.js", "frontend/contract_check.py",
         "scripts/build_pages_demo.py", "scripts/test_build_pages_demo.py", "rules/definitions/action_mapping.json",

@@ -15,7 +15,8 @@ class TaskRunnerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             result = run_task(FIXTURE, directory, "task-1", "run-1")
             self.assertEqual(result.status, "completed")
-            self.assertTrue((Path(directory) / "task-1" / "run-1" / "master-table.json").is_file())
+            self.assertRegex(Path(result.report_path).name, r"^report-[0-9a-f]{48}\.json$")
+            self.assertTrue(Path(result.report_path).is_file())
             self.assertTrue((Path(directory) / "task-1" / "run-1" / "run-meta.json").is_file())
             root = Path(directory) / "task-1" / "run-1"
             self.assertTrue((root / "input-meta.json").is_file())
@@ -31,7 +32,7 @@ class TaskRunnerTests(unittest.TestCase):
             result = run_task(FIXTURE, directory, "task-1", "run-1", provider_snapshot_version="snapshot-v1")
             self.assertEqual(result.status, "completed")
             root = Path(directory) / "task-1" / "run-1"
-            master = json.loads((root / "master-table.json").read_text(encoding="utf-8"))
+            master = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
             actions = json.loads((root / "action-results.json").read_text(encoding="utf-8"))
             meta = json.loads((root / "report-meta.json").read_text(encoding="utf-8"))
             run_meta = json.loads((root / "run-meta.json").read_text(encoding="utf-8"))
@@ -48,8 +49,9 @@ class TaskRunnerTests(unittest.TestCase):
             self.assertEqual(run_meta["reconciliation_passed"], meta["reconciliation_passed"])
             self.assertEqual(
                 set(run_meta) - {"task_id", "run_id", "status", "current_stage"},
-                (set(master) - {"reconciliation", "summary", "rows"}) | {"reconciliation_passed"},
+                (set(master) - {"reconciliation", "summary", "rows"}) | {"reconciliation_passed", "report_path"},
             )
+            self.assertEqual(run_meta["report_path"], f"task-1/run-1/{Path(result.report_path).name}")
 
     def test_invalid_input_stops_before_report(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -73,7 +75,7 @@ class TaskRunnerTests(unittest.TestCase):
     def test_duplicate_run_refuses_to_overwrite_existing_artifacts(self):
         with tempfile.TemporaryDirectory() as directory:
             first = run_task(FIXTURE, directory, "task-1", "run-1")
-            report = Path(directory) / "task-1" / "run-1" / "master-table.json"
+            report = Path(first.report_path)
             original = report.read_text(encoding="utf-8")
             second = run_task(FIXTURE, directory, "task-1", "run-1")
             self.assertEqual(first.status, "completed")
@@ -86,7 +88,7 @@ class TaskRunnerTests(unittest.TestCase):
             self.assertEqual(result.status, "failed")
             self.assertEqual(result.current_stage, "config")
             self.assertEqual(result.failure_reason["code"], "CONFIG_INVALID")
-            self.assertFalse((Path(directory) / "task-1" / "run-1" / "master-table.json").exists())
+            self.assertFalse(list((Path(directory) / "task-1" / "run-1").glob("report-*.json")))
 
     def test_competitor_profile_is_written_when_provided(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -103,7 +105,7 @@ class TaskRunnerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             result = run_task(FIXTURE, directory, "task-1", "run-1", competitor_profile={"self_asin": "B000000001", "competitors": []})
             self.assertEqual(result.failure_reason["code"], "COMPETITOR_PROFILE_INVALID")
-            self.assertFalse((Path(directory) / "task-1" / "run-1" / "master-table.json").exists())
+            self.assertFalse(list((Path(directory) / "task-1" / "run-1").glob("report-*.json")))
 
 
 if __name__ == "__main__":
