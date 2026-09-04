@@ -6,11 +6,11 @@ updated_at: 2026-09-04
 current_phase: Phase 8 / local-deployment-audit
 status: external_release_partially_verified_project_incomplete
 execution_state: BLOCKED_EXTERNAL
-current_objective: "完成阶段 8 生产部署；当前等待 Supabase Edge Function 平台恢复与 Worker 主机 SSH 恢复"
-next_safe_action: "外部状态恢复后重试 production-live-deployment：发布精确 Origin 网关，再部署 Worker、发布 live Pages，并完成真实端到端与无痕门禁截图"
-stop_reason: "已在用户恢复授权后进行有界外部尝试：Supabase 控制台显示技术故障且两次完整编辑器提交未发出部署请求；Worker 主机 SSH 两次连接超时。49 文件 live 包已本地重建审计通过，但未发布半成品。"
-last_action_fingerprint: "production-live-deployment:resume-attempt; live-bundle-49-audited; supabase-editor-no-deploy; worker-ssh-timeout"
-verified_gate_snapshot_current: "local_live_readiness=implemented_uat_passed; worker=269; frontend=7; live_candidate=49_no_demo_data_no_secrets_rebuilt; pages_demo=57_remote_main_b42009a; supabase_remote=001-006_applied; migrations_005_006=reapplied_successfully; runtime_contract=functions9_run_columns4_task_columns3_private_buckets2_storage_policies5_anon_claim_denied; gateway=not_deployed_platform_unavailable; production_worker=not_deployed_ssh_unreachable; live_pages=not_published; browser_e2e=pending; live_v1=not_complete"
+current_objective: "完成阶段 8 生产部署；当前等待精确 Origin 网关更新生效及 live Pages/真实端到端验收"
+next_safe_action: "外部状态恢复后重试 production-live-deployment：确认网关新版本预检、配置 Worker 环境并运行真实任务链、发布 live Pages、完成无痕门禁截图"
+stop_reason: "本轮已恢复 Worker SSH 并部署远端 Worker 包；Supabase 网关首版已发布并通过 403/401 拒绝验证，但兼容路径修复的允许来源预检仍返回 404，live Pages 与真实任务链尚未发布验收。"
+last_action_fingerprint: "production-live-deployment:worker-ssh-restored; worker-package-deployed; gateway-published; gateway-path-fix-local-passed; live-preflight-still-404"
+verified_gate_snapshot_current: "local_live_readiness=implemented_uat_passed; worker=269; frontend=7; live_candidate=49_no_demo_data_no_secrets_rebuilt; pages_demo=57_remote_main_b42009a; supabase_remote=001-006_applied; migrations_005_006=reapplied_successfully; runtime_contract=functions9_run_columns4_task_columns3_private_buckets2_storage_policies5_anon_claim_denied; gateway=published_bad_origin_403_unauth_401_allowed_preflight_404; production_worker=remote_compileall_and_disabled_2_cycles_passed; live_pages=not_published; browser_e2e=pending; live_v1=not_complete"
 local_safe_queue: empty
 external_blockers_only: true
 verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; docs=15; network_calls=0; external_calls=0; secrets=0"
