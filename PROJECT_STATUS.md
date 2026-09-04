@@ -13,7 +13,7 @@ last_action_fingerprint: "live-gateway-worker-pages-e2e-verified; login-tool-add
 verified_gate_snapshot_current: "gateway=deployed_exact_origin; auth=200; rls=two_users_own_only_cross_store_zero_write_403; storage=private_own_read_200_cross_user_denied; worker=completed; report=random_private_object_fetch_rendered; pages=live_root_tool_report_200; anonymous_report=redirect_login; unauth_api=401_AUTH_REQUIRED; xiyou=local_5xx_only; live_report_scope=ad_only_missing_market_competitor_image; address_bar_screenshots=login_tool_valid_report_content_pending"
 local_safe_queue: empty
 external_blockers_only: true
-verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages_demo=57; live_candidate=49; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0"
+verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; live_candidate=49; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0"
 ---
 
 ## 历史中间状态（2026-09-01）

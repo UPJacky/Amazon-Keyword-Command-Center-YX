@@ -29,9 +29,11 @@ python scripts/run_uat.py
 - UAT 的五组临时输出目录由受管上下文创建，正常和异常路径均自动清理。
 - UAT 网络调用为 0，Secret value 命中为 0。
 
-尚未执行且不能伪装为通过：
+历史外部 Gate 快照（当前状态以 `phase8-delivery-audit.md` 和 `PROJECT_STATUS.md` 为准）：
 
-- 临时 Supabase 项目 003 迁移后的双用户 RLS 复验（003 与匿名拒绝已验证，见 supabase-live-evidence-20260831.md）；
-- GitHub Pages HTTPS、精确 CORS 和 Auth Redirect 验证；
-- 真实私有 Storage 读取验证；
-- Provider `tools/list`、成本、字段单位和真实 429 验证。
+本文件仍是本地审计证据，外部复核结果不能伪装为通过；UAT 网络调用为 0。
+
+- 临时 Supabase 项目 001–006 的双用户 RLS 复验已完成；
+- GitHub Pages HTTPS、精确 Origin 和 Auth Redirect 已完成线上复验；
+- 真实私有 Storage 读取已完成自有/跨用户拒绝矩阵复验；
+- Provider `tools/list` 只读证据已保留；西柚无测试接口，5xx 以本地 fake transport 作为验收证据。
