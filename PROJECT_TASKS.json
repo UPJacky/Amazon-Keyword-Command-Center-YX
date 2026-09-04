@@ -112,9 +112,9 @@
       "verification": [
         {
           "kind": "external_block",
-          "source": "explicit user pause after partial production deployment",
+          "source": "bounded production deployment attempt",
           "result": "passed",
-          "summary": "User requested an immediate pause to switch models. Live Supabase migrations 005 and 006 were applied successfully and each re-applied successfully for idempotency; runtime query returned 9 KWCC functions, 4 run lease/version columns, 3 task input columns, 2 private buckets, 5 storage policies, and anon_cannot_claim=true. Exact-Origin gateway, worker deployment, live Pages and browser E2E remain pending."
+          "summary": "Supabase Edge Function editor produced no deployment request after two complete submission attempts while dashboard displayed a technical-issue banner; Worker host SSH timed out on two bounded connection attempts. Local live Pages bundle rebuilt and audited successfully: 49 files, no demo data, no raw inputs, no secrets, zero network calls. No production artifact was published."
         }
       ]
     },

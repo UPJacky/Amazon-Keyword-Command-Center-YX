@@ -5,12 +5,12 @@ version: 0.1
 updated_at: 2026-09-04
 current_phase: Phase 8 / production-live-deployment
 status: external_release_partially_verified_project_incomplete
-execution_state: USER_STOPPED
-current_objective: "暂停并保存阶段 8 生产部署进度，等待用户切换模型后恢复"
-next_safe_action: "恢复 production-live-deployment：发布精确 Origin 网关，再部署 Worker、构建/发布 live Pages，并完成真实端到端与无痕门禁截图"
-stop_reason: "用户于 2026-09-04 明确要求暂停并切换模型；浏览器控制会话已关闭"
-last_action_fingerprint: "production-live-deployment:005-006-applied-and-idempotent; runtime-contract-query-passed; gateway-worker-pages-pending"
-verified_gate_snapshot_current: "local_live_readiness=implemented_uat_passed; worker=269; frontend=7; live_candidate=49_no_demo_data_no_secrets; pages_demo=57_remote_main_b42009a; supabase_remote=001-006_applied; migrations_005_006=reapplied_successfully; runtime_contract=functions9_run_columns4_task_columns3_private_buckets2_storage_policies5_anon_claim_denied; gateway=local_not_deployed; production_worker=local_not_deployed; live_pages=not_published; browser_e2e=pending; live_v1=not_complete"
+execution_state: BLOCKED_EXTERNAL
+current_objective: "完成阶段 8 生产部署；当前等待 Supabase Edge Function 平台恢复与 Worker 主机 SSH 恢复"
+next_safe_action: "外部状态恢复后重试 production-live-deployment：发布精确 Origin 网关，再部署 Worker、发布 live Pages，并完成真实端到端与无痕门禁截图"
+stop_reason: "已在用户恢复授权后进行有界外部尝试：Supabase 控制台显示技术故障且两次完整编辑器提交未发出部署请求；Worker 主机 SSH 两次连接超时。49 文件 live 包已本地重建审计通过，但未发布半成品。"
+last_action_fingerprint: "production-live-deployment:resume-attempt; live-bundle-49-audited; supabase-editor-no-deploy; worker-ssh-timeout"
+verified_gate_snapshot_current: "local_live_readiness=implemented_uat_passed; worker=269; frontend=7; live_candidate=49_no_demo_data_no_secrets_rebuilt; pages_demo=57_remote_main_b42009a; supabase_remote=001-006_applied; migrations_005_006=reapplied_successfully; runtime_contract=functions9_run_columns4_task_columns3_private_buckets2_storage_policies5_anon_claim_denied; gateway=not_deployed_platform_unavailable; production_worker=not_deployed_ssh_unreachable; live_pages=not_published; browser_e2e=pending; live_v1=not_complete"
 local_safe_queue: empty
 external_blockers_only: true
 verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; docs=15; network_calls=0; external_calls=0; secrets=0"
