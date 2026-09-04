@@ -3,17 +3,17 @@ project: Amazon-Keyword-Command-Center-YX
 project_cn: 关键词作战总表
 document_type: implementation_plan
 version: 1.4
-updated_at: 2026-09-02
+updated_at: 2026-09-04
 status: current
 language: zh-CN
 
 ## 当前阶段 8 交付审计（2026-09-03）
 
-本轮恢复执行后的优先纠正：已发布 b42009a 为演示包；真实接入不只差 CORS。当前实施 `live-release-readiness`，新增 `production-live-deployment` 外部 Gate，覆盖005/006迁移、精确Origin网关、私有上传、任务/run、租约Worker、策略版本和live报告读取。未部署部分一律待验，历史测试/截图不替代新生产链证据。
+本轮恢复执行后的优先纠正：已发布 b42009a 为演示包；真实接入不只差 CORS。`live-release-readiness` 与 `production-live-deployment` 已完成，005/006 迁移、精确 Origin 网关、私有上传、任务/run、租约 Worker、策略版本和 live 报告读取均有复验记录；历史测试/截图不替代新生产链证据。
 
 - 真实任务报告对象名采用 `report-<48位十六进制随机串>.json`，运行元数据记录 `task_id/run_id/report_path`；固定 `master-table.json` 仅保留在离线演示黄金目录。
 - 解析器输出 `reconciliation.header_mapping`，供 6a 第一步核对实际表头与列序号；演示输入 118 行聚合为 91 个搜索词，展示/点击/花费/销售额/订单差值均为零，比例从聚合原始量重算。
-- 阶段 8 本地交付证据见 `docs/acceptance/phase8-delivery-audit.md`；线上重发布、真实无痕报告门禁和带地址栏截图仍是用户侧外部验收项。
+- 阶段 8 交付证据见 `docs/acceptance/phase8-delivery-audit.md`；线上重发布、真实无痕报告门禁和三张带地址栏截图均已登记，报告页截图来自带 `task/run` 的真实在线报告地址。
 
 > 当前基线见 Phase 8 的“当前执行状态（2026-08-31）”；此前有日期的执行段落保留为历史证据。
 

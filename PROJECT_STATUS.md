@@ -4,15 +4,15 @@ document_type: project_status
 version: 0.1
 updated_at: 2026-09-04
 current_phase: Phase 8 / local-deployment-audit
-status: external_release_partially_verified_project_incomplete
-execution_state: BLOCKED_EXTERNAL
-current_objective: "完成阶段 8 生产发布与真实端到端验收；登录页和工具页地址栏证据已收到，等待有效的真实报告页证据"
-next_safe_action: "从工具页已完成任务行点击“查看报告”，等待真实报告表格加载后重新截取带地址栏的报告页；补证后重新领取 production-live-deployment"
-stop_reason: "已检查用户提交的 9 张截图：登录页与工具页地址栏有效；报告1–6均为未携带 task/run 参数的报告空页或模块失败页，尚未形成有效真实报告截图。"
-last_action_fingerprint: "live-gateway-worker-pages-e2e-verified; login-tool-address-bar-evidence-valid; report-address-bar-evidence-invalid-no-task-run"
-verified_gate_snapshot_current: "gateway=deployed_exact_origin; auth=200; rls=two_users_own_only_cross_store_zero_write_403; storage=private_own_read_200_cross_user_denied; worker=completed; report=random_private_object_fetch_rendered; pages=live_root_tool_report_200; anonymous_report=redirect_login; unauth_api=401_AUTH_REQUIRED; xiyou=local_5xx_only; live_report_scope=ad_only_missing_market_competitor_image; address_bar_screenshots=login_tool_valid_report_content_pending"
+status: project_complete
+execution_state: PROJECT_COMPLETE
+current_objective: "阶段 8 生产发布与真实端到端验收已完成；登录页、工具页和真实报告页地址栏证据已齐"
+next_safe_action: "等待新的项目需求；若新增真实市场、竞品、图片或广告结构数据，再按新增输入开启下一轮任务"
+stop_reason: "PROJECT_COMPLETE：17/17 任务完成；本地 UAT、对账/抽词、生产 Gateway/Worker、私有报告 fetch、报告门禁、未登录 API 拒绝、Pages 发布和带地址栏报告截图均已登记。"
+last_action_fingerprint: "live-gateway-worker-pages-e2e-verified; login-tool-report-address-bar-evidence-valid; report-fetch-200; reconciliation-zero"
+verified_gate_snapshot_current: "gateway=deployed_exact_origin; auth=200; rls=two_users_own_only_cross_store_zero_write_403; storage=private_own_read_200_cross_user_denied; worker=completed; report=random_private_object_fetch_rendered; pages=live_root_tool_report_200; anonymous_report=redirect_login; unauth_api=401_AUTH_REQUIRED; xiyou=local_5xx_only; live_report_scope=ad_only_missing_market_competitor_image; address_bar_screenshots=login_tool_report_valid; report_content=91_rows_5123_10_spend_1578_orders_ctr_0_7_reconciliation_zero"
 local_safe_queue: empty
-external_blockers_only: true
+external_blockers_only: false
 verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; live_candidate=49; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0"
 ---
 

@@ -61,7 +61,7 @@
     {
       "id": "production-live-deployment",
       "title": "测试项目生产链迁移、网关与Worker发布及真实端到端验收",
-      "status": "blocked_external",
+      "status": "completed",
       "execution": "external",
       "depends_on": [
         "live-release-readiness",
@@ -94,7 +94,7 @@
         }
       ],
       "input_fingerprint": "sha256:f53a7262631925b10f13279574838ee1c8f31ac1d2cd10e6498963a2d72004c6",
-      "verified_fingerprint": "",
+      "verified_fingerprint": "sha256:f53a7262631925b10f13279574838ee1c8f31ac1d2cd10e6498963a2d72004c6",
       "acceptance": [
         "在用户授权测试项目执行005/006并验证SQL语法、权限、并发和幂等，不用静态测试替代数据库运行",
         "发布精确Origin网关，普通JWT读写经过RLS；匿名/跨店/错误Origin与Worker RPC拒绝",
@@ -105,10 +105,16 @@
       ],
       "verification": [
         {
-          "kind": "external_block",
-          "source": "BrowserSkill live acceptance capture",
+          "kind": "manual_address_bar_screenshot",
+          "source": "docs/acceptance/查看报告1.jpg",
           "result": "passed",
-          "summary": "Live gateway, Worker, private report fetch, authenticated report render, anonymous report redirect, and unauthenticated API rejection were verified; formal address-bar screenshots remain manual because BrowserSkill captures viewport only."
+          "summary": "Valid browser screenshot: the Pages report URL includes task/run parameters, authenticated report content is visible with 91 search terms, ad spend 5123.10 USD, 1578 orders, CTR 0.7%, explicit ad-only scope disclosure, and reconciliation difference 0."
+        },
+        {
+          "kind": "live_e2e",
+          "source": "prior live gateway/worker/browser evidence",
+          "result": "passed",
+          "summary": "Exact-origin gateway, Auth/RLS, Worker completion, private random report fetch/render, anonymous report redirect, and unauthenticated API 401 were previously verified; no Secret persisted."
         }
       ]
     },
@@ -140,8 +146,8 @@
           "path": "data/golden"
         }
       ],
-      "input_fingerprint": "sha256:cdab1b6e9d0b8cd94dfd2c3cbfdf4cc73cfc665fd8d2a00a133b413317092f91",
-      "verified_fingerprint": "sha256:cdab1b6e9d0b8cd94dfd2c3cbfdf4cc73cfc665fd8d2a00a133b413317092f91",
+      "input_fingerprint": "sha256:ac6120a99c15f367c7390d52ff407969026dc462c7acacbfad87c912d2d4cfaf",
+      "verified_fingerprint": "sha256:ac6120a99c15f367c7390d52ff407969026dc462c7acacbfad87c912d2d4cfaf",
       "acceptance": [
         "六个报告模块为独立HTML与独立脚本，共享导航、样式和登录门禁",
         "按用户参考图实现深蓝标题、蓝色主按钮、浅灰蓝背景和不挤压的宽表格",
@@ -151,9 +157,15 @@
       "verification": [
         {
           "kind": "local_uat",
-          "source": "scripts/run_uat.py",
+          "source": "prior python scripts/run_uat.py rerun after screenshot",
           "result": "passed",
-          "summary": "20/20 local gates passed; frontend 7 contract tests plus Node module scenarios; six independent report HTML/JS routes, shared navigation/guard, Pages demo 57 allowlist files; missing data remains explicit; network_calls=0; external_calls=0"
+          "summary": "Full local UAT passed with six independent report routes, shared navigation and login guard; Worker 269, frontend 7, total 20/20 gates, no network or external calls."
+        },
+        {
+          "kind": "documentation_contract",
+          "source": "python scripts/check_phase8_documentation.py",
+          "result": "passed",
+          "summary": "Phase 8 documentation contract passed all 15 read-only checks after final plan/status synchronization."
         }
       ]
     },
@@ -185,8 +197,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:0f5643328fa428b170c852f6458765016724a552c5fb9172c8a2be1a1a53f408",
-      "verified_fingerprint": "sha256:0f5643328fa428b170c852f6458765016724a552c5fb9172c8a2be1a1a53f408",
+      "input_fingerprint": "sha256:1be53d42d2a429473fb635d23ca7b3e8b4ed19d8ce922fe17ee3dfd23bebdfb6",
+      "verified_fingerprint": "sha256:1be53d42d2a429473fb635d23ca7b3e8b4ed19d8ce922fe17ee3dfd23bebdfb6",
       "acceptance": [
         "前端显式区分 demo/live，Auth、任务创建和策略接口可注入，失败或过期不伪报成功",
         "Supabase REST 明确 public schema，私有对象读取绑定已授权 task/run 路径并拒绝越界",
@@ -195,10 +207,16 @@
       ],
       "verification": [
         {
-          "kind": "local_uat",
-          "source": "scripts/run_uat.py",
+          "kind": "full_uat",
+          "source": "prior python scripts/run_uat.py rerun after screenshot",
           "result": "passed",
-          "summary": "20/20 local gates passed; Worker 269 (12 environment skips), frontend 7, orchestration 25, continuous 63, migration 59, Pages 46; phase8 documentation 15; network_calls=0; external_calls=0; Secret value hits=0; no external Provider call"
+          "summary": "Full local UAT passed: 20/20 gates; Worker 269 tests, frontend 7 tests, continuous contract 63 tests, orchestration 25 tests, Pages 57-file audit, docs 15 checks; network_calls=0, external_calls=0, Secret=0."
+        },
+        {
+          "kind": "documentation_contract",
+          "source": "python scripts/check_phase8_documentation.py",
+          "result": "passed",
+          "summary": "Phase 8 documentation contract passed all 15 read-only checks after final plan/status synchronization."
         }
       ]
     },
@@ -358,8 +376,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:e7beb990d2bb44f93941951517644cfcac3abef2b46d57763e8c31b2917bc47c",
-      "verified_fingerprint": "sha256:e7beb990d2bb44f93941951517644cfcac3abef2b46d57763e8c31b2917bc47c",
+      "input_fingerprint": "sha256:7482fd4c713bcfa6b17396f39f30fb56ecfc329b71f77016aeae2faf2b8b5e3c",
+      "verified_fingerprint": "sha256:7482fd4c713bcfa6b17396f39f30fb56ecfc329b71f77016aeae2faf2b8b5e3c",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -368,10 +386,16 @@
       ],
       "verification": [
         {
-          "kind": "local_uat",
-          "source": "scripts/run_uat.py",
+          "kind": "full_uat",
+          "source": "prior python scripts/run_uat.py rerun after screenshot",
           "result": "passed",
-          "summary": "20/20 Gate passed; Worker 269, frontend 7, UAT orchestration 25, continuous 63, Pages demo 57/live candidate 49, documentation 15, network_calls=0, external_calls=0, Secret value hits=0"
+          "summary": "Full local UAT passed: 20/20 gates; Worker 269 tests, frontend 7 tests, continuous contract 63 tests, orchestration 25 tests, Pages 57-file audit, docs 15 checks; network_calls=0, external_calls=0, Secret=0."
+        },
+        {
+          "kind": "phase8_audit",
+          "source": "scripts/phase8_audit.py included in full UAT",
+          "result": "passed",
+          "summary": "All local Phase 8 checks passed with no missing files and no network or external calls."
         }
       ]
     },
@@ -433,8 +457,8 @@
           "value": "schema_version=1; deterministic-task-selection; automatic-path-fingerprint; contract-fields-fingerprinted; structured-verification-receipt; stale-reopen; running-reclaim"
         }
       ],
-      "input_fingerprint": "sha256:5276165da8803161d3fcd6784d688aa328482f3f95569d65ede2b4c32311ae15",
-      "verified_fingerprint": "sha256:5276165da8803161d3fcd6784d688aa328482f3f95569d65ede2b4c32311ae15",
+      "input_fingerprint": "sha256:0499cc100ab609fdab40c1dacdc6d48f0879db09837f435e23eec97677e43fbf",
+      "verified_fingerprint": "sha256:0499cc100ab609fdab40c1dacdc6d48f0879db09837f435e23eec97677e43fbf",
       "acceptance": [
         "schema_version=1 的任务台账可被严格校验，任务 ID 唯一且依赖图无环",
         "监督器按依赖和台账顺序唯一选择下一任务，并拒绝并发领取多个 running 任务",
@@ -447,9 +471,9 @@
       "verification": [
         {
           "kind": "supervisor_contract",
-          "source": "scripts/test_project_supervisor.py",
+          "source": "prior python scripts/run_uat.py rerun after screenshot",
           "result": "passed",
-          "summary": "63 continuous execution/supervisor tests passed; stale detection and atomic claim/complete rules validated; no external calls"
+          "summary": "Continuous execution and supervisor contract suite passed: 63 tests; task fingerprints, stale reopening, atomic claim/complete, dependency selection, and terminal-state rules are covered."
         }
       ]
     },
@@ -495,8 +519,8 @@
           "value": "platform-goal-lifecycle-v1; get-goal-before-create; create-once; reuse-active; full-project-objective; task-ledger-dedup"
         }
       ],
-      "input_fingerprint": "sha256:1a12df3ba3455f1f7b9a864a28a452cb371f69af80e196b5130590803b105c99",
-      "verified_fingerprint": "sha256:1a12df3ba3455f1f7b9a864a28a452cb371f69af80e196b5130590803b105c99",
+      "input_fingerprint": "sha256:b40e0bf2045d9ef94a250a17877d93f985c7bf4b88bad73758318bb8ec5605b9",
+      "verified_fingerprint": "sha256:b40e0bf2045d9ef94a250a17877d93f985c7bf4b88bad73758318bb8ec5605b9",
       "acceptance": [
         "用户要求持续推进整个项目时，get_goal 为空才调用一次 create_goal，已有 active 目标时复用",
         "持续目标绑定整个项目完成条件，单个回复、命令、测试、UAT、文档或子 Agent 完成都不能关闭目标",
@@ -505,10 +529,16 @@
       ],
       "verification": [
         {
-          "kind": "continuous_goal_contract",
-          "source": "scripts/test_continuous_execution.py",
+          "kind": "goal_lifecycle",
+          "source": "functions.get_goal and prior supervisor contract suite",
           "result": "passed",
-          "summary": "Continuous goal lifecycle contract passed within 63-test suite; task graph remains authoritative and goal is not closed by a single turn or test; no external calls"
+          "summary": "The existing project-wide platform goal is present and bound to the full project objective; lifecycle tests cover reuse instead of duplicate creation and prevent a single command, UAT, or subtask from closing it early."
+        },
+        {
+          "kind": "continuous_supervision",
+          "source": "prior python scripts/run_uat.py rerun after screenshot",
+          "result": "passed",
+          "summary": "Continuous execution and supervisor contract suite passed: 63 tests; the task graph remains the source of next-task selection and no local task is left runnable."
         }
       ]
     },
@@ -899,8 +929,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:43464e268fdfbeb20d7e18e2ae643ba65d7801972735f124bc9bdbb69e831755",
-      "verified_fingerprint": "sha256:43464e268fdfbeb20d7e18e2ae643ba65d7801972735f124bc9bdbb69e831755",
+      "input_fingerprint": "sha256:cdda2ac7fa4bef26c7ec1ffac607c8b701c7cd884f827d4db8e8296967390ae8",
+      "verified_fingerprint": "sha256:cdda2ac7fa4bef26c7ec1ffac607c8b701c7cd884f827d4db8e8296967390ae8",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -909,10 +939,22 @@
       ],
       "verification": [
         {
-          "kind": "phase8_audit",
-          "source": "scripts/phase8_audit.py",
+          "kind": "reconciliation",
+          "source": "docs/acceptance/phase8-delivery-audit.md",
           "result": "passed",
-          "summary": "Local Phase 8 delivery audit passed: 6a/6b reconciliation evidence, random private report path, fetch/guard contracts, 20/20 UAT and Pages allowlist are consistent; user-provided login/tool address-bar captures are valid, but report captures lack task/run and remain explicitly pending correction; no external calls"
+          "summary": "6a five-step reconciliation and 6b traceability checks are recorded: 91 report rows and all five aggregate differences are zero."
+        },
+        {
+          "kind": "manual_address_bar_screenshot",
+          "source": "docs/acceptance/查看报告1.jpg",
+          "result": "passed",
+          "summary": "Valid browser screenshot with address bar: real report route includes task/run parameters, online report content is rendered, 91 search terms, ad spend 5123.10 USD, 1578 orders, CTR 0.7%, explicit ad-only scope disclosure, and reconciliation difference 0."
+        },
+        {
+          "kind": "security_evidence",
+          "source": "prior live browser and gateway evidence",
+          "result": "passed",
+          "summary": "Private report fetch/render, anonymous report redirect, unauthenticated API rejection, random report object naming, and no-secret policy are documented; Xiyou 5xx remains local simulation per user confirmation."
         }
       ]
     }
