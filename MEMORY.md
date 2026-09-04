@@ -1,5 +1,9 @@
 # Amazon-Keyword-Command-Center-YX 项目记忆
 
+## 最新执行纠正（2026-09-03，优先于下方历史快照）
+
+正式链路此前并非只差 CORS：已发布的 b42009a 是演示包。当前正在补齐 005 任务/RPC/租约迁移、006 策略版本迁移、精确 Origin 网关、私有上传/报告前端、生产 Worker 和独立 live 打包。原 001–004 的 RLS/Storage 证据不覆盖新增迁移。浏览器最后明确显示 Supabase 登录页，协助窗口45秒未完成；会话已关闭。继续本地集成，待控制台登录恢复后才执行新外部 Gate，不重复要求提供 Secret。
+
 - 2026-09-03 六模块整改：按用户参考图改为蓝色工作台，新增五个独立报告HTML/JS及共享导航。原计划本就要求六模块，旧状态“只差截图”不完整；数据/规则缺口详见 `docs/acceptance/six-module-workbench.md`。本轮完成的是演示前端交付，不是生产链路完成；不能把placeholder图片或unknown checklist当成视觉分析成功。
 
 - 2026-09-03：阶段 8 交付审计补齐真实任务报告随机对象名（48 位十六进制）、run-meta 相对路径追溯和解析器表头映射；演示黄金目录仍保留 `master-table.json` 作为离线 Pages fixture。6a 对账 91 行、五项差值零；完整 UAT Worker 207 项、前端 7 项、20/20 Gate 通过，network_calls=0、external_calls=0、Secret=0。
@@ -14,7 +18,7 @@
 - 2026-09-02：在已确认工具名后完成一次只读 `get_keyword_info` 样本：HTTP/业务状态 200，返回字段结构有效，观察到 `cost_credits=1`，业务调用 1 次、失败 0、限流 0；缓存/重复、429/5xx、成本单位和缺失值语义仍未实测。
 - 2026-09-02：追加 5 次授权范围内只读调用（重复基础指标、ABA 趋势、ASIN 信息、两组无结果边界）；均状态 200、各 1 credit，累计业务调用 6 次、失败 0、限流 0；无结果字段保持 JSON `null`，详细快照见 `docs/provider-snapshots/xiyou-tools-list-20260902.md`。
 - 2026-09-02：用户新授权后完成 3 轮、5 次真实只读请求：重复 `get_keyword_info` 两次均状态 200、各 1 credit、`cache_hits=0`，响应摘要相同；没有触发 429/5xx，未观察到成本/限流/版本响应头。快照已更新，剩余真实 Gate 为成本货币换算、429/5xx 和独立版本字段。
-- 2026-09-03：完整本地 UAT 20/20 Gate，Worker 207 项（12 项环境跳过）、前端 7 项（含 Node 26 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages 57 文件/11 项测试、迁移 21 项、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增 Provider transport、一次性探测入口、响应头白名单观测和真实任务随机报告对象名已通过离线回归。
+- 2026-09-04：完整本地 UAT 20/20 Gate，Worker 269 项（12 项环境跳过）、前端 7 项（含 Node 93 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增上传、策略版本、精确Origin网关、生产Worker和西柚有界关键词指标均为本地证据，尚未部署。
 - 真实 Supabase 已执行 003；显式 public schema 下七张表与 has_store_access 的匿名请求全部返回 401/42501。后置双用户复验已在临时项目通过：A/B 各自仅见授权店铺、任务和运行记录，跨店铺读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 的 A/B 自有读取、跨店/匿名/无效令牌拒绝矩阵也已通过；凭据未持久化。
 - 前端显式 live Auth/任务/策略读取、私有报告对象读取与 Gateway、Provider 缓存预算与流水线注入已实现并通过 fake 集成；上传、策略写入和真实私有报告前端仍明确禁用，不能假报上线。临时 Supabase 项目的历史 003/RLS/Storage 证据仍保留，但新版六模块尚未重新发布或做生产链复验；西柚无 5xx 测试接口，按用户确认以本地 fake transport 验收。
 - 本轮最终监督器：BLOCKED_EXTERNAL，本地任务无可执行项；Supabase RLS 与私有 Storage 已完成当前项目复验，GitHub Pages 严格精确 CORS 仍是唯一外部阻塞。`supabase-live-evidence-20260831.md` 已追加当前项目证据；不把平台 wildcard 冒充精确 Origin 配置。

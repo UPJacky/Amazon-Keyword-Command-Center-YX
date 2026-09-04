@@ -170,7 +170,7 @@ def main() -> int:
             run_gate([python, "-m", "unittest", "scripts/test_uat_orchestration.py", "-v"]),
             run_gate([python, "rules/action_mapping_contract_check.py"]),
             run_gate([python, "supabase/migration_contract_check.py"]),
-            run_gate([python, "-m", "unittest", "supabase.test_migration_contract", "-v"]),
+            run_gate([python, "-m", "unittest", "supabase.test_migration_contract", "supabase.test_production_jobs", "supabase.test_strategy_versions", "-v"]),
             run_gate([python, "scripts/smoke_test.py"]),
             run_gate([python, "scripts/build_phase4_modules.py", "--report", "data/golden/market-demo-report/master-table.json", "--output", str(phase4_output)]),
             run_gate([python, "scripts/build_competitor_profile.py", "--input", "data/golden/competitor-input-demo.json", "--output", str(competitor_output)]),
@@ -178,7 +178,7 @@ def main() -> int:
             run_gate([python, "scripts/build_optimization_plan.py", "--report", "data/golden/market-demo-report/master-table.json", "--output", str(optimization_output)]),
             run_gate([python, "scripts/phase8_audit.py"]),
             run_gate([python, "scripts/build_pages_demo.py", "--output", str(pages_output)]),
-            run_gate([python, "-m", "unittest", "scripts/test_build_pages_demo.py", "-v"]),
+            run_gate([python, "-m", "unittest", "scripts/test_build_pages_demo.py", "scripts/test_build_pages_live.py", "-v"]),
         ]
         migration = ROOT / "supabase" / "migrations"
         required_migrations = [

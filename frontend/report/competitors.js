@@ -34,7 +34,7 @@
       ['档案 Provider 调用', ui.number(data.provider_calls)],
     ]);
     body.replaceChildren();
-    body.append(ui.el('p', 'Demo 档案仅展示已有元数据。没有字段就显示 —；价格、销量、评分与自有商品详情未提供时不估算。图片不会自动请求，点击有效图片的加载按钮才会读取外部资源。', 'notice'));
+    body.append(ui.el('p', '档案仅展示已有元数据。没有字段就显示 —；价格、销量、评分与自有商品详情未提供时不估算。图片不会自动请求，点击有效图片的加载按钮才会读取外部资源。', 'notice'));
     const meta = ui.el('section', undefined, 'panel');
     meta.append(ui.el('h2', '档案来源'), ui.el('p', `站点：${ui.text(data.marketplace)} · 快照：${ui.text(data.snapshot_version)} · Schema：${ui.text(data.schema_version)}`), ui.el('p', `缓存键：${ui.text(data.cache_key)}`, 'muted'));
     body.append(meta);
@@ -92,13 +92,13 @@
       result.replaceChildren(visible.length ? ui.table(['比较字段', ...visible.map(row => `${row.role === 'self' ? '自己' : '竞品'} · ${ui.text(row.asin)}`)], fields.map(([title, format]) => [title, ...visible.map(format)])) : ui.el('p', products.length ? '没有符合筛选条件的商品。' : '暂无自有商品或竞品档案。', 'table-empty'));
       imageBody.replaceChildren();
       const count = visible.reduce((sum, row) => sum + validImages(row).length, 0);
-      if (!count) imageBody.append(ui.el('p', '当前 Demo 无有效图片可展示；未加载 example.* 占位地址。', 'notice'));
+      if (!count) imageBody.append(ui.el('p', '当前资料无有效图片可展示；未加载 example.* 占位地址。', 'notice'));
       for (const row of visible) {
         const urls = imagesFor(row);
         if (!urls.length) imageBody.append(ui.el('p', `${row.role === 'self' ? '自己' : '竞品'} ${ui.text(row.asin)}：尚未提供图片资料。`, 'muted'));
         urls.forEach((raw, index) => imageBody.append(imageCard(row, raw, index)));
       }
-      status.textContent = `Demo · 显示 ${ui.number(visible.length)} / ${ui.number(products.length)} 个商品 · 来源 competitors.json · 未发起 Provider 请求`;
+      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · 显示 ${ui.number(visible.length)} / ${ui.number(products.length)} 个商品 · 来源 competitors.json · 本页未发起 Provider 请求`;
     }
     search.addEventListener('input', render);
     toolbar.append(label, filters); panel.append(toolbar, result); body.append(panel, imageSection);

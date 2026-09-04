@@ -20,6 +20,10 @@ queue/
 storage/
 worker-storage/
 runtime/
+!worker/runtime/
+worker/runtime/*
+!worker/runtime/__init__.py
+!worker/runtime/production.py
 .PROJECT_TASKS.json.lock
 uat-output.json
 *.xlsx

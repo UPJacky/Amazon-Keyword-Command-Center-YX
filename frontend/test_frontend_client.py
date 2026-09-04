@@ -18,7 +18,7 @@ class FrontendClientTests(unittest.TestCase):
         self.assertIsNotNone(node, "Node is required for frontend behavioral tests")
         root = Path(__file__).resolve().parent
         result = subprocess.run(
-            [node, "--test", str(root / "tests" / "client.test.js"), str(root / "tests" / "report-shared.test.js"), str(root / "tests" / "report-modules.test.js")],
+            [node, "--test", str(root / "tests" / "client.test.js"), str(root / "tests" / "report-shared.test.js"), str(root / "tests" / "report-modules.test.js"), str(root / "tests" / "strategy.test.js"), str(root.parent / "supabase" / "functions" / "kwcc-gateway" / "gateway.test.mjs")],
             cwd=root, capture_output=True, text=True, encoding="utf-8", timeout=60,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

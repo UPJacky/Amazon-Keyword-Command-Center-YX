@@ -131,7 +131,7 @@
           return [ui.text(row.keyword), action, trace(row), monitoring(row), review(row)];
         }),
       ) : ui.el('p', actions.length ? '没有符合筛选条件的优化动作。' : '暂无优化方案；等待规则引擎生成带事实与配置的动作。', 'table-empty'));
-      status.textContent = `Demo · ${visible.length} / ${actions.length} 个动作 · ${ui.text(data.schema_version)} · 来源 optimization-plan.json · 未执行 Amazon 写入`;
+      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${visible.length} / ${actions.length} 个动作 · ${ui.text(data.schema_version)} · 来源 optimization-plan.json · 未执行 Amazon 写入`;
     }
     search.addEventListener('input', render); toolbar.append(label, filters); panel.append(toolbar, result); body.append(panel); render();
   } catch (error) {

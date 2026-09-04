@@ -31,7 +31,7 @@
   }
   const live = client.mode === 'live';
   globalThis.KWCC = { ...client, ready: null, showError: error => message(error.message || '操作失败') };
-  message(live ? 'Live · 正在验证身份；上传与策略写入尚未开放。' : 'Demo · 仅本地演示，不代表真实登录、上传或持久化保存。');
+  message(live ? '正在验证登录身份…' : 'Demo · 仅本地演示，不代表真实登录、上传或持久化保存。');
   const protectedPage=document.body.dataset.page || document.body.classList.contains('app-shell');
   const protectedContent = document.querySelector('main');
   let pageSuspended = false;
@@ -58,7 +58,7 @@
       }
       if (protectedContent) protectedContent.hidden = false;
       document.body.dataset.uiReady = 'true';
-      message(live ? 'Live · 身份已验证；任务操作仍受服务端 RLS 约束。上传与策略写入未开放。' : status.textContent);
+      message(live ? '已登录 · 可查看已授权店铺的任务和报告。' : status.textContent);
       return true;
     } catch (error) { lock(error.message); return false; }
   })();
@@ -137,7 +137,7 @@
   document.querySelectorAll('[data-open-upload]').forEach(el=>el.addEventListener('click',()=>message('上传后端尚未接入：未上传文件。请在工作台使用已有私有对象创建任务。')));
   if(live) {
     document.querySelectorAll('[data-static-submit], #preview-strategy, [data-open-drawer]').forEach(el=>{el.disabled=true;el.title='当前 RLS 未允许策略写入；未保存配置';});
-    document.querySelectorAll('.policy-banner strong').forEach(el=>{el.textContent='Live 策略只读 · 当前 RLS 禁止写入';});
+    document.querySelectorAll('.policy-banner strong').forEach(el=>{el.textContent=client.strategies.canWrite ? '策略版本 · 店铺管理员可保存与回滚' : '策略只读 · 写入服务尚未配置';});
   }
   const exportButton=document.querySelector('#export-report');if(exportButton)exportButton.addEventListener('click',()=>toast('导出接口已预留'));
 })();

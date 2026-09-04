@@ -64,7 +64,7 @@
         ['关键词', '自己 ASIN', '我的自然位', '我的广告位', '标杆 ASIN', '标杆自然位', '自然位差距', '7 天变化', '14 天变化', '30 天变化', '缺失字段'],
         visible.map(row => [ui.text(row.keyword), ui.text(row.my_asin), rank(row.my_organic_rank), rank(row.my_ad_rank), ui.text(row.benchmark_asin), rank(row.benchmark_organic_rank), validRank(row.my_organic_rank) && validRank(row.benchmark_organic_rank) ? signed(row.rank_gap) : '—', signed(row.rank_change_7d), signed(row.rank_change_14d), signed(row.rank_change_30d), missing(row).join('、') || '—']),
       ) : ui.el('p', rows.length ? '没有符合筛选条件的排名记录。' : '暂无排名数据；等待有排名快照的报告。', 'table-empty'));
-      status.textContent = `Demo · ${ui.number(visible.length)} / ${ui.number(rows.length)} 条 · ${ui.text(data.schema_version)} · 来源 rank-benchmark.json`;
+      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${ui.number(visible.length)} / ${ui.number(rows.length)} 条 · ${ui.text(data.schema_version)} · 来源 rank-benchmark.json`;
     }
     search.addEventListener('input', render);
     toolbar.append(label, filters);

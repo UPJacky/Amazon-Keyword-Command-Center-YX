@@ -268,6 +268,16 @@ table.module-table th:first-child { width: 240px; }
 
 /* Compatibility for existing workspace / tasks / strategy markup. */
 .content-grid, .strategy-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); gap: 24px; }
+#strategy-live-panel { padding: 24px; }
+#strategy-live-panel .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+#strategy-version-select { width: 100%; min-width: 0; margin-block: 8px 12px; }
+#strategy-numeric-fields { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); margin-block: 24px; }
+#strategy-numeric-fields fieldset { min-width: 0; margin: 0; padding: 18px; border: 1px solid #dce4ef; border-radius: 12px; background: #f8faff; }
+#strategy-numeric-fields legend { padding-inline: 6px; color: #1d3d79; font-weight: 650; }
+#strategy-numeric-fields label { display: grid; gap: 6px; margin-bottom: 14px; font-size: 14px; }
+#strategy-version-select, #strategy-numeric-fields input { padding: 11px 12px; min-height: 44px; border: 1px solid #c5d1e2; border-radius: 8px; color: var(--ink); background: #fff; font-size: 16px; }
+#strategy-numeric-fields input { width: 100%; min-width: 0; }
+#strategy-numeric-fields input:focus, #strategy-version-select:focus { outline: 3px solid #285bd924; border-color: var(--accent); }
 .task-list, .config-list { display: grid; }
 .task-row, .config-list > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
 .task-row strong, .task-row span { display: block; }

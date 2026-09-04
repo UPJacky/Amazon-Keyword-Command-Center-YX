@@ -31,6 +31,78 @@ function setup(queue = [], extra = {}) {
 }
 const loginResponses = () => [response({ access_token: jwt('authenticated'), expires_at: 200, user: { id: userId } }), response({ id: userId })];
 const signIn = client => client.auth.signIn('user@example.invalid', 'fake-password');
+const gatewayConfig = { ...config, gatewayUrl: config.supabaseUrl + '/functions/v1/kwcc-gateway' };
+const uploadRun = '44444444-4444-4444-8444-444444444444';
+const uploadInput = () => ({ ...input(), run_id: uploadRun, file: new File(['keyword,clicks\nexample,1'], 'report.csv', { type: 'text/csv' }) });
+const registered = () => response({ task_id: taskId, run_id: uploadRun, status: 'pending' });
+
+test('gateway config pins the same project endpoint and rejects mismatched anon project', () => {
+  assert.equal(validateConfig(gatewayConfig).gateway, gatewayConfig.gatewayUrl);
+  for (const gatewayUrl of ['https://other.invalid/functions/v1/kwcc-gateway', config.supabaseUrl + '/functions/v1/other', gatewayConfig.gatewayUrl + '?key=unexpected', gatewayConfig.gatewayUrl + '/'])
+    assert.throws(() => validateConfig({ ...config, gatewayUrl }));
+  const key = ['eyJhbGciOiJIUzI1NiJ9', Buffer.from(JSON.stringify({ role: 'anon', ref: 'other' })).toString('base64url'), 'unsigned'].join('.');
+  assert.throws(() => validateConfig({ ...config, supabaseUrl: 'https://example.supabase.co', publicKey: key }));
+});
+
+test('upload hashes actual file bytes, posts a private object then registers task/run through the gateway', async () => {
+  const { client, calls } = setup([...loginResponses(), response({ Key: 'stored' }), registered()], { config: gatewayConfig, crypto: require('node:crypto').webcrypto });
+  await signIn(client);
+  const result = await client.tasks.create(uploadInput());
+  assert.equal(result.run_id, uploadRun);
+  assert.equal(calls[0].url, gatewayConfig.gatewayUrl + '/auth/v1/token?grant_type=password');
+  assert.equal(calls[2].url, gatewayConfig.gatewayUrl + `/storage/v1/object/inputs/${storeId}/${userId}/${taskId}/input.csv`);
+  assert.equal(calls[2].headers['Accept-Profile'], undefined);
+  assert.equal(calls[2].headers['Content-Type'], 'text/csv');
+  assert.ok(calls[2].body instanceof ArrayBuffer);
+  const body = JSON.parse(calls[3].body);
+  assert.equal(body.p_input_file_hash, require('node:crypto').createHash('sha256').update('keyword,clicks\nexample,1').digest('hex'));
+  assert.equal(body.p_run_id, uploadRun);
+  assert.equal(calls[3].url, gatewayConfig.gatewayUrl + '/rest/v1/rpc/kwcc_submit_task');
+  assert.ok(calls.every(c => c.credentials === 'omit' && c.redirect === 'error'));
+});
+
+test('uncertain task registration retry preserves task/run and does not re-upload or overwrite the private input', async () => {
+  const { client, calls } = setup([...loginResponses(), response({}), new Error('timeout'), registered()], { config: gatewayConfig, crypto: require('node:crypto').webcrypto });
+  await signIn(client);
+  await assert.rejects(client.tasks.create(uploadInput()), { code: 'NETWORK_ERROR' });
+  await client.tasks.create(uploadInput());
+  assert.equal(calls.filter(c => c.url.includes('/storage/')).length, 1);
+  assert.equal(calls[3].body, calls[4].body);
+  await assert.rejects(client.tasks.create({ ...uploadInput(), self_asin: 'B087654321' }), { code: 'TASK_CONFLICT' });
+  assert.equal(calls.length, 5);
+});
+
+test('invalid or failed upload never registers a task', async () => {
+  const { client, calls } = setup([...loginResponses(), response({}, 413)], { config: gatewayConfig, crypto: require('node:crypto').webcrypto });
+  await signIn(client);
+  for (const file of [new File([], 'empty.csv'), new File(['x'], 'payload.exe'), { name: 'big.csv', size: 10485761, arrayBuffer() {} }])
+    await assert.rejects(client.tasks.create({ ...uploadInput(), file }), { code: 'INPUT_INVALID' });
+  assert.equal(calls.length, 2);
+  await assert.rejects(client.tasks.create(uploadInput()), { code: 'REQUEST_FAILED' });
+  assert.equal(calls.length, 3);
+  assert.ok(!calls.some(c => c.url.includes('kwcc_submit_task')));
+});
+
+test('logout while file hashing cancels upload before any storage request', async () => {
+  let resolveHash;
+  const { client, calls } = setup([...loginResponses(), response(null, 204)], { config: gatewayConfig, crypto: { subtle: { digest: () => new Promise(resolve => { resolveHash = resolve; }) } } });
+  await signIn(client);
+  const pending = client.tasks.create(uploadInput());
+  await new Promise(resolve => setImmediate(resolve));
+  await client.auth.signOut();
+  resolveHash(new Uint8Array(32).buffer);
+  await assert.rejects(pending, { code: 'SESSION_CHANGED' });
+  assert.equal(calls.length, 3);
+});
+
+test('latest run selection and rerun use scoped task and new run ids', async () => {
+  const { client, calls } = setup([...loginResponses(), response([{ task_id: taskId, run_id: uploadRun, status: 'completed' }]), response({ task_id: taskId, run_id: userId, status: 'pending' })], { config: gatewayConfig });
+  await signIn(client);
+  assert.equal((await client.tasks.latestRun(taskId)).run_id, uploadRun);
+  await assert.rejects(client.tasks.rerun(taskId, uploadRun, uploadRun), { code: 'INPUT_INVALID' });
+  await client.tasks.rerun(taskId, uploadRun, userId);
+  assert.deepEqual(JSON.parse(calls[3].body), { p_task_id: taskId, p_previous_run_id: uploadRun, p_run_id: userId });
+});
 
 test('demo default uses no fetch and never persists a real task', async () => {
   const client = createClient({ storage: memory(), fetch: globalThis.fetch });
@@ -182,17 +254,243 @@ test('all pages wire config then client then app, production config remains empt
   assert.equal(sandbox.KWCC_PUBLIC_CONFIG.mode, 'demo'); assert.equal(sandbox.KWCC_PUBLIC_CONFIG.liveEnabled, false);
   assert.equal(sandbox.KWCC_PUBLIC_CONFIG.supabaseUrl, ''); assert.equal(sandbox.KWCC_PUBLIC_CONFIG.publicKey, '');
 });
-test('page scripts await auth and do not fetch demo artifacts when live or blocked', async () => {
-  for (const name of ['tasks', 'strategy', 'report']) for (const ready of [false, true]) {
-    const element = () => ({ children: [], textContent: '', replaceChildren() { this.children = []; }, append(item) { this.children.push(item); } });
+test('task and strategy scripts await auth and do not fetch demo artifacts when live or blocked', async () => {
+  for (const name of ['tasks', 'strategy']) for (const ready of [false, true]) {
+    const element = () => ({ children: [], textContent: '', value: '', dataset: {},
+      addEventListener() {}, setAttribute() {}, querySelectorAll() { return []; },
+      replaceChildren() { this.children = []; }, append(item) { this.children.push(item); } });
     const nodes = new Map();
     const context = { fetch: globalThis.fetch, URL,
       document: { currentScript: {src: 'https://demo.invalid/report.js'}, querySelector(selector) { if (!nodes.has(selector)) nodes.set(selector, element()); return nodes.get(selector); }, createElement: element },
-      KWCC: { ready: Promise.resolve(ready), mode: 'live', tasks: { list: async () => [] }, strategies: { list: async () => [] }, showError: error => { throw error; } } };
+      KWCC: { ready: Promise.resolve(ready), mode: 'live', tasks: { list: async () => [] }, strategies: { list: async () => [], permissions: async () => [] }, showError: error => { throw error; } } };
     await vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', `${name}.js`), 'utf8'), context);
+    if (context.KWCCStrategyReady) await context.KWCCStrategyReady;
     if (!ready) assert.equal(nodes.size, 0);
-    if (ready && name === 'report') assert.match(nodes.get('main').children[0].textContent, /私有报告读取尚未接入/);
   }
+});
+
+const runId = '44444444-4444-4444-8444-444444444444';
+const reportPath = `${taskId}/${runId}/report-${'a'.repeat(48)}.json`;
+const reportContent = () => ({ schema_version: 'report-0.2', rows: [{ keyword: 'private keyword', spend: null, ui_color: 'cyan', action_group: 'hold_steady' }], currency_code: 'USD' });
+const reportRun = () => ({ task_id: taskId, run_id: runId, status: 'completed', report_path: reportPath });
+const reportResponses = () => [response([{ task_id: taskId }]), response([reportRun()]), response(reportContent())];
+
+test('private reports authorize task, then exact run, then exact bound object using the same ordinary token', async () => {
+  const { client, calls } = setup([...loginResponses(), ...reportResponses()]);
+  await signIn(client);
+  const result = await client.reports.read(taskId.toUpperCase(), runId.toUpperCase());
+  assert.deepEqual(result, { task_id: taskId, run_id: runId, report_path: reportPath, content: reportContent() });
+  assert.match(calls[2].url, new RegExp(`/rest/v1/tasks\\?task_id=eq.${taskId}&select=task_id&limit=2$`));
+  assert.match(calls[3].url, new RegExp(`/rest/v1/task_runs\\?task_id=eq.${taskId}&run_id=eq.${runId}&`));
+  assert.equal(calls[4].url, `https://supabase.invalid/storage/v1/object/authenticated/reports/${reportPath}`);
+  for (const call of calls.slice(2)) {
+    assert.equal(call.headers.Authorization, `Bearer ${jwt('authenticated')}`);
+    assert.equal(call.headers.apikey, config.publicKey);
+    assert.equal(call.credentials, 'omit'); assert.equal(call.redirect, 'error'); assert.equal(call.cache, 'no-store');
+    assert.equal(call.method, 'GET');
+  }
+  assert.equal(calls[2].headers['Accept-Profile'], 'public');
+  assert.equal(calls[3].headers['Accept-Profile'], 'public');
+  assert.equal(calls[4].headers['Accept-Profile'], undefined);
+});
+
+test('private reports require session and strict UUIDs before any lookup', async () => {
+  const { client, calls } = setup(loginResponses());
+  await assert.rejects(client.reports.read(taskId, runId), { code: 'AUTH_REQUIRED' });
+  await signIn(client);
+  for (const bad of [null, '', '../run', 'https://private.invalid', `${taskId}\n`, `${taskId}&select=*`, [], {}]) {
+    await assert.rejects(client.reports.read(bad, runId), { code: 'INPUT_INVALID' });
+    await assert.rejects(client.reports.read(taskId, bad), { code: 'INPUT_INVALID' });
+  }
+  assert.equal(calls.length, 2);
+});
+
+test('empty, duplicated, malformed or cross-task/run authorization never reaches Storage', async () => {
+  for (const tasks of [[], null, {}, [{ task_id: storeId }], [{ task_id: taskId }, { task_id: taskId }]]) {
+    const { client, calls } = setup([...loginResponses(), response(tasks)]);
+    await signIn(client);
+    await assert.rejects(client.reports.read(taskId, runId), { code: 'REPORT_UNAVAILABLE' });
+    assert.equal(calls.length, 3);
+  }
+  for (const runs of [[], {}, null, [reportRun(), reportRun()], [{ ...reportRun(), task_id: storeId }], [{ ...reportRun(), run_id: storeId }]]) {
+    const { client, calls } = setup([...loginResponses(), reportResponses()[0], response(runs)]);
+    await signIn(client);
+    await assert.rejects(client.reports.read(taskId, runId), { code: 'REPORT_UNAVAILABLE' });
+    assert.equal(calls.length, 4);
+  }
+});
+
+test('reports reject URLs, encodings, traversal, siblings and all non-48hex object names', async () => {
+  for (const report_path of [
+    `https://supabase.invalid/storage/v1/object/authenticated/reports/${reportPath}`, `//evil.invalid/${reportPath}`,
+    `/reports/${reportPath}`, reportPath.replace(runId, storeId), reportPath.replace(taskId, storeId),
+    `${taskId}/${runId}/../${runId}/report-${'a'.repeat(48)}.json`, reportPath.replace('/report-', '/%72eport-'),
+    reportPath.replaceAll('/', '\\'), `${reportPath}?download=1`, `${reportPath}#fragment`, `${reportPath}\n`,
+    `${taskId}/${runId}/master-table.json`, `${taskId}/${runId}/report-${'a'.repeat(47)}.json`,
+    `${taskId}/${runId}/report-${'a'.repeat(49)}.json`, reportPath.replace('report-a', 'report-g'), '', {},
+  ]) {
+    const { client, calls } = setup([...loginResponses(), reportResponses()[0], response([{ ...reportRun(), report_path }])]);
+    await signIn(client);
+    await assert.rejects(client.reports.read(taskId, runId), { code: 'REPORT_PATH_INVALID' });
+    assert.equal(calls.length, 4);
+  }
+});
+
+test('unfinished or unbound runs and all unbound modules explicitly remain not generated', async () => {
+  for (const patch of [{ status: 'pending' }, { status: 'processing' }, { status: 'failed' }, { report_path: null }]) {
+    const { client, calls } = setup([...loginResponses(), reportResponses()[0], response([{ ...reportRun(), ...patch }])]);
+    await signIn(client);
+    await assert.rejects(client.reports.read(taskId, runId), { code: 'REPORT_NOT_GENERATED' });
+    assert.equal(calls.length, 4);
+  }
+  const { client, calls } = setup([...loginResponses(), ...Array.from({ length: 5 }, reportResponses).flat()]);
+  await assert.rejects(client.reports.readModule(taskId, runId, 'rank-benchmark.json'), { code: 'AUTH_REQUIRED' });
+  await signIn(client);
+  for (const name of ['rank-benchmark.json', 'negative-keywords.json', 'competitors.json', 'listing-diagnostics.json', 'optimization-plan.json'])
+    await assert.rejects(client.reports.readModule(taskId, runId, name), { code: 'REPORT_NOT_GENERATED' });
+  await assert.rejects(client.reports.readModule(taskId, runId, '../report.json'), { code: 'INPUT_INVALID' });
+  assert.equal(calls.length, 17);
+  assert.ok(calls.filter(call => call.url.includes('/storage/')).every(call => call.url.endsWith(reportPath)));
+});
+
+test('bundled modules use only the authorized master object and preserve missing module semantics', async () => {
+  const modules = {
+    'rank-benchmark.json': { rows: [{ keyword: 'bundle rank', my_organic_rank: null }] },
+    'negative-keywords.json': { exact_negative: [], phrase_negative: [], cautious: [] },
+    'optimization-plan.json': { actions: [] },
+    'competitors.json': { competitors: [] },
+    'listing-diagnostics.json': { diagnostics: [] },
+  };
+  for (const name of Object.keys(modules)) {
+    const content = { ...reportContent(), task_id: taskId, run_id: runId, modules };
+    const { client, calls } = setup([...loginResponses(), ...reportResponses().slice(0, 2), response(content)]);
+    await signIn(client);
+    assert.deepEqual(await client.reports.readModule(taskId, runId, name), modules[name]);
+    assert.equal(calls.length, 5);
+    assert.equal(calls[4].url, `https://supabase.invalid/storage/v1/object/authenticated/reports/${reportPath}`);
+    assert.ok(calls.every(call => !call.url.includes(name)));
+  }
+  for (const modules of [{}, { 'rank-benchmark.json': null }, null]) {
+    const { client, calls } = setup([...loginResponses(), ...reportResponses().slice(0, 2), response({ ...reportContent(), modules })]);
+    await signIn(client);
+    await assert.rejects(client.reports.readModule(taskId, runId, 'rank-benchmark.json'), { code: 'REPORT_NOT_GENERATED' });
+    assert.equal(calls.length, 5);
+  }
+});
+
+test('bundled modules reject malformed entries, URL references and cross-run identities', async () => {
+  for (const modules of [[], 'https://evil.invalid', { 'rank-benchmark.json': [] },
+    { 'rank-benchmark.json': `https://supabase.invalid/${reportPath}` },
+    { 'rank-benchmark.json': { run_id: storeId, rows: [] } }, { 'rank-benchmark.json': { task_id: storeId, rows: [] } }]) {
+    const { client, calls } = setup([...loginResponses(), ...reportResponses().slice(0, 2), response({ ...reportContent(), modules })]);
+    await signIn(client);
+    await assert.rejects(client.reports.readModule(taskId, runId, 'rank-benchmark.json'), { code: 'RESPONSE_INVALID' });
+    assert.equal(calls.length, 5);
+  }
+});
+
+test('invalid object schema/rows and conflicting embedded identities reject the artifact', async () => {
+  for (const content of [null, [], {}, { ...reportContent(), schema_version: 'module02-0.1' },
+    { ...reportContent(), rows: [null] }, { ...reportContent(), rows: [[]] },
+    { ...reportContent(), task_id: storeId }, { ...reportContent(), run_id: storeId }]) {
+    const { client } = setup([...loginResponses(), ...reportResponses().slice(0, 2), response(content)]);
+    await signIn(client);
+    await assert.rejects(client.reports.read(taskId, runId), { code: 'RESPONSE_INVALID' });
+  }
+});
+
+test('401/403 at every report stage clears authentication and never falls back to demo', async () => {
+  for (const status of [401, 403]) for (const stage of [0, 1, 2]) {
+    const { client, calls, storage } = setup([...loginResponses(), ...reportResponses().slice(0, stage), response({}, status)]);
+    await signIn(client);
+    await assert.rejects(client.reports.read(taskId, runId), { status });
+    assert.equal(client.auth.state, status === 403 ? 'forbidden' : 'expired');
+    assert.equal(storage.getItem('kwcc_live_session'), null);
+    assert.equal(calls.length, 3 + stage);
+  }
+});
+
+test('logout, expiry and new login at every report stage discard late data and stop the chain', async () => {
+  for (const change of ['logout', 'expire', 'login']) for (const stage of [0, 1, 2]) {
+    let release, started;
+    const waiting = new Promise(resolve => { started = resolve; });
+    let clock = 100000;
+    const queue = [...loginResponses(), ...reportResponses().slice(0, stage), () => new Promise(resolve => { release = resolve; started(); })];
+    if (change === 'logout') queue.push(response(null, 204));
+    if (change === 'login') queue.push(...loginResponses());
+    const { client, calls } = setup(queue, { now: () => clock });
+    await signIn(client);
+    const pending = client.reports.read(taskId, runId);
+    await waiting;
+    if (change === 'logout') await client.auth.signOut();
+    if (change === 'login') await signIn(client);
+    if (change === 'expire') clock = 200000;
+    release(reportResponses()[stage]);
+    await assert.rejects(pending, { code: change === 'expire' ? 'SESSION_EXPIRED' : 'SESSION_CHANGED' });
+    assert.equal(calls.length, 3 + stage + (change === 'login' ? 2 : change === 'logout' ? 1 : 0));
+    if (change === 'login') assert.equal(client.auth.state, 'authenticated');
+  }
+});
+
+function reportPage(client, { ready = true, search = `?task=${taskId}&run=${runId}&url=https://evil.invalid` } = {}) {
+  const nodes = new Map();
+  const element = tag => ({ tag, children: [], textContent: '', disabled: false, events: {},
+    append(...items) { this.children.push(...items); }, appendChild(item) { this.children.push(item); },
+    replaceChildren(...items) { this.children = items; }, setAttribute() {},
+    addEventListener(name, fn) { this.events[name] = fn; }, classList: { toggle() {} },
+  });
+  const context = {
+    URL, fetch: globalThis.fetch, location: { href: `https://demo.invalid/report/index.html${search}` },
+    document: { currentScript: { src: 'https://demo.invalid/report.js' }, createElement: element,
+      querySelector(key) { if (!nodes.has(key)) nodes.set(key, element(key)); return nodes.get(key); },
+      querySelectorAll() { return []; } },
+    KWCC: { ...client, ready: Promise.resolve(ready) },
+  };
+  const done = vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../report.js'), 'utf8'), context);
+  return { done, nodes };
+}
+
+test('master page awaits auth and renders only the private client result; logout clears export/data', async () => {
+  const { client, calls } = setup([...loginResponses(), ...reportResponses(), response(null, 204)]);
+  const denied = reportPage(client, { ready: false });
+  await denied.done; assert.equal(denied.nodes.size, 0); assert.equal(calls.length, 0);
+  await signIn(client);
+  const page = reportPage(client); await page.done;
+  assert.equal(calls.length, 5);
+  assert.equal(page.nodes.get('#report-schema-version').textContent, 'report-0.2');
+  assert.equal(page.nodes.get('#report-rows').children[0].children[0].children[0].textContent, 'private keyword');
+  assert.equal(page.nodes.get('#report-rows').children[0].children[2].children[0].className, 'conclusion cyan');
+  assert.equal(page.nodes.get('#export-report').disabled, false);
+  await client.auth.signOut();
+  assert.equal(page.nodes.get('#export-report').disabled, true);
+  assert.equal(page.nodes.get('#keyword-count').textContent, '报告加载失败');
+  assert.doesNotMatch(JSON.stringify(page.nodes.get('#report-rows')), /private keyword/);
+  page.nodes.get('#export-report').events.click();
+});
+
+test('master page rejects missing selectors and private storage errors without loading demo', async () => {
+  for (const missing of [true, false]) {
+    const queue = [...loginResponses()];
+    if (!missing) queue.push(...reportResponses().slice(0, 2), response({}, 404));
+    const { client, calls } = setup(queue); await signIn(client);
+    const page = reportPage(client, missing ? { search: `?task=${taskId}` } : {}); await page.done;
+    assert.equal(page.nodes.get('#export-report').disabled, true);
+    assert.equal(page.nodes.get('#keyword-count').textContent, '报告加载失败');
+    assert.equal(calls.length, missing ? 2 : 5);
+    if (missing) assert.match(page.nodes.get('#report-rows').children[0].children[0].textContent, /task 与 run UUID/);
+  }
+});
+
+test('master page expiry before export clears private report even without timer notification', async () => {
+  let clock = 100000;
+  const { client } = setup([...loginResponses(), ...reportResponses()], { now: () => clock });
+  await signIn(client);
+  const page = reportPage(client); await page.done;
+  assert.equal(page.nodes.get('#export-report').disabled, false);
+  clock = 200000;
+  page.nodes.get('#export-report').events.click();
+  assert.equal(page.nodes.get('#export-report').disabled, true);
+  assert.doesNotMatch(JSON.stringify(page.nodes.get('#report-rows')), /private keyword/);
 });
 
 function appFixture(client, { login = false, clientError = false } = {}) {

@@ -63,14 +63,14 @@
         ['检查编号 / 分类', '检查问题（评价标准）', '重要度', '报告状态', '观察证据', '关联图片组'],
         visible.map(item => [ui.text(item.check_id) + ' / ' + ui.text(item.category), ui.text(item.question), ui.text(item.severity), badge(item), evidence(item), `自己：${ui.text(data.checklist.image_group_id)}；竞品：${ui.text(data.checklist.competitor_group_id)}`]),
       ) : ui.el('p', items.length ? '该状态下没有检查项。' : '暂无 checklist；等待检查标准与证据。', 'table-empty'));
-      status.textContent = `Demo · 显示 ${visible.length} / ${items.length} 项检查 · 来源 listing-diagnostics.json · 仅本地报告`;
+      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · 显示 ${visible.length} / ${items.length} 项检查 · 来源 listing-diagnostics.json`;
     }
     toolbar.append(filters); panel.append(toolbar, result); body.append(panel);
     function renderImages(group, title) {
       const section = ui.el('section', undefined, 'panel'); section.append(ui.el('h2', title), ui.el('p', `图片组：${ui.text(group.group_id)} · ${group.images.length} 张留底记录`, 'muted'));
       const grid = ui.el('div', undefined, 'image-grid');
       if (!group.images.length) grid.append(ui.el('p', '尚未提供图片组内容。', 'table-empty'));
-      if (!group.images.some(img => imageURL(img.url))) grid.append(ui.el('p', '当前 Demo 无有效图片；example.* 占位地址不会加载。', 'notice'));
+      if (!group.images.some(img => imageURL(img.url))) grid.append(ui.el('p', '当前资料无有效图片；example.* 占位地址不会加载。', 'notice'));
       group.images.forEach(item => {
         const card = ui.el('figure', undefined, 'image-card');
         card.append(ui.el('figcaption', `图片 ${ui.text(item.image_id)} · 位置 ${ui.number(item.position)}`));

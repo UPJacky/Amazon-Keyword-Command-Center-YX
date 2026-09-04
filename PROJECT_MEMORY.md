@@ -7,6 +7,10 @@ updated_at: 2026-09-03
 status: current
 language: zh-CN
 
+## 最新生产接入纠正（2026-09-03）
+
+此前“唯一 CORS 阻塞”是历史误判，b42009a 是 demo 而非生产包。本轮补齐上传→任务/run原子登记→租约Worker→输入hash→私有报告上传读回→前端读取；策略保存/回滚为追加版本。005/006和Edge网关尚未部署，旧外部证据不能关闭新Gate。当前Supabase管理浏览器停在登录页，未收到人工登录完成；本地任务继续。完整视觉诊断、三标杆/ABA趋势和广告结构优化仍须按业务数据覆盖逐项验收，不能用局部指标或测试全绿代替。
+
 - 2026-09-03 外部验收续办：GitHub Pages 已用审计后的 57 文件包发布到 `main`，远端提交为 `b42009a`；根入口、`tool/`、报告六模块和静态资源 HTTPS 均返回 200。Supabase Auth Site URL 已保存为正式 Pages Origin，登出后直达报告地址会回到登录入口。当前严格 Pages Gate 唯一阻塞是 Supabase 托管 API 的 CORS 预检返回 `Access-Control-Allow-Origin: *`，而项目验收要求精确 Origin；未把 wildcard 误记为通过。
 
 - 2026-09-03 当前临时 Supabase 项目复验：通过控制台执行 001–004 迁移；两组普通测试账号认证均为 200，各自仅读取 1 条所属 profile/store/membership/strategy/task/run/audit，跨店读取为 0，RPC 自己为 true/对方为 false，跨店任务写入 403。`reports` bucket 为 private；A/B 自有报告读取 200，跨用户/匿名/无效 token 400，普通用户 Storage 写入被拒；报告文件名均为 `report-` 加 48 位随机十六进制。凭据、令牌和 Secret 未写入文件、台账或聊天。
@@ -60,7 +64,7 @@ language: zh-CN
 
 ## 当前验证快照
 
-- 2026-09-03：完整 UAT Worker 207 项（12 项环境跳过）、前端 7 项（含 Node 26 场景），20/20 Gate、连续执行 63 项、UAT 编排契约 25 项、迁移 21 项、Pages 57 文件/11 项测试、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。Provider transport、一次性探测入口、响应头白名单观测和真实任务随机报告对象名已通过离线回归。
+- 2026-09-04：完整 UAT Worker 269 项（12 项环境跳过）、前端 7 项（含 Node 93 场景），20/20 Gate、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。生产接入为本地证据，005/006和服务部署仍待外部验收。
 - Supabase 003 已执行；public schema 的七表和辅助函数匿名 HTTP 均为 401/42501。默认 Data API schema 为 api，客户端显式使用 public。迁移后双用户矩阵已复验：A/B 各自仅见授权店铺、任务和运行记录，跨店读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 读取矩阵也已通过。
 - 默认 demo 与显式 live 分离，Auth/任务/策略读取、私有对象绑定与 Gateway、Provider 预算/缓存和流水线注入的本地链路已通过验证；禁用未配置的上传/策略写入/真实私有报告前端。六模块本地交付已收口，但新版生产上传→Worker→私有报告链及真实外部复验仍未完成。详情见 `docs/acceptance/production-adapters-local.md`。
 - 本轮最终状态 BLOCKED_EXTERNAL：本地任务无可执行项；Supabase RLS、私有 Storage 和新版 GitHub Pages 发布/复验保留为外部 Gate。真实 Provider 的 5xx 按用户确认以本地 fake transport 验收，不再重复声称存在西柚测试接口；心跳在终止态暂停，未将项目标记完成。

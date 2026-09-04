@@ -23,11 +23,44 @@
       body.replaceChildren();
       if (globalThis.KWCC.mode === 'live') {
         const tasks = await globalThis.KWCC.tasks.list();
-        tasks.forEach(task => body.append(renderRow([
+        tasks.forEach(task => {
+          const row = renderRow([
           task.task_id, task.input_file_path, task.status, task.created_at,
           task.current_stage, task.failure_reason?.message || task.failure_reason?.code || task.failure_reason || '—',
-          '查看详情',
-        ])));
+          '',
+          ]);
+          const actions = row.lastElementChild;
+          if (task.status === 'completed') {
+            const report = document.createElement('button'); report.type = 'button'; report.className = 'button button--small'; report.textContent = '查看报告';
+            report.addEventListener('click', async () => {
+              report.disabled = true;
+              try {
+                const run = await globalThis.KWCC.tasks.latestRun(task.task_id);
+                if (!run || run.status !== 'completed') throw new Error('最新运行尚未生成报告，请刷新任务列表');
+                const target = new URL(document.body.dataset.reportUrl || 'report.html', window.location.href);
+                target.searchParams.set('task', task.task_id); target.searchParams.set('run', run.run_id);
+                window.location.href = target.href;
+              } catch (error) { globalThis.KWCC.showError?.(error); report.disabled = false; }
+            });
+            actions.append(report);
+          }
+          if (['completed', 'failed'].includes(task.status) && globalThis.KWCC.tasks.canUpload) {
+            const rerun = document.createElement('button'); rerun.type = 'button'; rerun.className = 'button button--secondary button--small'; rerun.textContent = '重新分析';
+            let nextRunId = null;
+            rerun.addEventListener('click', async () => {
+              rerun.disabled = true;
+              try {
+                const run = await globalThis.KWCC.tasks.latestRun(task.task_id);
+                if (!run || !['completed', 'failed'].includes(run.status)) throw new Error('任务正在执行，请刷新列表');
+                nextRunId ||= crypto.randomUUID();
+                await globalThis.KWCC.tasks.rerun(task.task_id, run.run_id, nextRunId);
+                await refresh();
+              } catch (error) { globalThis.KWCC.showError?.(error); rerun.disabled = false; }
+            });
+            actions.append(rerun);
+          }
+          body.append(row);
+        });
         if (count) count.textContent = `共 ${tasks.length} 项`;
       } else {
         const response = await fetch(dataPath('report-meta.json'));

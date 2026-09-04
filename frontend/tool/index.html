@@ -9,7 +9,7 @@
 <body class="app-shell" data-page="tool" data-login-url="../index.html" data-report-url="../report/index.html">
   <header class="topbar">
     <a class="brand" href="../index.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a>
-    <nav aria-label="主导航"><a class="active" href="index.html" aria-current="page">分析工作台</a><a href="../report/index.html">报告中心</a></nav>
+    <nav aria-label="主导航"><a class="active" href="index.html" aria-current="page">分析工作台</a><a href="../report/index.html">报告中心</a><a href="../strategy.html">策略中心</a></nav>
     <button class="user-chip" id="logout" type="button">退出登录</button>
   </header>
   <main class="workspace">
@@ -30,6 +30,7 @@
     <section class="tool-grid">
       <form id="tool-form" class="panel task-form" novalidate>
         <h2>任务输入</h2>
+        <label id="tool-store-field" hidden>所属店铺 <span class="required">必选</span><select id="tool-store" name="store_id"><option value="">正在读取已授权店铺…</option></select></label>
         <label>ASIN <span class="required">必填</span><input id="tool-asin" name="asin" inputmode="latin" autocomplete="off" placeholder="B0XXXXXXXX" required><small class="field-help">必须是 10 位且以 B0 开头。</small></label>
         <label>产品阶段 <span class="required">必选</span><select id="tool-stage" name="product_stage" required><option value="">请选择阶段</option><option value="new">新品期</option><option value="growth">上升期</option><option value="stable">稳定期</option><option value="clearance">清货期</option><option value="seasonal_restart">季节性老品重启</option></select></label>
         <label>广告搜索词报表 <span class="required">必填</span><input id="tool-file" name="report_file" type="file" accept=".xlsx,.csv" required><small class="field-help">仅支持 .xlsx / .csv；最大 10 MB。</small></label>

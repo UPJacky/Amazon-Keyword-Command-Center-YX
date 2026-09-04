@@ -31,7 +31,7 @@
 
 - BrowserSkill 已连接 Edge，并在隔离 Agent Window 中直接访问线上 `/report/`；清除演示会话后，页面自动跳转到 `/index.html` 登录页，报告表格内容不可见。
 - 在同一隔离会话完成演示登录后，`/tool/` 正常显示 ASIN、`.xlsx/.csv`、10 MB、阶段 3 固定顺序、手动刷新和失败原因列；`/report/` 正常显示 `fetch 在线获取并渲染`、91 个搜索词、`对账 通过 · 差值 0`。
-- 线上 `index.html`、`tool/index.html`、`tool/tool.js`、`report/index.html`、`report.js`、`styles.css` 均返回 200，且与已审计发布目录哈希一致；远端 `main` 为 `b00f9ef`。
+- 线上 `index.html`、`tool/index.html`、`tool/tool.js`、`report/index.html`、`report.js`、`styles.css` 均返回 200，且与当时已审计发布目录哈希一致；远端演示包 `main` 为 `b42009a`。
 - BrowserSkill 截图只输出网页视口，不包含浏览器地址栏；因此三张带地址栏截图仍保留为人工交付项，不能用视口截图冒充。匿名乙线 API 拒绝截图也仍需在可控的真实接口环境中补齐。
 
 ## 阶段 8 清单
@@ -44,7 +44,7 @@
 | 本地 Git 存档与密钥纪律 | 通过；已有基线提交，工作树干净，`.env`、密钥文件、私钥、原始上传文件和运行目录均被忽略且不在索引。 |
 | 对账、抽词、随机报告对象名 | 通过；见上方 6a/6b 和对象名证据。 |
 | 本地 5xx | 通过；按用户确认“西柚无测试接口”，使用本地 5xx 模拟作为验收证据，未伪造西柚真实 5xx。 |
-| 线上 Pages 精确地址/重发布 | 通过；远端 `main=b00f9ef`，根入口、`/tool/`、`/report/` 均 HTTPS 200，六个关键文件与审计发布目录哈希一致。 |
+| 线上 Pages 精确地址/重发布 | 演示包通过；远端 `main=b42009a`，根入口、`/tool/`、`/report/` 均 HTTPS 200。生产live包尚未发布，不以演示证据替代。 |
 | 未登录窗口打开报告页 | 通过；BrowserSkill 隔离 Agent Window 清除演示会话后直接打开 `/report/`，自动跳回 `/index.html`，报告内容不可见。 |
 | 三张带地址栏截图、乙线匿名 API 拒绝截图 | 部分完成；已生成登录/工具/报告网页视口截图，但接口只提供视口不含地址栏；带地址栏截图和乙线真实接口拒绝截图仍需人工补齐。 |
 

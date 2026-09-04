@@ -50,15 +50,17 @@
     }
     node.append(head, body); wrap.append(node); return wrap;
   }
-  function showError() {
-    document.querySelector('#module-body')?.replaceChildren(el('p', '报告数据暂时无法读取。请刷新重试；持续失败请检查报告是否已生成。', 'module-empty'));
+  function showError(error) {
+    const unavailable = error?.code === 'REPORT_NOT_GENERATED';
+    setMetrics([]);
+    document.querySelector('#module-body')?.replaceChildren(el('p', unavailable ? '该模块尚未生成可读取的真实报告。' : '报告数据暂时无法读取。请确认任务、运行记录和登录权限。', 'module-empty'));
     const status = document.querySelector('#module-status');
-    if (status) { status.textContent = '加载失败 · 未生成分析结论'; status.setAttribute('role', 'alert'); }
+    if (status) { status.textContent = unavailable ? '真实报告尚未生成' : '加载失败 · 未生成分析结论'; status.setAttribute('role', 'alert'); }
   }
   const ready = (async () => {
     if (!await globalThis.KWCC?.ready) return false;
-    if (globalThis.KWCC.mode !== 'demo') {
-      document.querySelector('main')?.replaceChildren(el('p', '私有报告读取尚未接入：不显示演示数据。请返回工具页。', 'module-empty'));
+    if (!['demo', 'live'].includes(globalThis.KWCC.mode)) {
+      document.querySelector('main')?.replaceChildren(el('p', '报告访问已禁止：不显示演示数据。请返回工具页。', 'module-empty'));
       return false;
     }
     const sidebar = document.querySelector('.report-sidebar');
@@ -67,9 +69,11 @@
       pages.forEach(([key, path, title], index) => {
         const link = el('a');
         const url = new URL(path, scriptURL);
-        // Retain only the task selector, not arbitrary query params or credentials.
-        const task = new URL(location.href).searchParams.get('task');
-        if (task) url.searchParams.set('task', task);
+        // Preserve the exact run across modules; never forward credentials or object URLs.
+        for (const key of ['task', 'run']) {
+          const value = new URL(location.href).searchParams.get(key);
+          if (value) url.searchParams.set(key, value);
+        }
         link.href = url.href;
         link.append(el('span', String(index + 1).padStart(2, '0')), el('span', title));
         if ((document.body.dataset.module || 'master') === key) { link.className = 'active'; link.setAttribute('aria-current', 'page'); }
@@ -82,6 +86,10 @@
   async function load(name) {
     if (!await ready) throw new Error('report access denied');
     if (!['rank-benchmark.json', 'negative-keywords.json', 'competitors.json', 'listing-diagnostics.json', 'optimization-plan.json'].includes(name)) throw new Error('unknown artifact');
+    if (globalThis.KWCC.mode === 'live') {
+      const params = new URL(location.href).searchParams;
+      return globalThis.KWCC.reports.readModule(params.get('task'), params.get('run'), name);
+    }
     const localSource = scriptURL.pathname.includes('/frontend/');
     const response = await fetch(new URL(`${localSource ? '../../' : '../'}data/golden/market-demo-modules/${name}`, scriptURL), { credentials: 'same-origin' });
     if (!response.ok) throw new Error('artifact unavailable');

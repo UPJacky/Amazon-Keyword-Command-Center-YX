@@ -77,7 +77,7 @@
         ['关键词', '候选分类', '点击', '花费（原币）', '订单', '销售额（原币）', 'ACOS', '证据与追溯'],
         visible.map(({ row, label, color, expected }) => [ui.text(row.keyword), ui.el('span', row.negative_status === expected ? label : '状态冲突 · 待确认', row.negative_status === expected ? color : 'badge gray'), ui.number(row.clicks), ui.number(row.spend, 2), ui.number(row.orders), ui.number(row.sales, 2), ui.percent(row.acos), trace(row)]),
       ) : ui.el('p', entries.length ? '当前分类或关键词下没有候选。' : '暂无否词候选；不据此判断全部关键词都应保留。', 'table-empty'));
-      status.textContent = `Demo · ${ui.number(visible.length)} / ${ui.number(entries.length)} 条 · ${ui.text(data.schema_version)} · 来源 negative-keywords.json`;
+      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${ui.number(visible.length)} / ${ui.number(entries.length)} 条 · ${ui.text(data.schema_version)} · 来源 negative-keywords.json`;
     }
     exportButton.addEventListener('click', () => {
       let url;

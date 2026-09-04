@@ -7,13 +7,44 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="strategy">
-  <div class="app-shell"><aside class="sidebar" id="sidebar"><a class="brand" href="workspace.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a><div class="store-switcher"><span class="label">当前店铺</span><strong>待接入店铺</strong><span class="muted">store_id · —</span></div><nav class="side-nav" aria-label="后台导航"><a data-nav="workspace" href="workspace.html"><span class="nav-icon">⌂</span>工作台</a><a data-nav="tasks" href="tasks.html"><span class="nav-icon">↗</span>任务</a><a data-nav="strategy" href="strategy.html"><span class="nav-icon">◌</span>策略中心</a><a data-nav="report" href="report.html"><span class="nav-icon">▤</span>报告</a></nav><div class="sidebar-foot"><span class="status-dot status-dot--mint"></span><span>静态预览模式</span></div></aside><main class="app-main"><header class="app-header"><button class="icon-button mobile-only" data-sidebar-toggle aria-label="打开导航">☰</button><div><p class="eyebrow">STRATEGY CENTER</p><h1>策略中心</h1></div><div class="header-actions"><a class="button button--secondary button--small" href="login.html">退出预览</a><div class="avatar">Y</div></div></header>
-      <section class="page-intro"><div><p class="muted">规则回答怎么算，配置回答边界是多少。参数保存与版本发布由配置 API 负责。</p></div><button class="button button--primary" data-open-drawer>查看编辑抽屉</button></section>
-      <section class="policy-banner"><div><span class="status-dot status-dot--yellow"></span><strong>本地配置预览 · 待接入 API</strong><p id="strategy-local-values">正在读取版本化默认配置；不会写入正式策略。</p></div><span class="version-tag" id="strategy-config-version">config_version · —</span></section>
-      <section class="strategy-grid"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">SCOPE</p><h2>生效范围</h2></div><span class="badge badge--muted">待配置</span></div><dl class="summary-list"><div><dt>产品阶段</dt><dd>用户指定</dd></div><div><dt>层级覆盖</dt><dd>Store / ASIN / Task</dd></div><div><dt>规则版本</dt><dd>rule_version · —</dd></div></dl></article><article class="panel"><div class="panel-heading"><div><p class="eyebrow">CONFIG GROUPS</p><h2>配置分组</h2></div></div><div class="config-list"><div><span class="config-icon config-icon--coral">01</span><div><strong>广告证据</strong><span>点击、花费、订单与证据等级边界</span></div><span class="config-state">API</span></div><div><span class="config-icon config-icon--forest">02</span><div><strong>成本与利润</strong><span>ACOS、CPC 与战略容忍边界</span></div><span class="config-state">API</span></div><div><span class="config-icon config-icon--peach">03</span><div><strong>市场与排名</strong><span>搜索量、难度、趋势与防守区间</span></div><span class="config-state">API</span></div></div></article></section>
-      <section class="panel panel--large"><div class="panel-heading"><div><p class="eyebrow">CHANGE PREVIEW</p><h2>修改前先试算</h2></div><span class="badge badge--muted">需要任务数据</span></div><div class="empty-state empty-state--compact"><div class="empty-state__mark">↗</div><h3>试算结果将在这里出现</h3><p>选择一个任务后，配置服务返回新旧结论差异；前端只展示规则服务的结果。</p><button class="button button--secondary button--small" data-open-drawer>打开配置抽屉</button></div></section>
-    </main></div>
-  <aside class="drawer" id="strategy-drawer" aria-hidden="true"><div class="drawer__backdrop" data-close-drawer></div><section class="drawer__panel"><div class="drawer__header"><div><p class="eyebrow">CONFIG PREVIEW</p><h2>策略配置抽屉</h2></div><button class="icon-button" data-close-drawer aria-label="关闭">×</button></div><div class="drawer__body"><div class="notice notice--soft"><strong>占位 API</strong><span>字段将由配置 schema 注入。此处不定义或保存业务阈值。</span></div><label>配置作用域<select disabled><option>等待配置服务</option></select></label><label>产品阶段<select disabled><option>由用户指定</option></select></label><div class="drawer-placeholder"><span class="status-dot status-dot--gray"></span><span>暂无可编辑字段</span></div></div><div class="drawer__footer"><button class="button button--secondary" data-close-drawer>取消</button><button class="button button--primary" data-static-submit>预览变更</button><p class="form-status" data-drawer-status hidden></p></div></section></aside>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="workspace.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a>
+      <div class="store-switcher"><span class="label">策略范围</span><strong>已授权店铺</strong><span class="muted">在版本列表选择店铺与阶段</span></div>
+      <nav class="side-nav" aria-label="后台导航">
+        <a data-nav="workspace" href="workspace.html"><span class="nav-icon">⌂</span>工作台</a>
+        <a data-nav="tasks" href="tasks.html"><span class="nav-icon">↗</span>任务</a>
+        <a data-nav="strategy" href="strategy.html"><span class="nav-icon">◌</span>策略中心</a>
+        <a data-nav="report" href="report.html"><span class="nav-icon">▤</span>报告</a>
+      </nav>
+      <div class="sidebar-foot"><span class="status-dot status-dot--mint"></span><span>本地预览模式</span></div>
+    </aside>
+    <main class="app-main">
+      <header class="app-header">
+        <button class="icon-button mobile-only" data-sidebar-toggle aria-label="打开导航">☰</button>
+        <div><p class="eyebrow">STRATEGY CENTER</p><h1>策略中心</h1></div>
+        <div class="header-actions"><a class="button button--secondary button--small" href="login.html">退出预览</a><div class="avatar">Y</div></div>
+      </header>
+      <section class="page-intro"><p class="muted">调整已授权店铺的数值边界。每次保存或回滚都创建新版本；规则公式不可修改。</p></section>
+      <section class="policy-banner">
+        <div><strong id="strategy-mode-label">正在确认运行模式</strong><p id="strategy-local-values" role="status">等待登录与配置读取；未保存任何配置。</p></div>
+        <span class="version-tag" id="strategy-config-version">config_version · —</span>
+      </section>
+      <section class="panel panel--large" id="strategy-live-panel" hidden>
+        <div class="panel-heading"><div><p class="eyebrow">STRATEGY VERSIONS</p><h2>配置版本与数值</h2></div><button type="button" class="button button--secondary" id="strategy-refresh-versions" disabled>刷新版本</button></div>
+        <label for="strategy-version-select">已授权配置版本（包含店铺与产品阶段）</label>
+        <select id="strategy-version-select" disabled aria-describedby="strategy-access"></select>
+        <p id="strategy-access" class="muted">正在读取店铺角色…</p>
+        <div id="strategy-numeric-fields" class="strategy-grid"></div>
+        <p class="muted">保存将以当前选择和表单数值创建版本；回滚将直接复制所选历史版本，忽略表单修改。没有已有策略时，请先由管理员初始化对应阶段。</p>
+        <div class="header-actions">
+          <button type="button" class="button button--primary" id="strategy-save-version" disabled>保存为新版本</button>
+          <button type="button" class="button button--secondary" id="strategy-rollback-version" disabled>回滚到所选历史版本</button>
+        </div>
+        <p id="strategy-operation-status" class="form-status" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+  </div>
   <script src="public-config.js" defer></script><script src="client.js" defer></script><script src="app.js" defer></script><script src="strategy.js" defer></script>
 </body>
 </html>
