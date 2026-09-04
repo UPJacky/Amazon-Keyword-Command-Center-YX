@@ -107,7 +107,11 @@ export function createGateway({ supabaseUrl, allowedOrigin, fetchImpl = fetch, t
     if (requestOrigin !== allowedOrigin) return reject(403, 'ORIGIN_DENIED');
     const url = new URL(request.url);
     if (url.href.length > 8192) return reject(414, 'URL_TOO_LONG');
-    const method = request.method === 'OPTIONS' ? request.headers.get('Access-Control-Request-Method') : request.method;
+    // Edge runtimes may preserve casing/whitespace from the preflight header;
+    // normalize it before applying the same allowlist as normal requests.
+    const method = (request.method === 'OPTIONS'
+      ? request.headers.get('Access-Control-Request-Method')
+      : request.method).trim().toUpperCase();
     const matched = route(url, method);
     if (!matched) return reject(404, 'ROUTE_NOT_ALLOWED');
     if (request.method === 'OPTIONS') {
