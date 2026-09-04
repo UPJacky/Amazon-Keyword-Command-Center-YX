@@ -33,8 +33,8 @@
           "value": "retain-exact-origin-gate; bearer-no-cookies; no-demo-as-live; private-report-task-run-binding"
         }
       ],
-      "input_fingerprint": "sha256:fb3be32705744d47679073470f1721c3660384177b50c630a57e2380dbd32fc6",
-      "verified_fingerprint": "sha256:fb3be32705744d47679073470f1721c3660384177b50c630a57e2380dbd32fc6",
+      "input_fingerprint": "sha256:aafd0230f6a1eaa28a659cf8e65764498a01c2d86069be949dd61c4a8e51661f",
+      "verified_fingerprint": "sha256:aafd0230f6a1eaa28a659cf8e65764498a01c2d86069be949dd61c4a8e51661f",
       "acceptance": [
         "查明 wildcard 与 bearer 认证的实际关系，保留精确 Origin 验收要求并给出可部署方案",
         "精确 Origin 网关仅允许本项目必要路由，保留用户 JWT/RLS，不使用 service role 提升权限",
@@ -45,22 +45,10 @@
       ],
       "verification": [
         {
-          "kind": "test",
+          "kind": "local_contract",
           "source": "node --test supabase/functions/kwcc-gateway/gateway.test.mjs",
-          "summary": "Gateway contract regression after runtime path compatibility patch",
-          "result": "passed"
-        },
-        {
-          "kind": "external-check",
-          "source": "curl and Supabase dashboard",
-          "summary": "Published kwcc-gateway; bad-origin denial 403 and unauthenticated denial 401 verified; allowed-origin preflight still 404 pending runtime redeploy",
-          "result": "passed"
-        },
-        {
-          "kind": "remote-check",
-          "source": "ssh ubuntu@43.139.80.199",
-          "summary": "Worker package deployed to /home/ubuntu/keyword-war-room; remote compileall and two-cycle disabled loop passed",
-          "result": "passed"
+          "result": "passed",
+          "summary": "12 gateway contract tests passed after preflight method normalization"
         }
       ]
     },
@@ -400,8 +388,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:302f6046f7e3990b5a64f2c7863459279f82dd68d42e9c8a30cf9da27958b0b9",
-      "verified_fingerprint": "sha256:302f6046f7e3990b5a64f2c7863459279f82dd68d42e9c8a30cf9da27958b0b9",
+      "input_fingerprint": "sha256:1d2953b07874bb30f0b07ec1771633d7195237d7a38b8f581117deba910c924d",
+      "verified_fingerprint": "sha256:1d2953b07874bb30f0b07ec1771633d7195237d7a38b8f581117deba910c924d",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -411,21 +399,9 @@
       "verification": [
         {
           "kind": "uat",
-          "source": "python scripts/run_uat.py",
-          "summary": "20/20 local gates passed; Worker 269 with 12 environment skips, frontend 7, network_calls=0, external_calls=0, secret_value_hits=0",
-          "result": "passed"
-        },
-        {
-          "kind": "documentation",
-          "source": "python scripts/check_phase8_documentation.py",
-          "summary": "15 documentation checks passed with network_calls=0",
-          "result": "passed"
-        },
-        {
-          "kind": "gateway",
-          "source": "node --test supabase/functions/kwcc-gateway/gateway.test.mjs",
-          "summary": "12 gateway contract tests passed",
-          "result": "passed"
+          "source": "python -u scripts/run_uat.py",
+          "result": "passed",
+          "summary": "20/20 gates passed; worker=269, frontend=7, network_calls=0, external_calls=0, secret_value_hits=[]"
         }
       ]
     },

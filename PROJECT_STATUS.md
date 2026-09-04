@@ -8,9 +8,9 @@ status: external_release_partially_verified_project_incomplete
 execution_state: BLOCKED_EXTERNAL
 current_objective: "完成阶段 8 生产部署；当前等待精确 Origin 网关更新生效及 live Pages/真实端到端验收"
 next_safe_action: "外部状态恢复后重试 production-live-deployment：确认网关新版本预检、配置 Worker 环境并运行真实任务链、发布 live Pages、完成无痕门禁截图"
-stop_reason: "本轮已恢复 Worker SSH 并部署远端 Worker 包；Supabase 网关首版已发布并通过 403/401 拒绝验证，但兼容路径修复的允许来源预检仍返回 404，live Pages 与真实任务链尚未发布验收。"
-last_action_fingerprint: "production-live-deployment:worker-ssh-restored; worker-package-deployed; gateway-published; gateway-path-fix-local-passed; live-preflight-still-404"
-verified_gate_snapshot_current: "local_live_readiness=implemented_uat_passed; worker=269; frontend=7; live_candidate=49_no_demo_data_no_secrets_rebuilt; pages_demo=57_remote_main_b42009a; supabase_remote=001-006_applied; migrations_005_006=reapplied_successfully; runtime_contract=functions9_run_columns4_task_columns3_private_buckets2_storage_policies5_anon_claim_denied; gateway=published_bad_origin_403_unauth_401_allowed_preflight_404; production_worker=remote_compileall_and_disabled_2_cycles_passed; live_pages=not_published; browser_e2e=pending; live_v1=not_complete"
+stop_reason: "本轮完成 20/20 本地 Gate，并定位 Supabase 网关线上 503 的明确原因：在线编辑器旧内容未完整替换导致 UUID 重复声明；已保存本地兼容修复与部署证据，但浏览器随后未能重新加载代码编辑器，故网关修复尚未再次发布验证。live Pages、Worker 真实配置/任务链和无痕报告门禁仍未完成。"
+last_action_fingerprint: "gateway-preflight-normalization-local-passed; redeploy-boot-error-diagnosed-duplicate-UUID; editor-reload-unavailable"
+verified_gate_snapshot_current: "local_live_readiness=implemented_uat_passed; worker=269; frontend=7; live_candidate=49_no_demo_data_no_secrets_rebuilt; pages_demo=57_remote_main_b42009a; supabase_remote=001-006_applied; migrations_005_006=reapplied_successfully; runtime_contract=functions9_run_columns4_task_columns3_private_buckets2_storage_policies5_anon_claim_denied; gateway=bad_origin_403_unauth_401; latest_deploy=boot_error_duplicate_UUID_503; production_worker=remote_compileall_and_disabled_2_cycles_passed; live_pages=not_published; browser_e2e=pending; live_v1=not_complete"
 local_safe_queue: empty
 external_blockers_only: true
 verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; docs=15; network_calls=0; external_calls=0; secrets=0"
