@@ -3,7 +3,7 @@ project: Amazon-Keyword-Command-Center-YX
 document_type: project_status
 version: 0.1
 updated_at: 2026-09-04
-current_phase: Phase 8 / production-live-deployment
+current_phase: Phase 8 / local-deployment-audit
 status: external_release_partially_verified_project_incomplete
 execution_state: BLOCKED_EXTERNAL
 current_objective: "完成阶段 8 生产部署；当前等待 Supabase Edge Function 平台恢复与 Worker 主机 SSH 恢复"

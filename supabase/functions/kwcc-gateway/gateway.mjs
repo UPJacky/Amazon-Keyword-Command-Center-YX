@@ -28,8 +28,12 @@ function userToken(value, project) {
 }
 
 function route(url, method) {
-  if (!url.pathname.startsWith(PREFIX + '/')) return null;
-  const path = url.pathname.slice(PREFIX.length);
+  // Supabase's Edge runtime strips the public function prefix before invoking
+  // the handler, while local contract tests use the full public URL path.
+  const path = url.pathname.startsWith(PREFIX + '/')
+    ? url.pathname.slice(PREFIX.length)
+    : url.pathname;
+  if (!path.startsWith('/')) return null;
   if (path === '/auth/v1/token' && method === 'POST'
       && url.search === '?grant_type=password') return { path, login: true };
   if (path === '/auth/v1/user' && method === 'GET' && !url.search) return { path };

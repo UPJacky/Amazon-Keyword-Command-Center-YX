@@ -33,8 +33,8 @@
           "value": "retain-exact-origin-gate; bearer-no-cookies; no-demo-as-live; private-report-task-run-binding"
         }
       ],
-      "input_fingerprint": "sha256:8f23db5d66269e89ff9bfcf568b40e20d0f87edc2320d856db9b487151b76432",
-      "verified_fingerprint": "sha256:8f23db5d66269e89ff9bfcf568b40e20d0f87edc2320d856db9b487151b76432",
+      "input_fingerprint": "sha256:fb3be32705744d47679073470f1721c3660384177b50c630a57e2380dbd32fc6",
+      "verified_fingerprint": "sha256:fb3be32705744d47679073470f1721c3660384177b50c630a57e2380dbd32fc6",
       "acceptance": [
         "查明 wildcard 与 bearer 认证的实际关系，保留精确 Origin 验收要求并给出可部署方案",
         "精确 Origin 网关仅允许本项目必要路由，保留用户 JWT/RLS，不使用 service role 提升权限",
@@ -45,22 +45,22 @@
       ],
       "verification": [
         {
-          "kind": "uat",
-          "source": "python scripts/run_uat.py",
-          "result": "passed",
-          "summary": "20/20 gates; Worker 269 (12 skipped), frontend 7 with Node 93 scenarios, network_calls=0, external_calls=0, no Secret hits."
+          "kind": "test",
+          "source": "node --test supabase/functions/kwcc-gateway/gateway.test.mjs",
+          "summary": "Gateway contract regression after runtime path compatibility patch",
+          "result": "passed"
         },
         {
-          "kind": "live_build",
-          "source": "scripts/build_pages_live.py",
-          "result": "passed",
-          "summary": "49-file local live candidate; contains_demo_data=false, contains_raw_inputs=false, published=false."
+          "kind": "external-check",
+          "source": "curl and Supabase dashboard",
+          "summary": "Published kwcc-gateway; bad-origin denial 403 and unauthenticated denial 401 verified; allowed-origin preflight still 404 pending runtime redeploy",
+          "result": "passed"
         },
         {
-          "kind": "documentation",
-          "source": "scripts/check_phase8_documentation.py",
-          "result": "passed",
-          "summary": "15 documentation contracts passed after production-vs-demo correction."
+          "kind": "remote-check",
+          "source": "ssh ubuntu@43.139.80.199",
+          "summary": "Worker package deployed to /home/ubuntu/keyword-war-room; remote compileall and two-cycle disabled loop passed",
+          "result": "passed"
         }
       ]
     },
@@ -400,8 +400,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:1f0080e1f66dbfb837a5c25cac85c1ec49dce6c00dd0fa7d09ea354879d5af98",
-      "verified_fingerprint": "sha256:1f0080e1f66dbfb837a5c25cac85c1ec49dce6c00dd0fa7d09ea354879d5af98",
+      "input_fingerprint": "sha256:302f6046f7e3990b5a64f2c7863459279f82dd68d42e9c8a30cf9da27958b0b9",
+      "verified_fingerprint": "sha256:302f6046f7e3990b5a64f2c7863459279f82dd68d42e9c8a30cf9da27958b0b9",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -412,20 +412,20 @@
         {
           "kind": "uat",
           "source": "python scripts/run_uat.py",
-          "result": "passed",
-          "summary": "20/20 gates on current source; Worker 269 (exceeds historical 207 baseline, 12 skipped), frontend 7 with Node 93, orchestration 25, continuous/supervisor 63."
+          "summary": "20/20 local gates passed; Worker 269 with 12 environment skips, frontend 7, network_calls=0, external_calls=0, secret_value_hits=0",
+          "result": "passed"
         },
         {
-          "kind": "pages_docs",
-          "source": "page build suites + scripts/check_phase8_documentation.py",
-          "result": "passed",
-          "summary": "Demo allowlist 57 files, live candidate 49 files, documentation contracts 15; Python compile and Python/PowerShell entry checks passed within UAT."
+          "kind": "documentation",
+          "source": "python scripts/check_phase8_documentation.py",
+          "summary": "15 documentation checks passed with network_calls=0",
+          "result": "passed"
         },
         {
-          "kind": "safety",
-          "source": "UAT summary",
-          "result": "passed",
-          "summary": "network_calls=0, external_calls=0, Secret value hits=0."
+          "kind": "gateway",
+          "source": "node --test supabase/functions/kwcc-gateway/gateway.test.mjs",
+          "summary": "12 gateway contract tests passed",
+          "result": "passed"
         }
       ]
     },
