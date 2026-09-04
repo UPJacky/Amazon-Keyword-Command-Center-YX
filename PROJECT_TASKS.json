@@ -99,7 +99,7 @@
           "value": "real-live-upload-register-worker-private-report-strategy-rls; exact-origin; no-demo-as-production"
         }
       ],
-      "input_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "input_fingerprint": "sha256:060e60c15d946032ad71e0a4eac028b1c9e8ab6fca1a06158d123e308ced6e92",
       "verified_fingerprint": "",
       "acceptance": [
         "在用户授权测试项目执行005/006并验证SQL语法、权限、并发和幂等，不用静态测试替代数据库运行",
@@ -109,7 +109,14 @@
         "49文件live包不带演示报告/原始输入/Secret；报告无痕门禁和地址栏截图完成",
         "西柚与其他模块缺失业务数据继续显式待补，不以广告部分报告宣布完整项目完成"
       ],
-      "verification": []
+      "verification": [
+        {
+          "kind": "external_block",
+          "source": "explicit user pause after partial production deployment",
+          "result": "passed",
+          "summary": "User requested an immediate pause to switch models. Live Supabase migrations 005 and 006 were applied successfully and each re-applied successfully for idempotency; runtime query returned 9 KWCC functions, 4 run lease/version columns, 3 task input columns, 2 private buckets, 5 storage policies, and anon_cannot_claim=true. Exact-Origin gateway, worker deployment, live Pages and browser E2E remain pending."
+        }
+      ]
     },
     {
       "id": "six-module-workbench",
@@ -797,8 +804,8 @@
           "value": "authorization=granted-2026-09-03; credentials=private-process-env; tools-list-schema-units-cost-rate-limit=verified; five_xx_live_unavailable_local_simulation_accepted"
         }
       ],
-      "input_fingerprint": "sha256:86cd1e84c7498fc0c372d0b6f720989a24e7f07e389a04aea120202ab16f6154",
-      "verified_fingerprint": "sha256:86cd1e84c7498fc0c372d0b6f720989a24e7f07e389a04aea120202ab16f6154",
+      "input_fingerprint": "sha256:046fefb54d99f689da5003fd1870fcb1aa062912424b6e69e4dc527c54d19f89",
+      "verified_fingerprint": "sha256:046fefb54d99f689da5003fd1870fcb1aa062912424b6e69e4dc527c54d19f89",
       "acceptance": [
         "获得明确授权、凭据和费用边界后才执行真实 tools/list 与小样调用",
         "工具 schema、字段枚举、单位、缺失值语义和版本均被记录",
@@ -808,21 +815,21 @@
       "verification": [
         {
           "kind": "external_validation",
-          "source": "bounded authorized Xiyou MCP read-only probes",
+          "source": "one bounded authorized Xiyou MCP get_keyword_info call",
           "result": "passed",
-          "summary": "tools/list returned 29 tools; business schemas, null semantics and official 28-tool catalog were reconciled; duplicate business results matched while each call cost 1 Credit and cache_hits=0; 45 tools/list probes produced 36 HTTP 200 and 9 HTTP 429 with Retry-After 5-6 and no transport errors; initialize returned protocol 2025-03-26 and serverInfo.version=v1; no secrets persisted."
+          "summary": "One US keyword read-only call succeeded: actual_calls=1, retries=0, rate_limited=0, reported_credits=1, budget 1/1, no Secret persisted or emitted; confirmed observations include abaReport and competitiveDifficulty."
+        },
+        {
+          "kind": "historical_schema_rate_limit",
+          "source": "bounded authorized Xiyou MCP evidence already recorded in this task",
+          "result": "passed",
+          "summary": "tools/list 29-tool reconciliation, protocol/server version, duplicate cost/cache behavior and bounded 429 Retry-After evidence remain valid; current source adds no schema inference."
         },
         {
           "kind": "local_simulation",
-          "source": "python -m unittest worker.tests.test_providers worker.tests.test_mcp_client worker.tests.test_provider_orchestrator -v",
+          "source": "current UAT Worker 269 tests",
           "result": "passed",
-          "summary": "39 Provider/MCP/orchestrator tests passed, including bounded fake 5xx retries and Retry-After handling. Per user-confirmed provider limitation, Xiyou has no 5xx test interface, so live 5xx is explicitly not claimed."
-        },
-        {
-          "kind": "acceptance_boundary",
-          "source": "user confirmation 2026-09-03",
-          "result": "passed",
-          "summary": "Accepted criterion: Xiyou has no test interface; local fake transport 5xx bounded-retry evidence is the acceptance evidence."
+          "summary": "Provider failure/missing-field determinism, one-call/ten-keyword ceilings, shared call+credit budgets, no retry and local fake 5xx bounded behavior passed; Xiyou has no live 5xx test endpoint by provider confirmation."
         }
       ]
     },
@@ -852,8 +859,8 @@
           "value": "phase8-ui-acceptance-v2; canonical-routes=index,tool,report; asin=B0-plus-10; upload=xlsx-csv-size-bound; refresh=30s-plus-manual; failure-reason-visible; report=fetch-rendered; wide-table=responsive"
         }
       ],
-      "input_fingerprint": "sha256:f80a9adc3e0fdb2d0c6b4389c90985a121b40bc55f214e70a1c4d91a1719291a",
-      "verified_fingerprint": "sha256:f80a9adc3e0fdb2d0c6b4389c90985a121b40bc55f214e70a1c4d91a1719291a",
+      "input_fingerprint": "sha256:fc8cb9647f4885a240b2a8f418a119932713cf37af4a69fd35acbf72cd8ae2c4",
+      "verified_fingerprint": "sha256:fc8cb9647f4885a240b2a8f418a119932713cf37af4a69fd35acbf72cd8ae2c4",
       "acceptance": [
         "登录、工具、报告为独立 HTML 与独立地址，Pages 发布路径可直接访问 index/、tool/、report/",
         "工具页实现 B0 开头 10 位 ASIN、XLSX/CSV 与大小校验、阶段 3 提交顺序、提交防重复、任务 30 秒自动刷新与手动刷新、失败原因和退出登录",
@@ -862,10 +869,22 @@
       ],
       "verification": [
         {
-          "kind": "test",
-          "source": "python scripts/run_uat.py; current source review",
+          "kind": "frontend_regression",
+          "source": "current python scripts/run_uat.py frontend gate",
           "result": "passed",
-          "summary": "All three main routes and six independent report pages present, 13 JS syntax checks and 41 Node scenarios passed. Browser DOM 390px body, own-scroll 3200px table and logged-out redirect observed. Demo-only upload and production gaps disclosed."
+          "summary": "Three canonical independent routes plus six independent report modules passed frontend 7/Node 93 scenarios and JavaScript syntax checks."
+        },
+        {
+          "kind": "acceptance_contract",
+          "source": "frontend contract and page build tests",
+          "result": "passed",
+          "summary": "B0 10-character ASIN, CSV/XLSX/size validation, fixed submission order, duplicate prevention, 30-second/manual refresh, failure reason, logout, fetch rendering, unauthenticated guard and responsive wide-table rules passed."
+        },
+        {
+          "kind": "live_boundary",
+          "source": "scripts/test_build_pages_live.py",
+          "result": "passed",
+          "summary": "49-file production candidate excludes demo/raw inputs; real incognito address-bar screenshot remains part of production-live-deployment and is not claimed here."
         }
       ]
     },
@@ -891,8 +910,8 @@
           "path": ".env.example"
         }
       ],
-      "input_fingerprint": "sha256:44bf1d1e840a78b8734eba2520314902af627f241070c85f9e1e3f7e4b4b4315",
-      "verified_fingerprint": "sha256:44bf1d1e840a78b8734eba2520314902af627f241070c85f9e1e3f7e4b4b4315",
+      "input_fingerprint": "sha256:1636452c2c5b0cc7f6c22548d8ca60526651ea7bd06bc6a08bc96ea7552a3448",
+      "verified_fingerprint": "sha256:1636452c2c5b0cc7f6c22548d8ca60526651ea7bd06bc6a08bc96ea7552a3448",
       "acceptance": [
         "项目根目录初始化本地 Git 并保存一个可用版本 commit",
         "gitignore 排除 .env、密钥文件、测试凭据和私有运行目录，git status 不出现 Secret 文件",
@@ -901,9 +920,21 @@
       "verification": [
         {
           "kind": "git",
-          "source": "git log/diff/check-ignore",
+          "source": "git commit 961aa69 and staged-content audit",
           "result": "passed",
-          "summary": "Source changes saved in local commit 41f9a54; diff check passed; named credential files .env/private keys excluded and no raw upload files staged. User reference images remain untracked/preserved."
+          "summary": "Usable production pipeline and frontend source saved in commit 961aa69; 47 staged project files, 0 images, 0 forbidden Secret paths and 0 detected Secret values."
+        },
+        {
+          "kind": "gitignore",
+          "source": "git status/check-ignore and git diff --cached --check",
+          "result": "passed",
+          "summary": ".env/credential/private runtime exclusions remain active; only user reference images are untracked and preserved, not committed."
+        },
+        {
+          "kind": "recoverability",
+          "source": "git log -1 --oneline",
+          "result": "passed",
+          "summary": "Repository history is readable and frontend source is recoverable from commit 961aa69."
         }
       ]
     },
@@ -934,8 +965,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:ed65b86731a96277f1170c723910f848b975147860054166f4a2be17c72f29fe",
-      "verified_fingerprint": "sha256:ed65b86731a96277f1170c723910f848b975147860054166f4a2be17c72f29fe",
+      "input_fingerprint": "sha256:763bc67ce3e7da66af8b3edf5949c78db01ded5eeac34f7de1bb239bcf6cc205",
+      "verified_fingerprint": "sha256:763bc67ce3e7da66af8b3edf5949c78db01ded5eeac34f7de1bb239bcf6cc205",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -945,21 +976,27 @@
       "verification": [
         {
           "kind": "phase8_audit",
-          "source": "scripts/phase8_audit.py",
+          "source": "python scripts/run_uat.py and scripts/phase8_audit.py within current gate",
           "result": "passed",
-          "summary": "本地阶段8审计全部通过；required files、迁移/RLS/私有报告契约、前端门禁、Pages 包审计、worker loop 均通过；network_calls=0、external_calls=0。"
+          "summary": "Local reconciliation/sample checks, required files, migration/RLS/private-report contracts, frontend guards, Pages package audit and worker loop passed; 20/20, network_calls=0, external_calls=0."
+        },
+        {
+          "kind": "report_boundary",
+          "source": "production migration/worker/frontend contract tests",
+          "result": "passed",
+          "summary": "Report paths are task/run-bound random identifiers; live frontend fetches the private bundle and exposes no arbitrary or permanent object URL."
         },
         {
           "kind": "documentation",
           "source": "scripts/check_phase8_documentation.py",
           "result": "passed",
-          "summary": "阶段8文档契约15项通过，保持本地模拟边界与外部阻塞可追溯。"
+          "summary": "15/15 delivery documentation contracts pass and explicitly distinguish local pass, demo publication and pending production/incognito address-bar evidence."
         },
         {
-          "kind": "external_evidence",
-          "source": "docs/acceptance/supabase-live-evidence-20260831.md",
+          "kind": "external_boundary",
+          "source": "production-live-deployment task",
           "result": "passed",
-          "summary": "已记录当前项目 Supabase 双用户 RLS、私有 Storage 与 Pages 发布复验；严格精确 CORS 仍单独标记为外部阻塞，未伪造通过。"
+          "summary": "No production screenshot is fabricated; live migrations 005/006, exact-Origin gateway, worker, live Pages and incognito address-bar screenshots remain the single consolidated external deployment Gate."
         }
       ]
     }
