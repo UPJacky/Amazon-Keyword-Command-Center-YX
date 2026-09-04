@@ -5,6 +5,7 @@ const INPUT = new RegExp(`^/storage/v1/object/inputs/(${UUID})/(${UUID})/(${UUID
 const TABLES = new Set(['profiles', 'stores', 'store_memberships', 'strategy_configs', 'tasks', 'task_runs']);
 const HEADERS = ['authorization', 'apikey', 'content-type', 'accept-profile', 'content-profile', 'prefer'];
 const PREFIX = '/functions/v1/kwcc-gateway';
+const EDGE_PREFIX = '/kwcc-gateway';
 
 function payload(value) {
   try { return JSON.parse(atob(value.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); }
@@ -29,10 +30,14 @@ function userToken(value, project) {
 
 function route(url, method) {
   // Supabase's Edge runtime strips the public function prefix before invoking
-  // the handler, while local contract tests use the full public URL path.
+  // the handler. Depending on the runtime revision, it can strip either the
+  // /functions/v1 segment or the complete public function prefix. Local
+  // contract tests use the full public URL path.
   const path = url.pathname.startsWith(PREFIX + '/')
     ? url.pathname.slice(PREFIX.length)
-    : url.pathname;
+    : url.pathname.startsWith(EDGE_PREFIX + '/')
+      ? url.pathname.slice(EDGE_PREFIX.length)
+      : url.pathname;
   if (!path.startsWith('/')) return null;
   if (path === '/auth/v1/token' && method === 'POST'
       && url.search === '?grant_type=password') return { path, login: true };
@@ -107,21 +112,23 @@ export function createGateway({ supabaseUrl, allowedOrigin, fetchImpl = fetch, t
     if (requestOrigin !== allowedOrigin) return reject(403, 'ORIGIN_DENIED');
     const url = new URL(request.url);
     if (url.href.length > 8192) return reject(414, 'URL_TOO_LONG');
-    // Edge runtimes may preserve casing/whitespace from the preflight header;
-    // normalize it before applying the same allowlist as normal requests.
-    const method = (request.method === 'OPTIONS'
-      ? request.headers.get('Access-Control-Request-Method')
-      : request.method).trim().toUpperCase();
-    const matched = route(url, method);
-    if (!matched) return reject(404, 'ROUTE_NOT_ALLOWED');
     if (request.method === 'OPTIONS') {
+      // Supabase Edge can invoke an OPTIONS request without the same
+      // pathname normalization as the subsequent request. CORS preflight is
+      // not authorization: keep it origin/header/method bounded here, then
+      // enforce the exact route and auth checks on the actual request below.
+      const requestedMethod = (request.headers.get('Access-Control-Request-Method') || '').trim().toUpperCase();
       const requested = (request.headers.get('Access-Control-Request-Headers') || '').toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
+      if (!['GET', 'POST'].includes(requestedMethod)) return reject(403, 'METHOD_NOT_ALLOWED');
       if (requested.some(h => !HEADERS.includes(h))) return reject(403, 'HEADER_NOT_ALLOWED');
       headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
       headers.set('Access-Control-Allow-Headers', HEADERS.join(', '));
       headers.set('Access-Control-Max-Age', '300');
       return new Response(null, { status: 204, headers });
     }
+    const method = request.method.trim().toUpperCase();
+    const matched = route(url, method);
+    if (!matched) return reject(404, 'ROUTE_NOT_ALLOWED');
     const key = request.headers.get('apikey');
     const authorization = request.headers.get('authorization');
     if (!publicKey(key, project)) return reject(401, 'PUBLIC_KEY_REQUIRED');

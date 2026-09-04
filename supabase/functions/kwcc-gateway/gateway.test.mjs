@@ -20,6 +20,10 @@ function request(path, options = {}) {
   return new Request(base + path, { ...options, headers: { Origin: origin, apikey: key,
     Authorization: `Bearer ${token}`, ...options.headers } });
 }
+function edgeRequest(path, options = {}) {
+  return new Request(`https://${project}.supabase.co/kwcc-gateway${path}`, { ...options, headers: { Origin: origin, apikey: key,
+    Authorization: `Bearer ${token}`, ...options.headers } });
+}
 
 test('exact Origin preflight succeeds with zero upstream calls; missing/null/lookalike origins fail', async () => {
   const { handler, calls } = setup();
@@ -38,15 +42,20 @@ test('exact Origin preflight succeeds with zero upstream calls; missing/null/loo
   assert.equal(calls.length, 0);
 });
 
-test('preflight rejects unexpected headers, write methods and non-allowlisted endpoints', async () => {
+test('preflight rejects unexpected headers and methods; actual routes remain allowlisted', async () => {
   const { handler, calls } = setup();
   for (const [path, method, headers] of [
-    ['/rest/v1/tasks', 'DELETE', 'authorization'], ['/auth/v1/admin/users', 'POST', 'apikey'],
-    ['/rest/v1/tasks', 'GET', 'x-forwarded-host'], ['/rest/v1/rpc/has_store_access', 'POST', 'authorization'],
-    ['/storage/v1/object/public/reports/example.json', 'GET', 'authorization'],
+    ['/rest/v1/tasks', 'DELETE', 'authorization'], ['/rest/v1/tasks', 'PATCH', 'apikey'],
+    ['/rest/v1/tasks', 'GET', 'x-forwarded-host'], ['/rest/v1/tasks', '', 'authorization'],
   ]) assert.ok((await handler(request(path, { method: 'OPTIONS', headers: {
     'Access-Control-Request-Method': method, 'Access-Control-Request-Headers': headers,
   } }))).status >= 400);
+  for (const path of ['/auth/v1/admin/users', '/rest/v1/rpc/has_store_access', '/storage/v1/object/public/reports/example.json']) {
+    assert.equal((await handler(request(path, { method: 'OPTIONS', headers: {
+      'Access-Control-Request-Method': 'GET', 'Access-Control-Request-Headers': 'authorization',
+    } }))).status, 204);
+    assert.equal((await handler(request(path))).status, 404);
+  }
   assert.equal(calls.length, 0);
 });
 
@@ -87,6 +96,14 @@ test('login forwards only password grant and public key; no privileged session o
   assert.equal(calls[0].options.headers.get('Authorization'), null);
   assert.equal((await handler(request('/auth/v1/signup', { method: 'POST' }))).status, 404);
   assert.equal((await handler(request('/auth/v1/token?grant_type=refresh_token', { method: 'POST' }))).status, 404);
+});
+
+test('edge runtime prefix variant still reaches the strict login route', async () => {
+  const { handler, calls } = setup(() => Response.json({ access_token: 'response-test-only' }));
+  const response = await handler(edgeRequest('/auth/v1/token?grant_type=password', { method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: '' }, body: JSON.stringify({ email: 'user@example.test', password: 'fixture-only' }) }));
+  assert.equal(response.status, 200);
+  assert.equal(calls[0].url, `https://${project}.supabase.co/auth/v1/token?grant_type=password`);
 });
 
 test('private report path must use authenticated bucket and random task/run filename', async () => {

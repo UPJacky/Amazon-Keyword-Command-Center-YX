@@ -6,14 +6,14 @@ updated_at: 2026-09-04
 current_phase: Phase 8 / local-deployment-audit
 status: external_release_partially_verified_project_incomplete
 execution_state: BLOCKED_EXTERNAL
-current_objective: "完成阶段 8 生产部署；当前等待精确 Origin 网关更新生效及 live Pages/真实端到端验收"
-next_safe_action: "外部状态恢复后重试 production-live-deployment：确认网关新版本预检、配置 Worker 环境并运行真实任务链、发布 live Pages、完成无痕门禁截图"
-stop_reason: "本轮完成 20/20 本地 Gate，并定位 Supabase 网关线上 503 的明确原因：在线编辑器旧内容未完整替换导致 UUID 重复声明；已保存本地兼容修复与部署证据，但浏览器随后未能重新加载代码编辑器，故网关修复尚未再次发布验证。live Pages、Worker 真实配置/任务链和无痕报告门禁仍未完成。"
-last_action_fingerprint: "gateway-preflight-normalization-local-passed; redeploy-boot-error-diagnosed-duplicate-UUID; editor-reload-unavailable"
-verified_gate_snapshot_current: "local_live_readiness=implemented_uat_passed; worker=269; frontend=7; live_candidate=49_no_demo_data_no_secrets_rebuilt; pages_demo=57_remote_main_b42009a; supabase_remote=001-006_applied; migrations_005_006=reapplied_successfully; runtime_contract=functions9_run_columns4_task_columns3_private_buckets2_storage_policies5_anon_claim_denied; gateway=bad_origin_403_unauth_401; latest_deploy=boot_error_duplicate_UUID_503; production_worker=remote_compileall_and_disabled_2_cycles_passed; live_pages=not_published; browser_e2e=pending; live_v1=not_complete"
+current_objective: "完成阶段 8 生产发布与真实端到端验收；本地与线上链路已复验，等待正式地址栏截图"
+next_safe_action: "用户用真实浏览器分别截取登录页、工具页、报告页的地址栏画面；补证后重新领取 production-live-deployment"
+stop_reason: "唯一阻塞：BrowserSkill 只能保存网页视口，无法生成带浏览器地址栏的正式截图；其余本地 Gate、Supabase RLS/Storage、Pages、Gateway、Worker、登录/报告/匿名门禁均已复验。"
+last_action_fingerprint: "live-gateway-worker-pages-e2e-verified; b-user-report-fetch-200; anonymous-report-redirect; unauth-api-401; viewport-only-captures"
+verified_gate_snapshot_current: "gateway=deployed_exact_origin; auth=200; rls=two_users_own_only_cross_store_zero_write_403; storage=private_own_read_200_cross_user_denied; worker=completed; report=random_private_object_fetch_rendered; pages=live_root_tool_report_200; anonymous_report=redirect_login; unauth_api=401_AUTH_REQUIRED; xiyou=local_5xx_only; live_report_scope=ad_only_missing_market_competitor_image; address_bar_screenshots=manual_pending"
 local_safe_queue: empty
 external_blockers_only: true
-verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; docs=15; network_calls=0; external_calls=0; secrets=0"
+verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages_demo=57; live_candidate=49; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0"
 ---
 
 ## 历史中间状态（2026-09-01）

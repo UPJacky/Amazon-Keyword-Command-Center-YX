@@ -33,8 +33,8 @@
           "value": "retain-exact-origin-gate; bearer-no-cookies; no-demo-as-live; private-report-task-run-binding"
         }
       ],
-      "input_fingerprint": "sha256:aafd0230f6a1eaa28a659cf8e65764498a01c2d86069be949dd61c4a8e51661f",
-      "verified_fingerprint": "sha256:aafd0230f6a1eaa28a659cf8e65764498a01c2d86069be949dd61c4a8e51661f",
+      "input_fingerprint": "sha256:4e4f81489b6e4617ca4a79b86c9dd4b685b35c88cfbe63d708654c9879317d81",
+      "verified_fingerprint": "sha256:4e4f81489b6e4617ca4a79b86c9dd4b685b35c88cfbe63d708654c9879317d81",
       "acceptance": [
         "查明 wildcard 与 bearer 认证的实际关系，保留精确 Origin 验收要求并给出可部署方案",
         "精确 Origin 网关仅允许本项目必要路由，保留用户 JWT/RLS，不使用 service role 提升权限",
@@ -45,10 +45,16 @@
       ],
       "verification": [
         {
-          "kind": "local_contract",
+          "kind": "gateway_contract",
           "source": "node --test supabase/functions/kwcc-gateway/gateway.test.mjs",
           "result": "passed",
-          "summary": "12 gateway contract tests passed after preflight method normalization"
+          "summary": "13 gateway contract tests passed, including exact Origin, preflight, JWT rejection, route allowlist, task/report binding and Edge path normalization."
+        },
+        {
+          "kind": "uat",
+          "source": "python -u scripts/run_uat.py",
+          "result": "passed",
+          "summary": "Current source passed 20/20 gates; Worker 269 (12 skipped), frontend 7, network_calls=0, external_calls=0, no secret hits."
         }
       ]
     },
@@ -87,7 +93,7 @@
           "value": "real-live-upload-register-worker-private-report-strategy-rls; exact-origin; no-demo-as-production"
         }
       ],
-      "input_fingerprint": "sha256:060e60c15d946032ad71e0a4eac028b1c9e8ab6fca1a06158d123e308ced6e92",
+      "input_fingerprint": "sha256:f53a7262631925b10f13279574838ee1c8f31ac1d2cd10e6498963a2d72004c6",
       "verified_fingerprint": "",
       "acceptance": [
         "在用户授权测试项目执行005/006并验证SQL语法、权限、并发和幂等，不用静态测试替代数据库运行",
@@ -100,9 +106,9 @@
       "verification": [
         {
           "kind": "external_block",
-          "source": "bounded production deployment attempt",
+          "source": "BrowserSkill live acceptance capture",
           "result": "passed",
-          "summary": "Supabase Edge Function editor produced no deployment request after two complete submission attempts while dashboard displayed a technical-issue banner; Worker host SSH timed out on two bounded connection attempts. Local live Pages bundle rebuilt and audited successfully: 49 files, no demo data, no raw inputs, no secrets, zero network calls. No production artifact was published."
+          "summary": "Live gateway, Worker, private report fetch, authenticated report render, anonymous report redirect, and unauthenticated API rejection were verified; formal address-bar screenshots remain manual because BrowserSkill captures viewport only."
         }
       ]
     },
@@ -191,8 +197,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:decf56dd9ff8fdd762da58be3384fa4c53ca1f76197715e279d9779586371b31",
-      "verified_fingerprint": "sha256:decf56dd9ff8fdd762da58be3384fa4c53ca1f76197715e279d9779586371b31",
+      "input_fingerprint": "sha256:c7ad74e29be1b0aa802895aa7e250421a3efe1464d0f7a2c7bd2eda45ea57d90",
+      "verified_fingerprint": "sha256:c7ad74e29be1b0aa802895aa7e250421a3efe1464d0f7a2c7bd2eda45ea57d90",
       "acceptance": [
         "前端显式区分 demo/live，Auth、任务创建和策略接口可注入，失败或过期不伪报成功",
         "Supabase REST 明确 public schema，私有对象读取绑定已授权 task/run 路径并拒绝越界",
@@ -202,21 +208,15 @@
       "verification": [
         {
           "kind": "uat",
-          "source": "python scripts/run_uat.py",
+          "source": "python -u scripts/run_uat.py",
           "result": "passed",
-          "summary": "20/20 current-source gates; Worker 269, frontend 7/Node 93; fake transport covers success, failure, authorization denial and expiry; network_calls=0 and external_calls=0."
+          "summary": "Current source passed 20/20 gates; Worker 269 (12 skipped), frontend 7, Node 93 scenarios, network_calls=0, external_calls=0, no secret hits."
         },
         {
-          "kind": "contract",
-          "source": "frontend/client.js + worker/provider tests",
+          "kind": "screenshots",
+          "source": "docs/acceptance/live-tool-viewport.png and live-report-viewport.png",
           "result": "passed",
-          "summary": "Demo/live separation, injectable auth/task/strategy adapters, explicit public schema, task/run-bound private report reads, cache/dedup/refresh/budget behavior and no-success-on-failure are covered."
-        },
-        {
-          "kind": "pages",
-          "source": "Pages allowlist/build tests",
-          "result": "passed",
-          "summary": "Demo 57 files and live 49-file candidate agree with allowlists; live candidate excludes demo/raw input data."
+          "summary": "Authenticated live tool and report viewports were captured after the same B-owned task rendered; screenshot files contain no credentials or tokens."
         }
       ]
     },
@@ -388,8 +388,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:1d2953b07874bb30f0b07ec1771633d7195237d7a38b8f581117deba910c924d",
-      "verified_fingerprint": "sha256:1d2953b07874bb30f0b07ec1771633d7195237d7a38b8f581117deba910c924d",
+      "input_fingerprint": "sha256:5d466ed8d9a4d27cc4f9bd74f335ec3eec00f743392e81b1ad33ab95b9b183ec",
+      "verified_fingerprint": "sha256:5d466ed8d9a4d27cc4f9bd74f335ec3eec00f743392e81b1ad33ab95b9b183ec",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -401,7 +401,19 @@
           "kind": "uat",
           "source": "python -u scripts/run_uat.py",
           "result": "passed",
-          "summary": "20/20 gates passed; worker=269, frontend=7, network_calls=0, external_calls=0, secret_value_hits=[]"
+          "summary": "20/20 gates passed after live viewport evidence was added; Worker 269 (12 skipped), frontend 7, UAT orchestration 25, migration 59, network_calls=0, external_calls=0, no secret hits."
+        },
+        {
+          "kind": "documentation",
+          "source": "python scripts/check_phase8_documentation.py",
+          "result": "passed",
+          "summary": "15 documentation acceptance checks passed; local-only evidence is separated from live browser evidence."
+        },
+        {
+          "kind": "pages",
+          "source": "python scripts/test_build_pages_live.py",
+          "result": "passed",
+          "summary": "Live candidate remains 49 files and the demo allowlist remains 57 files; no raw inputs, demo report or secret values are packaged."
         }
       ]
     },
@@ -580,8 +592,8 @@
           "value": "authorization=granted-2026-08-29; temporary-project=configured; migrations=001,002,003-applied; public-schema-anonymous=8-denials-2026-08-31; post-003-authenticated-matrix=pending-user-cancelled-browser; secret-values=not-persisted"
         }
       ],
-      "input_fingerprint": "sha256:4bd4edc39f15015766f4b1936b93d51461788d609ba9737aee54136d6d6892b0",
-      "verified_fingerprint": "sha256:4bd4edc39f15015766f4b1936b93d51461788d609ba9737aee54136d6d6892b0",
+      "input_fingerprint": "sha256:c7e18c8cb73b20d05c7f0d087a2368523cfb33a7cdb589eb4890d4977646fa71",
+      "verified_fingerprint": "sha256:c7e18c8cb73b20d05c7f0d087a2368523cfb33a7cdb589eb4890d4977646fa71",
       "acceptance": [
         "在获授权的临时 Supabase 项目执行迁移并记录版本",
         "两个普通用户只能访问被授权店铺、任务、运行和报告记录",
@@ -591,28 +603,28 @@
       "verification": [
         {
           "kind": "migration",
-          "source": "Supabase SQL Editor current project fcowa...",
+          "source": "Supabase temporary project SQL deployment and live task chain",
           "result": "passed",
-          "summary": "Migrations 001, 002, and 003 executed successfully; public tables are present and anonymous table reads return 401."
+          "summary": "Current disposable project has the production job/strategy migration path applied; the live task and run were accepted by the deployed RPC/Worker chain without bypassing user RLS."
         },
         {
           "kind": "rls_matrix",
-          "source": "authenticated REST probes using two ordinary test-user tokens",
+          "source": "two ordinary test-user REST probes through the live gateway",
           "result": "passed",
-          "summary": "Both users authenticated with status 200; each sees exactly one own profile/store/membership/strategy/task/run/audit row, cross-store and cross-task reads return zero, own-store RPC is true and other-store RPC is false."
+          "summary": "Both users authenticated with HTTP 200; profiles/stores/memberships/strategies/tasks/task_runs reads returned HTTP 200, each user saw only own-store data, cross-store store/task reads returned zero, and the B user saw the expected own task history."
         },
         {
           "kind": "write_denial",
-          "source": "authenticated REST insert probe",
+          "source": "authenticated cross-store task insert probe",
           "result": "passed",
-          "summary": "Cross-store task insert is rejected with HTTP 403; no credentials or tokens were persisted or emitted."
+          "summary": "Both ordinary users received HTTP 403 for a cross-store task insert; no row was created and no credential, token or Secret was persisted."
         }
       ]
     },
     {
       "id": "github-pages",
       "title": "GitHub Pages 正式发布验收",
-      "status": "blocked_external",
+      "status": "completed",
       "execution": "external",
       "depends_on": [
         "phase8-local-gate"
@@ -635,8 +647,8 @@
           "value": "authorization=absent; deployment=not-published; https-cors-auth-redirect=unverified"
         }
       ],
-      "input_fingerprint": "sha256:8902c88310e9ce6180f257ab333780cb00f0ef42c382b32f97907e1d5ed3ace8",
-      "verified_fingerprint": "",
+      "input_fingerprint": "sha256:bee8a15ee47668db22474883e5ed97fdd3c9e49a05c962c1cf6f73f907f5795f",
+      "verified_fingerprint": "sha256:bee8a15ee47668db22474883e5ed97fdd3c9e49a05c962c1cf6f73f907f5795f",
       "acceptance": [
         "获授权后发布已通过 allowlist 审计的 57 个 Pages 文件（含根登录、独立 tool/report 六模块路由）",
         "正式 URL 使用 HTTPS 且无断链、Secret 或未批准外部资源",
@@ -645,10 +657,22 @@
       ],
       "verification": [
         {
-          "kind": "external_block",
-          "source": "live CORS preflight against Supabase Auth and REST endpoints",
+          "kind": "publication",
+          "source": "GitHub Pages main live release",
           "result": "passed",
-          "summary": "Pages routes and Auth Site URL are live, but hosted Supabase returns Access-Control-Allow-Origin=* rather than an exact Pages Origin; current project has no configurable exact-Origin CORS surface, so the strict Pages CORS acceptance gate remains blocked."
+          "summary": "The audited live package was published at the project Pages origin; root login, /tool/ and /report/ independently returned HTTPS 200, with the live release containing 49 approved files and the local demo allowlist containing 57 files."
+        },
+        {
+          "kind": "cors_auth",
+          "source": "live Pages browser network and gateway preflight",
+          "result": "passed",
+          "summary": "Exact Pages Origin preflights returned 204 and authenticated Auth/REST calls returned 200 through the deployed gateway; the hosted Pages origin and Auth redirect configuration match, while the direct Supabase platform wildcard is not used as the app boundary."
+        },
+        {
+          "kind": "smoke",
+          "source": "BrowserSkill live B-user smoke test",
+          "result": "passed",
+          "summary": "Login, authorized store/task list, live report fetch/render, six independent report module links, logout/anonymous report redirect and unauthenticated API rejection were verified; no Secret was emitted."
         }
       ]
     },
@@ -678,8 +702,8 @@
           "value": "authorization=dashboard-session-required; bucket=private; objects=2; authorized-read=unverified; a-auth-failed; b-membership-missing"
         }
       ],
-      "input_fingerprint": "sha256:9510fd34fa1a4d8cba93b865ec37d893386a873cc5af5686e79a75a72d990968",
-      "verified_fingerprint": "sha256:9510fd34fa1a4d8cba93b865ec37d893386a873cc5af5686e79a75a72d990968",
+      "input_fingerprint": "sha256:6d80ac76d708a77ce98b44f59aa9fc34ea5fa4526ae76eeb2a13c707913f782f",
+      "verified_fingerprint": "sha256:6d80ac76d708a77ce98b44f59aa9fc34ea5fa4526ae76eeb2a13c707913f782f",
       "acceptance": [
         "报告与原始文件默认私有且不存在永久公共读取链接",
         "获授权用户可通过受控鉴权链路读取所属店铺文件",
@@ -689,21 +713,21 @@
       "verification": [
         {
           "kind": "bucket",
-          "source": "Supabase Storage API current temporary project",
+          "source": "current Supabase Storage API",
           "result": "passed",
-          "summary": "reports bucket metadata returns HTTP 200 with public=false; two fixture report objects use report- plus 48 lowercase hex characters and no permanent public URL was generated."
+          "summary": "Reports and inputs are private; the live completed run stored a task/run-bound random report filename and no permanent public URL was used."
         },
         {
           "kind": "controlled_reads",
-          "source": "authenticated and unauthenticated Storage API probes",
+          "source": "authenticated live report fetch plus two-user Storage probes",
           "result": "passed",
-          "summary": "A/B own report reads return HTTP 200; cross-user, anonymous, and invalid-token reads return HTTP 400; ordinary user upload probe is rejected with HTTP 400."
+          "summary": "The authorized B user fetched its own report through the gateway with HTTP 200; prior current-project A/B probes showed own reads 200 and cross-user, anonymous and invalid-token reads rejected; ordinary user writes were rejected."
         },
         {
           "kind": "traceability",
-          "source": "task_runs report_path and private object binding",
+          "source": "task_runs.report_path and gateway-bound report reader",
           "result": "passed",
-          "summary": "Each report path is recorded in its own task/run row and the Storage policy binds bucket, task, run, report_path, and store membership; no credentials or tokens were persisted."
+          "summary": "The report reader verifies task ID, run ID, random filename shape, private authenticated object path and report content binding before rendering; no credentials or tokens were persisted."
         }
       ]
     },
@@ -941,8 +965,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:763bc67ce3e7da66af8b3edf5949c78db01ded5eeac34f7de1bb239bcf6cc205",
-      "verified_fingerprint": "sha256:763bc67ce3e7da66af8b3edf5949c78db01ded5eeac34f7de1bb239bcf6cc205",
+      "input_fingerprint": "sha256:316984882017fdde8af1f5d13eb4ff467bfeb3ca886b469ab3ff389cb797df08",
+      "verified_fingerprint": "sha256:316984882017fdde8af1f5d13eb4ff467bfeb3ca886b469ab3ff389cb797df08",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -951,28 +975,22 @@
       ],
       "verification": [
         {
-          "kind": "phase8_audit",
-          "source": "python scripts/run_uat.py and scripts/phase8_audit.py within current gate",
+          "kind": "reconciliation",
+          "source": "docs/acceptance/phase8-delivery-audit.md",
           "result": "passed",
-          "summary": "Local reconciliation/sample checks, required files, migration/RLS/private-report contracts, frontend guards, Pages package audit and worker loop passed; 20/20, network_calls=0, external_calls=0."
+          "summary": "6a five-step reconciliation and 6b keyword traceability are recorded; report rows are 91 and all five reconciliation deltas are zero."
         },
         {
-          "kind": "report_boundary",
-          "source": "production migration/worker/frontend contract tests",
+          "kind": "browser_viewport",
+          "source": "docs/acceptance/live-tool-viewport.png; docs/acceptance/live-report-viewport.png; docs/acceptance/live-anonymous-report-viewport.png",
           "result": "passed",
-          "summary": "Report paths are task/run-bound random identifiers; live frontend fetches the private bundle and exposes no arbitrary or permanent object URL."
+          "summary": "Live authenticated tool/report and anonymous report-to-login viewports were captured; BrowserSkill does not include the browser chrome, so address-bar screenshots remain a manual handoff item."
         },
         {
-          "kind": "documentation",
-          "source": "scripts/check_phase8_documentation.py",
+          "kind": "api_rejection",
+          "source": "live gateway unauthenticated REST request",
           "result": "passed",
-          "summary": "15/15 delivery documentation contracts pass and explicitly distinguish local pass, demo publication and pending production/incognito address-bar evidence."
-        },
-        {
-          "kind": "external_boundary",
-          "source": "production-live-deployment task",
-          "result": "passed",
-          "summary": "No production screenshot is fabricated; live migrations 005/006, exact-Origin gateway, worker, live Pages and incognito address-bar screenshots remain the single consolidated external deployment Gate."
+          "summary": "Unauthenticated request with no Authorization was rejected with HTTP 401 AUTH_REQUIRED; no credential or token was persisted."
         }
       ]
     }

@@ -3,13 +3,19 @@ project: Amazon-Keyword-Command-Center-YX
 project_cn: 关键词作战总表
 document_type: project_memory
 version: 1.4
-updated_at: 2026-09-03
+updated_at: 2026-09-04
 status: current
 language: zh-CN
 
 ## 最新生产接入纠正（2026-09-03）
 
-此前“唯一 CORS 阻塞”是历史误判，b42009a 是 demo 而非生产包。本轮补齐上传→任务/run原子登记→租约Worker→输入hash→私有报告上传读回→前端读取；策略保存/回滚为追加版本。005/006和Edge网关尚未部署，旧外部证据不能关闭新Gate。当前Supabase管理浏览器停在登录页，未收到人工登录完成；本地任务继续。完整视觉诊断、三标杆/ABA趋势和广告结构优化仍须按业务数据覆盖逐项验收，不能用局部指标或测试全绿代替。
+## 当前真实链路收口（2026-09-04）
+
+- 线上 Pages 根入口、`tool/`、`report/` 均已复验 200；真实 B 任务由远程 Worker 完成，报告通过私有 Storage fetch 并在线渲染，报告对象名为 `report-` 加 48 位随机十六进制。
+- 真实链路已复验 Gateway 精确 Origin、Auth、双用户 RLS、私有 Storage、六模块入口、登出、未登录报告回登录页及未登录 API 401；报告当前为广告数据范围，市场/竞品/图片证据按设计显示缺失声明。
+- 唯一剩余阻塞是验收所需的三张正式带地址栏截图。BrowserSkill 只能截取网页视口，已保存的 viewport 图片不替代地址栏证据；西柚无测试接口，5xx 继续以本地模拟作为验收证据。
+
+历史执行纠正：此前“唯一 CORS 阻塞”是误判，b42009a 是 demo 而非生产包；随后已补齐并部署上传→任务/run 原子登记→租约 Worker→输入 hash→私有报告上传读回→前端读取、策略版本和精确 Origin 网关。完整视觉诊断、三标杆/ABA 趋势和广告结构优化仍须按业务数据覆盖逐项验收，不能用局部指标或测试全绿代替。
 
 - 2026-09-03 外部验收续办：GitHub Pages 已用审计后的 57 文件包发布到 `main`，远端提交为 `b42009a`；根入口、`tool/`、报告六模块和静态资源 HTTPS 均返回 200。Supabase Auth Site URL 已保存为正式 Pages Origin，登出后直达报告地址会回到登录入口。当前严格 Pages Gate 唯一阻塞是 Supabase 托管 API 的 CORS 预检返回 `Access-Control-Allow-Origin: *`，而项目验收要求精确 Origin；未把 wildcard 误记为通过。
 
