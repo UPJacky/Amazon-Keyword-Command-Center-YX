@@ -275,6 +275,14 @@ class XiyouLiveEnricher:
         if observation is not None:
             # Direct integer identity only: no invented 0..100 scale or labels.
             row["competitive_difficulty"] = observation["competitiveDifficulty"]
+            aba = observation.get("abaReport")
+            if aba is not None:
+                row.update(
+                    weekly_search_volume=aba["weeklySearchVolume"],
+                    aba_search_frequency_rank=aba["searchFrequencyRank"],
+                    aba_report_from_date=aba["reportFromDate"],
+                    aba_report_to_date=aba["reportToDate"],
+                )
         row.update(keyword=keyword, asin=self._asin, country=self._country,
                    full_report_complete=False,
                    provider_sampled=sampled,

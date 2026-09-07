@@ -59,6 +59,15 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("passed === true", report_script)
         self.assertIn("reconciliation_passed === true", tasks_script)
 
+    def test_live_module_state_and_run_navigation_contract(self):
+        root = Path(__file__).resolve().parent
+        client = (root / "client.js").read_text(encoding="utf-8")
+        shared = (root / "report" / "shared.js").read_text(encoding="utf-8")
+        for marker in ("module_states", "REPORT_MODULE_FAILED", "legacy_bundle_without_module_states"):
+            self.assertIn(marker, client)
+        for marker in ("statusPrefix", "部分数据", "task", "run"):
+            self.assertIn(marker, shared)
+
 
 if __name__ == "__main__":
     unittest.main()

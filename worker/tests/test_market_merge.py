@@ -38,6 +38,26 @@ class MarketMergeTests(unittest.TestCase):
         rows = merge_market_data([{"keyword": "led light"}], [{"keyword": "led light", "missing_fields": [" "]}])
         self.assertEqual(rows[0]["missing_fields"], [])
 
+    def test_rank_aba_and_lineage_fields_survive_without_overwriting_ad_identity(self):
+        benchmarks = [{"asin": "B000000002", "organic_rank": 2}]
+        observations = {"abaReport": {"weeklySearchVolume": 1200}}
+        row = merge_market_data(
+            [{"keyword": "led light", "asin": "B000000001", "clicks": 10}],
+            [{"keyword": "led light", "asin": "B999999999", "country": "US",
+              "organic_rank": 5, "benchmark_asins": benchmarks,
+              "rank_change_7d": -2, "rank_change_14d": 1, "rank_change_30d": None,
+              "weekly_search_volume": 1200, "aba_search_frequency_rank": 42,
+              "aba_report_from_date": "2026-08-23", "aba_report_to_date": "2026-08-29",
+              "provider_sampled": True, "provider_observations": observations,
+              "missing_fields": ["rank_change_30d"]}],
+        )[0]
+        self.assertEqual("B000000001", row["asin"])
+        self.assertEqual(benchmarks, row["benchmark_asins"])
+        self.assertEqual(1200, row["weekly_search_volume"])
+        self.assertEqual(42, row["aba_search_frequency_rank"])
+        self.assertEqual(observations, row["provider_observations"])
+        self.assertEqual(["rank_change_30d"], row["missing_fields"])
+
 
 if __name__ == "__main__":
     unittest.main()

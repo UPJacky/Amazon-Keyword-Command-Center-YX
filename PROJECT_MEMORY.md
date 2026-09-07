@@ -47,6 +47,12 @@ language: zh-CN
 - 2026-08-21 UAT 编排最终本地审计：`run_uat.py` 要求 Worker loop、Phase 8、Pages 摘要包含 `network_calls`、`external_calls`、`local_only`，并严格校验字段类型；缺少结构化摘要同时写入 `summary_contract_errors` 和诊断字段，部分摘要、类型错误、超时和启动异常均结构化失败并继续收集全部 19 Gate；`_summary_metrics` 对缺失摘要安全跳过。新增统一 120 秒 Gate 超时和 5 组 ExitStack 临时目录退出清理回归，编排契约 18 项，最新完整 UAT Worker 144 项（12 项环境跳过）/前端 5 项，网络/外部调用 0、Secret 0。
 ---
 
+## Phase 9 六模块补全重新开启（2026-09-07，优先于旧完成结论）
+
+- 按两份 LUNU 执行方案新增 P0-P8 持久任务链。旧 Phase 8 证明的是安全发布链和 ad-only 主表，不证明六模块业务数据完整。
+- 指定 task/run 的 91 行广告数据与零差值继续有效；排名、否词安全、竞对、图片与广告实体模块分别处于 partial 或 not_generated。审计基线为 `docs/acceptance/phase9-p0-live-gap-audit.md`。
+- 后续按监督器顺序执行 P1-P7，本地完成后再执行 P8 新真实 run 发布验收；不得重写历史 run 或把缺数伪造成 0。
+
 - 2026-08-21 report-0.2 追溯契约收口：统一 `normalise_missing_fields()` 供 `shared_traceability()`、`market_merge`、`rule_engine` 使用；共享对账字段和前端展示只接受布尔 `true`，报告页/任务页缺失字段统一过滤、去重、排序并安全降级。新增 7 项回归，完整 UAT Worker 140 项（11 项环境跳过）/前端 5 项，19 Gate 通过，network_calls=0、external_calls=0、Secret 0。
 
 - 2026-08-21 report-0.2 追溯契约收口：`shared_traceability()`、`market_merge`、`rule_engine` 对 `missing_fields` 去除首尾空白并过滤空白/非字符串值；共享对账字段和前端展示均只接受布尔 `true` 为通过；报告页对异常缺失字段数组安全降级。新增 5 项回归，完整 UAT Worker 139 项（11 项环境跳过）/前端 5 项、19 Gate 通过，network_calls=0、external_calls=0、Secret=0。
@@ -70,7 +76,7 @@ language: zh-CN
 
 ## 当前验证快照
 
-- 2026-09-04：完整 UAT Worker 269 项（12 项环境跳过）、前端 7 项（含 Node 93 场景），20/20 Gate、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。生产接入为本地证据，005/006和服务部署仍待外部验收。
+- 2026-09-07：完整 UAT Worker 281 项（12 项环境跳过）、前端 8 项（含 Node 场景），20/20 Gate、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。生产接入与 Provider 语义已有真实证据，六模块业务数据仍按新 run 的显式待补状态处理。
 - Supabase 003 已执行；public schema 的七表和辅助函数匿名 HTTP 均为 401/42501。默认 Data API schema 为 api，客户端显式使用 public。迁移后双用户矩阵已复验：A/B 各自仅见授权店铺、任务和运行记录，跨店读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 读取矩阵也已通过。
 - 默认 demo 与显式 live 分离，Auth/任务/策略读取、私有对象绑定与 Gateway、Provider 预算/缓存和流水线注入的本地链路已通过验证；禁用未配置的上传/策略写入/真实私有报告前端。六模块本地交付已收口，但新版生产上传→Worker→私有报告链及真实外部复验仍未完成。详情见 `docs/acceptance/production-adapters-local.md`。
 - 本轮最终状态 BLOCKED_EXTERNAL：本地任务无可执行项；Supabase RLS、私有 Storage 和新版 GitHub Pages 发布/复验保留为外部 Gate。真实 Provider 的 5xx 按用户确认以本地 fake transport 验收，不再重复声称存在西柚测试接口；心跳在终止态暂停，未将项目标记完成。

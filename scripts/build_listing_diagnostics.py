@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from worker.diagnostics.listing_checklist import build_checklist, build_image_group, diagnose_conversion_gap
+from worker.diagnostics.listing_checklist import build_listing_diagnostics
 from worker.rule_engine.engine import load_default_config
 
 
@@ -20,16 +20,7 @@ def main() -> int:
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     source = json.loads(Path(args.input).read_text(encoding="utf-8"))
-    self_group = build_image_group(source.get("self_images", []), group_id="self-images")
-    competitor_group = build_image_group(source.get("competitor_images", []), group_id="competitor-images")
-    payload = {
-        "schema_version": "listing-diagnostics-0.1",
-        "self_images": self_group,
-        "competitor_images": competitor_group,
-        "checklist": build_checklist(image_group_id="self-images", competitor_group_id="competitor-images"),
-        "conversion_diagnostics": [diagnose_conversion_gap(row, load_default_config()) for row in source.get("keyword_rows", [])],
-        "provider_calls": 0,
-    }
+    payload = build_listing_diagnostics(self_images=source.get("self_images", []), competitor_images=source.get("competitor_images", []), keyword_rows=source.get("keyword_rows", []), config=load_default_config())
     destination = Path(args.output)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")

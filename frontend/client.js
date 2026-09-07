@@ -5,9 +5,9 @@
   const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   const stages = ['new', 'growth', 'stable', 'clearance', 'seasonal_restart'];
   class ClientError extends Error {
-    constructor(code, message, status = 0) { super(message); this.code = code; this.status = status; }
+    constructor(code, message, status = 0, details = null) { super(message); this.code = code; this.status = status; this.details = details; }
   }
-  const fail = (code, message, status) => { throw new ClientError(code, message, status); };
+  const fail = (code, message, status, details) => { throw new ClientError(code, message, status, details); };
   function jwtPayload(value) {
     try {
       const part = value.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
@@ -373,13 +373,22 @@
           fail('REPORT_NOT_GENERATED', '该模块尚未生成可读取的真实报告');
         if (typeof modules !== 'object' || Array.isArray(modules))
           fail('RESPONSE_INVALID', '报告模块结构无效');
-        if (!Object.prototype.hasOwnProperty.call(modules, name) || modules[name] === null)
-          fail('REPORT_NOT_GENERATED', '该模块尚未生成可读取的真实报告');
+        const states = report.content.module_states;
+        const state = states && typeof states === 'object' && !Array.isArray(states) ? states[name] : null;
+        if (!Object.prototype.hasOwnProperty.call(modules, name) || modules[name] === null) {
+          if (state?.status === 'failed') fail('REPORT_MODULE_FAILED', '该模块生成失败。', 0, { module_state: state });
+          fail('REPORT_NOT_GENERATED', '该模块尚未生成可读取的真实报告。', 0, { module_state: state || { status: 'not_generated', reason: 'artifact_not_generated' } });
+        }
         const content = modules[name];
         if (!content || typeof content !== 'object' || Array.isArray(content)
           || ('task_id' in content && content.task_id !== taskId) || ('run_id' in content && content.run_id !== runId))
           fail('RESPONSE_INVALID', '报告模块结构或运行绑定无效');
-        return content;
+        const module = { ...content };
+        Object.defineProperty(module, '_module_state', {
+          value: state?.status ? state : { status: 'partial', reason: 'legacy_bundle_without_module_states' },
+          enumerable: false,
+        });
+        return module;
       },
     };
     const defaults = config.mode === 'live' ? { auth: liveAuth, tasks: liveTasks, strategies: liveStrategies, reports: liveReports, stores: liveStores } : {

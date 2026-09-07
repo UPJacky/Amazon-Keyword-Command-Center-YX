@@ -37,7 +37,7 @@
         "status": "unknown"
       }
     ],
-    "schema_version": "listing-checklist-0.1"
+    "schema_version": "listing-checklist-0.2"
   },
   "competitor_images": {
     "group_id": "competitor-images",
@@ -50,8 +50,9 @@
         "url": null
       }
     ],
+    "observation_status": "not_requested",
     "provider_calls": 0,
-    "schema_version": "image-group-0.1"
+    "schema_version": "image-group-0.2"
   },
   "conversion_diagnostics": [
     {
@@ -104,7 +105,8 @@
         "url": null
       }
     ],
+    "observation_status": "not_requested",
     "provider_calls": 0,
-    "schema_version": "image-group-0.1"
+    "schema_version": "image-group-0.2"
   }
 }

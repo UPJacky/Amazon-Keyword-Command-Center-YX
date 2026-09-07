@@ -20,7 +20,12 @@ def main() -> int:
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     report = json.loads(Path(args.report).read_text(encoding="utf-8"))
-    payload = {"schema_version": "optimization-plan-0.1", "ai_may_change_action": False, "actions": build_optimization_plan(report["rows"], load_default_config())}
+    payload = {
+        "schema_version": "optimization-plan-0.2",
+        "ai_may_change_action": False,
+        "entity_diagnosis_contract": "entity_context_required_for_judgement",
+        "actions": build_optimization_plan(report["rows"], load_default_config()),
+    }
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")

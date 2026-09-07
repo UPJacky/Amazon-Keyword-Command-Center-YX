@@ -32,6 +32,11 @@
       preliminary_clicks_min: '初步证据点击下界', sufficient_clicks_min: '充分证据点击下界',
       preliminary_orders_min: '初步证据订单下界', sufficient_orders_min: '充分证据订单下界',
     };
+    const entityLabels = {
+      campaign_id: '活动 ID', campaign_name: '活动名称', ad_group_id: '广告组 ID', ad_group_name: '广告组名称',
+      target_id: '投放 ID', target: '投放目标', match_type: '匹配类型', targeting_type: '投放类型', ad_type: '广告类型',
+    };
+    const entityStatusLabels = { ready: '实体证据完整', partial: '实体证据不完整', not_available: '未提供实体明细' };
     const knownGroup = row => Object.hasOwn(groups, row.action_group) ? row.action_group : 'unknown';
     const strings = value => Array.isArray(value) ? value.filter(item => typeof item === 'string' && item.trim()) : [];
     const object = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -39,6 +44,8 @@
     const hasValue = value => value != null && value !== '' && (!Array.isArray(value) || value.length > 0) && (typeof value !== 'object' || Object.keys(value).length > 0);
     const hasConfigValues = row => Object.entries(object(row.config_refs)).some(([key, value]) => key !== 'config_version' && hasValue(value));
     const completeTrace = row => Object.values(object(row.data_facts)).some(value => typeof value === 'number' && Number.isFinite(value)) && strings(row.rule_hits).length > 0 && hasConfigValues(row) && hasValue(row.next_action_text);
+    const entityDiagnoses = row => Array.isArray(row.entity_diagnoses) ? row.entity_diagnoses.filter(item => item && typeof item === 'object' && !Array.isArray(item)) : [];
+    const entityTraceComplete = row => entityDiagnoses(row).some(item => item.entity_status === 'ready' && item.judgement?.status === 'judged' && item.recommended_action?.status === 'ready');
     const reviewFields = ['clicks', 'spend', 'orders', 'sales', 'ctr', 'cpc', 'cvr', 'acos', 'roas', 'organic_rank', 'ad_rank'];
     function factValue(key, value) {
       if (['ctr', 'cvr', 'acos'].includes(key)) return ui.percent(value);
@@ -66,6 +73,24 @@
     function trace(row) {
       const details = ui.el('details');
       details.append(ui.el('summary', completeTrace(row) ? '查看事实 → 规则 → 配置 → 动作' : '追溯待补 · 查看事实 → 规则 → 配置 → 动作'));
+      details.append(ui.el('h3', '0 · 广告实体上下文'));
+      const diagnoses = entityDiagnoses(row);
+      if (!diagnoses.length) {
+        details.append(ui.el('p', '未生成实体诊断；不能根据关键词汇总推断广告活动、广告组、投放目标或匹配类型。', 'muted'));
+      } else {
+        diagnoses.forEach((diagnosis, index) => {
+          const context = object(diagnosis.entity_context);
+          const label = entityStatusLabels[diagnosis.entity_status] || '未知实体状态';
+          const item = ui.el('div', undefined, 'diagnosis-card');
+          item.append(ui.el('strong', `实体 ${index + 1} · ${label}`));
+          const fields = Object.entries(context).map(([key, value]) => `${entityLabels[key] || key}：${valueText(value)}`);
+          item.append(ui.el('p', fields.length ? fields.join(' · ') : '源数据未提供广告实体明细。'));
+          const missing = strings(diagnosis.missing_fields);
+          item.append(ui.el('p', `判断：${valueText(diagnosis.judgement?.conclusion)} · 动作：${valueText(diagnosis.recommended_action?.text)} · 退出：${valueText(diagnosis.exit_condition?.value)}`, 'muted'));
+          if (missing.length) item.append(ui.el('small', `待补字段：${missing.join('、')}`));
+          details.append(item);
+        });
+      }
       details.append(ui.el('h3', '1 · 数据事实'));
       const facts = object(row.data_facts);
       const list = ui.el('ul');
@@ -98,14 +123,15 @@
       ['动作', ui.number(actions.length)], ['止损 / 暂停复核', ui.number(actions.filter(row => ['stop_loss', 'reduce_or_pause'].includes(row.action_group)).length)],
       ['追溯字段待补', ui.number(actions.filter(row => !completeTrace(row)).length)],
       ['观察退出待补', ui.number(actions.filter(row => !hasValue(row.exit_conditions) || !hasValue(row.observation_window)).length)],
+      ['广告实体可判断', ui.number(actions.filter(entityTraceComplete).length)],
     ]);
     body.replaceChildren();
-    body.append(ui.el('p', '仅展示规则生成的运营方案，不写入 Amazon。AI 不决定动作；所有阈值只读自 config_refs。当前产物未携带的周期、币种、规则版本或观察退出条件保持待补，不据此直接执行。', 'notice'));
+    body.append(ui.el('p', '仅展示规则生成的运营方案，不写入 Amazon。AI 不决定动作；所有阈值只读自 config_refs。广告实体缺失时只显示“不可判定”，不从关键词汇总推断活动、广告组、投放或匹配类型。', 'notice'));
     if (data.ai_may_change_action !== false || actions.some(row => row.ai_may_change_action !== false)) {
       body.append(ui.el('p', '产物未确认 AI 动作只读契约，请先复核生成来源。本页仍不执行任何动作。', 'notice'));
     }
     const coverage = ui.el('section', undefined, 'panel');
-    coverage.append(ui.el('h2', '运营方案覆盖范围'), ui.el('p', '已按产物呈现预算加投候选、核心防守、新词测试、止损与优化动作。Broad / Phrase / Exact 内耗、Search Term → Exact 迁移及具体 Broad 调价需要活动、广告组和匹配类型证据；当前 schema 未提供，保持待分析。', 'muted'));
+    coverage.append(ui.el('h2', '运营方案覆盖范围'), ui.el('p', '已按产物呈现预算加投候选、核心防守、新词测试、止损与优化动作。Broad / Phrase / Exact 内耗、Search Term → Exact 迁移及具体调价只有在活动、广告组、投放目标和匹配类型证据完整时才可判断；缺失时保持待分析。', 'muted'));
     body.append(coverage);
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar');
@@ -124,14 +150,20 @@
       const visible = actions.filter(row => (selected === 'all' || (selected === 'trace_missing' ? !completeTrace(row) : knownGroup(row) === selected)) && (!query || [ui.text(row.keyword), ...strings(row.rule_hits)].some(value => value.toLocaleLowerCase().includes(query))));
       buttons.forEach(([key, button]) => { button.className = key === selected ? 'filter active' : 'filter'; button.setAttribute('aria-pressed', String(key === selected)); });
       result.replaceChildren(visible.length ? ui.table(
-        ['关键词', '最终动作与执行类型', '事实 → 规则 → 配置 → 动作', '观察与退出条件', '下一轮复盘'],
+        ['关键词', '广告实体与判断', '最终动作与执行类型', '事实 → 规则 → 配置 → 动作', '观察与退出条件', '下一轮复盘'],
         visible.map(row => {
           const [title, color] = Object.hasOwn(groups, row.action_group) ? groups[row.action_group] : ['未知动作 · 人工复核', 'badge gray'];
+          const entity = ui.el('div');
+          const entityStatus = entityStatusLabels[row.entity_status] || '实体状态未知';
+          entity.append(ui.el('span', entityStatus, entityTraceComplete(row) ? 'badge green' : 'badge gray'));
+          const missing = strings(row.missing_entity_fields);
+          entity.append(ui.el('p', entityTraceComplete(row) ? '可追溯到广告实体后判断' : '不可据关键词汇总判定实体动作'));
+          if (missing.length) entity.append(ui.el('small', `待补：${missing.join('、')}`));
           const action = ui.el('div'); action.append(ui.el('span', title, color), ui.el('p', ui.text(row.next_action_text)), ui.el('small', ui.text(row.action_type)));
-          return [ui.text(row.keyword), action, trace(row), monitoring(row), review(row)];
+          return [ui.text(row.keyword), entity, action, trace(row), monitoring(row), review(row)];
         }),
       ) : ui.el('p', actions.length ? '没有符合筛选条件的优化动作。' : '暂无优化方案；等待规则引擎生成带事实与配置的动作。', 'table-empty'));
-      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${visible.length} / ${actions.length} 个动作 · ${ui.text(data.schema_version)} · 来源 optimization-plan.json · 未执行 Amazon 写入`;
+      status.textContent = `${ui.statusPrefix(data)} · ${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${visible.length} / ${actions.length} 个动作 · 实体可判断 ${actions.filter(entityTraceComplete).length} · ${ui.text(data.schema_version)} · 来源 optimization-plan.json · 未执行 Amazon 写入`;
     }
     search.addEventListener('input', render); toolbar.append(label, filters); panel.append(toolbar, result); body.append(panel); render();
   } catch (error) {

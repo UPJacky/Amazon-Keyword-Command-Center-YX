@@ -11,7 +11,14 @@
       ['phrase_negative', '词组否定候选', 'phrase_negative_candidate', 'badge orange'],
       ['cautious', '慎否', 'cautious', 'badge yellow'],
       ['pending_confirmation', '待确认', 'pending_confirmation', 'badge gray'],
+      ['low_cvr_high_spend', '低 CVR 高花费复核', 'low_cvr_high_spend', 'badge orange'],
+      ['protected_converted', '已有订单保护', 'protected_converted', 'badge green'],
     ];
+    // module03-0.1 artifacts predate the two diagnostic buckets; treat their
+    // absence as an empty legacy bucket so old reports remain readable.
+    for (const key of ['low_cvr_high_spend', 'protected_converted']) {
+      if (!Array.isArray(data?.[key])) data[key] = [];
+    }
     if (!data || groups.some(([key]) => !Array.isArray(data[key]) || data[key].some(row => !row || typeof row !== 'object' || Array.isArray(row)))) {
       throw new Error('否词报告结构无效：四类候选必须为行数组。');
     }
@@ -30,12 +37,14 @@
     // even if a malformed artifact duplicates it into a candidate bucket.
     const protectedKeywords = new Set(entries.filter(entry => entry.key === 'cautious' || entry.key === 'pending_confirmation' || entry.row.negative_status !== entry.expected).map(entry => normalize(entry.row.keyword)));
     const eligible = entry => ['exact_negative', 'phrase_negative'].includes(entry.key)
+      && entry.row.export_eligible === true
       && entry.row.negative_status === entry.expected
       && normalize(entry.row.keyword) && !protectedKeywords.has(normalize(entry.row.keyword))
+      && entry.row.relevance === 'unrelated' && !String(entry.row.reason || '').includes('conflict')
       && entry.row.orders === 0 && finite(entry.row.clicks) && entry.row.clicks > 0 && finite(entry.row.spend);
     ui.setMetrics(groups.map(([key, label]) => [label, ui.number(data[key].length)]));
     body.replaceChildren();
-    body.append(ui.el('p', '候选仅供人工复核，不会写入 Amazon。慎否、待确认及状态冲突的关键词不进入导出。花费和销售额按原报表币种展示；本模块未携带币种或统计周期时，请回到关键词作战总表核对。', 'notice'));
+    body.append(ui.el('p', '候选仅供人工复核，不会写入 Amazon。相关/未知、慎否、待确认、词组冲突及已有订单保护的关键词不进入导出。低 CVR 高花费是独立复核组，不等于否定词。', 'notice'));
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar');
     const label = ui.el('label', '搜索关键词 ');
@@ -62,7 +71,8 @@
       const block = ui.el('div');
       block.append(ui.el('strong', Object.hasOwn(reasons, row.reason) ? reasons[row.reason] : ui.text(row.reason)));
       block.append(ui.el('small', `候选依据：${ui.text(row.reason)} · 原动作规则：${strings(row.rule_hits).join('、') || '—'}`));
-      block.append(ui.el('small', `规则版本：${ui.text(row.rule_version)} · 生效配置：${ui.text(row.effective_config_version)} · 证据：${ui.text(row.evidence_level)}`));
+      block.append(ui.el('small', `相关性：${ui.text(row.relevance)} · 来源：${ui.text(row.relevance_source)} · 规则版本：${ui.text(row.rule_version)} · 生效配置：${ui.text(row.effective_config_version)}`));
+      block.append(ui.el('small', `CVR：${ui.percent(row.cvr_observed)} · 高花费线：${ui.number(row.high_spend_threshold, 2)} · 证据：${ui.text(row.evidence_level)}`));
       block.append(ui.el('small', `原动作：${ui.text(row.action_group)} · ${ui.text(row.next_action_text)}`));
       block.append(ui.el('small', `缺失字段：${strings(row.missing_fields).join('、') || '—'}`));
       return block;
@@ -77,7 +87,7 @@
         ['关键词', '候选分类', '点击', '花费（原币）', '订单', '销售额（原币）', 'ACOS', '证据与追溯'],
         visible.map(({ row, label, color, expected }) => [ui.text(row.keyword), ui.el('span', row.negative_status === expected ? label : '状态冲突 · 待确认', row.negative_status === expected ? color : 'badge gray'), ui.number(row.clicks), ui.number(row.spend, 2), ui.number(row.orders), ui.number(row.sales, 2), ui.percent(row.acos), trace(row)]),
       ) : ui.el('p', entries.length ? '当前分类或关键词下没有候选。' : '暂无否词候选；不据此判断全部关键词都应保留。', 'table-empty'));
-      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${ui.number(visible.length)} / ${ui.number(entries.length)} 条 · ${ui.text(data.schema_version)} · 来源 negative-keywords.json`;
+      status.textContent = `${ui.statusPrefix(data)} · ${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${ui.number(visible.length)} / ${ui.number(entries.length)} 条 · ${ui.text(data.schema_version)} · 来源 negative-keywords.json`;
     }
     exportButton.addEventListener('click', () => {
       let url;

@@ -13,73 +13,190 @@ def _stable_row_key(row: Mapping[str, Any]) -> tuple[str, str, str]:
     return normalized.casefold(), normalized, json.dumps(dict(row), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
+def _positive_rank(value: Any) -> int | None:
+    return value if type(value) is int and value > 0 else None
+
+
+def rank_module_status(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    records = list(rows)
+    complete = bool(records) and all(
+        _positive_rank(row.get("my_organic_rank")) is not None
+        and len(row.get("benchmarks") or []) == 3
+        for row in records
+    )
+    covered = sum(
+        _positive_rank(row.get("my_organic_rank")) is not None
+        and bool(row.get("benchmarks"))
+        for row in records
+    )
+    return {
+        "status": "ready" if complete else "partial",
+        "reason": "rank_snapshot_complete" if complete else "rank_snapshot_incomplete",
+        "coverage": {"comparable_keywords": covered, "total_keywords": len(records)},
+    }
+
+
 def build_rank_benchmark(rows: Iterable[Mapping[str, Any]], *, my_asin: str | None = None) -> list[dict[str, Any]]:
     """Build Module 02 from already-normalized rank/benchmark records."""
     output: list[dict[str, Any]] = []
     for source in rows:
         row = dict(source)
-        benchmarks = [item for item in (row.get("benchmark_asins") or []) if isinstance(item, Mapping)]
-        if my_asin:
-            benchmarks = [item for item in benchmarks if item.get("asin") != my_asin]
-        benchmark = min(
-            benchmarks,
-            key=lambda item: (
-                str(item.get("asin") or ""),
-                json.dumps(dict(item), ensure_ascii=False, sort_keys=True, separators=(",", ":")),
-            ),
-        ) if benchmarks else {}
-        my_rank = row.get("organic_rank")
+        own_asin = str(my_asin or row.get("asin") or "").strip().upper() or None
+        unique: dict[str, dict[str, Any]] = {}
+        for item in (row.get("benchmark_asins") or []):
+            if not isinstance(item, Mapping):
+                continue
+            asin = str(item.get("asin") or "").strip().upper()
+            rank = _positive_rank(item.get("organic_rank"))
+            if not asin or asin == own_asin or rank is None:
+                continue
+            candidate = {**dict(item), "asin": asin, "organic_rank": rank}
+            previous = unique.get(asin)
+            if previous is None or rank < previous["organic_rank"]:
+                unique[asin] = candidate
+        benchmarks = sorted(unique.values(), key=lambda item: (item["organic_rank"], item["asin"]))[:3]
+        my_rank = _positive_rank(row.get("organic_rank"))
+        for benchmark in benchmarks:
+            benchmark["rank_gap"] = None if my_rank is None else my_rank - benchmark["organic_rank"]
+        benchmark = benchmarks[0] if benchmarks else {}
         benchmark_rank = benchmark.get("organic_rank")
-        gap = None if my_rank is None or benchmark_rank is None else int(my_rank) - int(benchmark_rank)
+        gap = None if my_rank is None or benchmark_rank is None else my_rank - benchmark_rank
+        missing = set(row.get("missing_fields") or [])
+        if my_rank is None:
+            missing.add("my_organic_rank")
+        if len(benchmarks) < 3:
+            missing.add("benchmark_asins")
         output.append({
             "keyword": row.get("keyword"),
-            "my_asin": my_asin or row.get("asin"),
+            "my_asin": own_asin,
             "my_organic_rank": my_rank,
             "my_ad_rank": row.get("ad_rank"),
+            "benchmarks": benchmarks,
+            "benchmark_count": len(benchmarks),
+            # Compatibility fields keep old report readers functional.
             "benchmark_asin": benchmark.get("asin"),
             "benchmark_organic_rank": benchmark_rank,
             "rank_gap": gap,
             "rank_change_7d": row.get("rank_change_7d"),
             "rank_change_14d": row.get("rank_change_14d"),
             "rank_change_30d": row.get("rank_change_30d"),
-            "missing_fields": sorted(set(row.get("missing_fields") or []) | ({"benchmark_organic_rank"} if benchmark and benchmark_rank is None else set())),
+            "weekly_search_volume": row.get("weekly_search_volume"),
+            "aba_search_frequency_rank": row.get("aba_search_frequency_rank"),
+            "aba_report_from_date": row.get("aba_report_from_date"),
+            "aba_report_to_date": row.get("aba_report_to_date"),
+            "missing_fields": sorted(missing),
         })
     return sorted(output, key=_stable_row_key)
 
 
 def build_negative_keywords(rows: Iterable[Mapping[str, Any]], config: Mapping[str, Any]) -> dict[str, list[dict[str, Any]]]:
-    """Classify negative-keyword candidates without ever executing them."""
+    """Classify candidates while fail-closed on relevance and phrase scope.
+
+    Relevance is deliberately a supplied business fact.  Missing/unknown
+    relevance is never upgraded by ad performance alone.  High spend is the
+    inclusive 75th percentile of this report's positive-spend rows, recorded
+    on each diagnostic row so the rule remains inspectable and reproducible.
+    """
     stop_loss = config["stop_loss"]
     evidence = config["evidence"]
+    low_cvr = config.get("diagnostics", {}).get("low_cvr")
+    records = [dict(row) for row in rows]
+    spends = sorted(float(row["spend"]) for row in records
+                    if isinstance(row.get("spend"), (int, float))
+                    and not isinstance(row.get("spend"), bool) and float(row["spend"]) > 0)
+    if spends:
+        position = (len(spends) - 1) * 0.75
+        lower, upper = int(position), min(int(position) + 1, len(spends) - 1)
+        high_spend_threshold = spends[lower] + (spends[upper] - spends[lower]) * (position - lower)
+    else:
+        high_spend_threshold = None
     exact: list[dict[str, Any]] = []
     phrase: list[dict[str, Any]] = []
     cautious: list[dict[str, Any]] = []
     pending: list[dict[str, Any]] = []
-    for source in rows:
-        row = dict(source)
-        clicks = row.get("clicks")
-        spend = row.get("spend")
-        orders = row.get("orders")
-        if clicks is None or spend is None or orders is None:
-            pending.append({**row, "negative_status": "pending_confirmation", "reason": "required_ad_fields_missing"})
+    low_cvr_high_spend: list[dict[str, Any]] = []
+    protected_converted: list[dict[str, Any]] = []
+
+    def candidate(row: Mapping[str, Any], status: str, reason: str, **extra: Any) -> dict[str, Any]:
+        relevance = row.get("relevance") if row.get("relevance") in {"related", "unrelated", "unknown"} else "unknown"
+        return {**dict(row), "relevance": relevance,
+                "relevance_source": row.get("relevance_source") or "not_provided",
+                "negative_status": status, "reason": reason,
+                "high_spend_threshold": high_spend_threshold,
+                "export_eligible": False, **extra}
+
+    for row in records:
+        clicks, spend, orders = row.get("clicks"), row.get("spend"), row.get("orders")
+        if not all(isinstance(value, (int, float)) and not isinstance(value, bool)
+                   for value in (clicks, spend, orders)):
+            pending.append(candidate(row, "pending_confirmation", "required_ad_fields_missing"))
             continue
-        clicks = float(clicks)
-        spend = float(spend)
-        orders = float(orders)
-        candidate = {**row, "negative_status": None, "reason": None}
+        clicks, spend, orders = float(clicks), float(spend), float(orders)
+        relevance = row.get("relevance") if row.get("relevance") in {"related", "unrelated", "unknown"} else "unknown"
+        cvr = orders / clicks if clicks > 0 else None
+        base = {**row, "cvr_observed": cvr}
         if orders > 0:
+            protected_converted.append(candidate(base, "protected_converted", "existing_orders_protected"))
             continue
-        if clicks >= float(stop_loss["zero_order_clicks"]) and spend >= float(stop_loss["zero_order_spend"]):
-            exact.append({**candidate, "negative_status": "exact_negative_candidate", "reason": "zero_orders_and_hard_stop_boundary"})
+        hard_stop = clicks >= float(stop_loss["zero_order_clicks"]) and spend >= float(stop_loss["zero_order_spend"])
+        if hard_stop and relevance == "unrelated":
+            exact.append(candidate(base, "exact_negative_candidate", "zero_orders_and_hard_stop_boundary",
+                                   export_eligible=True))
+            continue
+        if (low_cvr is not None and isinstance(low_cvr, (int, float)) and not isinstance(low_cvr, bool)
+                and cvr is not None and cvr < float(low_cvr)
+                and high_spend_threshold is not None and spend >= high_spend_threshold):
+            low_cvr_high_spend.append(candidate(base, "low_cvr_high_spend", "low_cvr_high_spend_review",
+                                                 low_cvr_threshold=float(low_cvr)))
+            # Keep one keyword in one operational bucket; this is a diagnostic
+            # review, not an additional negative candidate.
+            continue
+        if relevance == "unknown":
+            pending.append(candidate(base, "pending_confirmation", "relevance_unknown"))
+        elif relevance == "related":
+            cautious.append(candidate(base, "cautious", "related_relevance_protection"))
         elif clicks >= float(evidence["preliminary_clicks_min"]):
-            phrase.append({**candidate, "negative_status": "phrase_negative_candidate", "reason": "zero_orders_with_preliminary_evidence"})
+            phrase.append(candidate(base, "phrase_negative_candidate", "zero_orders_with_preliminary_evidence",
+                                    export_eligible=True))
         elif clicks > 0:
-            cautious.append({**candidate, "negative_status": "cautious", "reason": "evidence_insufficient"})
+            cautious.append(candidate(base, "cautious", "evidence_insufficient"))
         else:
-            pending.append({**candidate, "negative_status": "pending_confirmation", "reason": "no_click_evidence"})
+            pending.append(candidate(base, "pending_confirmation", "no_click_evidence"))
+
+    protected_terms = [str(row.get("keyword") or "").strip().casefold()
+                       for row in [*protected_converted, *cautious, *pending]
+                       if str(row.get("keyword") or "").strip()]
+    safe_phrase: list[dict[str, Any]] = []
+    for row in phrase:
+        phrase_key = str(row.get("keyword") or "").strip().casefold()
+        conflicts = sorted({term for term in protected_terms if term != phrase_key
+                             and f" {phrase_key} " in f" {term} "})
+        if conflicts:
+            pending.append({**row, "negative_status": "pending_confirmation",
+                            "reason": "phrase_conflicts_with_protected_keyword",
+                            "phrase_conflict_keywords": conflicts, "export_eligible": False})
+        else:
+            safe_phrase.append(row)
+
+    result = {
+        "exact_negative": exact,
+        "phrase_negative": safe_phrase,
+        "cautious": cautious,
+        "pending_confirmation": pending,
+        "low_cvr_high_spend": low_cvr_high_spend,
+        "protected_converted": protected_converted,
+    }
+    return {key: sorted(value, key=_stable_row_key) for key, value in result.items()}
+
+
+def negative_module_status(groups: Mapping[str, Any]) -> dict[str, Any]:
+    records = [row for values in groups.values() if isinstance(values, list)
+               for row in values if isinstance(row, Mapping)]
+    unknown = sum(row.get("relevance") == "unknown" for row in records)
+    missing = sum(row.get("reason") == "required_ad_fields_missing" for row in records)
+    complete = bool(records) and unknown == 0 and missing == 0
     return {
-        "exact_negative": sorted(exact, key=_stable_row_key),
-        "phrase_negative": sorted(phrase, key=_stable_row_key),
-        "cautious": sorted(cautious, key=_stable_row_key),
-        "pending_confirmation": sorted(pending, key=_stable_row_key),
+        "status": "ready" if complete else "partial",
+        "reason": "negative_classification_complete" if complete else "relevance_or_ad_fields_incomplete",
+        "coverage": {"classified_rows": len(records) - unknown - missing, "total_rows": len(records)},
     }

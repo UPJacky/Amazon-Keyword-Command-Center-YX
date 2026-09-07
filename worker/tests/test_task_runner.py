@@ -27,6 +27,15 @@ class TaskRunnerTests(unittest.TestCase):
             self.assertEqual((root / "input-meta.json").read_text(encoding="utf-8").count("input_sha256"), 1)
             self.assertIn('"rule_version": "rule-v0.1"', (root / "rules-snapshot.json").read_text(encoding="utf-8"))
 
+    def test_rank_artifact_receives_explicit_asin_and_partial_status(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result = run_task(FIXTURE, directory, "task-1", "run-1", my_asin="B012345678")
+            rank = json.loads((Path(directory) / "task-1" / "run-1" / "rank-benchmark.json").read_text(encoding="utf-8"))
+            self.assertEqual("module02-0.2", rank["schema_version"])
+            self.assertEqual("partial", rank["module_status"]["status"])
+            self.assertTrue(all(row["my_asin"] == "B012345678" for row in rank["rows"]))
+            self.assertEqual("completed", result.status)
+
     def test_run_meta_matches_report_traceability_fields(self):
         with tempfile.TemporaryDirectory() as directory:
             result = run_task(FIXTURE, directory, "task-1", "run-1", provider_snapshot_version="snapshot-v1")
@@ -103,7 +112,7 @@ class TaskRunnerTests(unittest.TestCase):
 
     def test_invalid_competitor_profile_stops_before_formal_report(self):
         with tempfile.TemporaryDirectory() as directory:
-            result = run_task(FIXTURE, directory, "task-1", "run-1", competitor_profile={"self_asin": "B000000001", "competitors": []})
+            result = run_task(FIXTURE, directory, "task-1", "run-1", competitor_profile={"self_asin": "B000000001", "competitors": [{"asin": "B000000002"}, {"asin": "B000000003"}, {"asin": "B000000004"}, {"asin": "B000000005"}]})
             self.assertEqual(result.failure_reason["code"], "COMPETITOR_PROFILE_INVALID")
             self.assertFalse(list((Path(directory) / "task-1" / "run-1").glob("report-*.json")))
 

@@ -37,7 +37,7 @@
     ]);
     body.replaceChildren();
     body.append(ui.el('p', '状态与证据均来自报告。unknown 表示尚未核验，不计为通过。当前未请求视觉模型；不会根据占位图片生成观察结论。高机会、低转化只触发检查，不证明图片存在问题。', 'notice'));
-    const meta = ui.el('p', `Schema：${ui.text(data.schema_version)} · checklist：${ui.text(data.checklist.schema_version)} · AI：${ui.text(data.checklist.ai_status)} · 已记录 Provider 调用：${ui.number(data.provider_calls)}`, 'muted');
+    const meta = ui.el('p', `Schema：${ui.text(data.schema_version)} · checklist：${ui.text(data.checklist.schema_version)} · AI：${ui.text(data.checklist.ai_status)} · 模块：${ui.text(data.module_status?.status || 'partial')} · 已记录 Provider 调用：${ui.number(data.provider_calls)}`, 'muted');
     body.append(meta);
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar'); toolbar.append(ui.el('h2', 'Checklist 与证据状态'));
@@ -63,7 +63,7 @@
         ['检查编号 / 分类', '检查问题（评价标准）', '重要度', '报告状态', '观察证据', '关联图片组'],
         visible.map(item => [ui.text(item.check_id) + ' / ' + ui.text(item.category), ui.text(item.question), ui.text(item.severity), badge(item), evidence(item), `自己：${ui.text(data.checklist.image_group_id)}；竞品：${ui.text(data.checklist.competitor_group_id)}`]),
       ) : ui.el('p', items.length ? '该状态下没有检查项。' : '暂无 checklist；等待检查标准与证据。', 'table-empty'));
-      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · 显示 ${visible.length} / ${items.length} 项检查 · 来源 listing-diagnostics.json`;
+      status.textContent = `${ui.statusPrefix(data)} · ${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · 显示 ${visible.length} / ${items.length} 项检查 · 来源 listing-diagnostics.json`;
     }
     toolbar.append(filters); panel.append(toolbar, result); body.append(panel);
     function renderImages(group, title) {

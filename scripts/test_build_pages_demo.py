@@ -246,7 +246,7 @@ class WorkbenchDemoTests(unittest.TestCase):
     def test_competitor_projection_preserves_fixture_metadata(self):
         payload = workbench_demo.build_payloads()["competitors.json"]
         source = json.loads((ROOT / workbench_demo.COMPETITOR_INPUT).read_text(encoding="utf-8"))
-        self.assertEqual(payload["schema_version"], "competitors-0.1")
+        self.assertEqual(payload["schema_version"], "competitors-0.2")
         self.assertEqual(payload["snapshot_version"], source["snapshot_version"])
         self.assertEqual(payload["self_asin"], source["self_asin"])
         self.assertEqual(len(payload["competitors"]), len(source["competitors"]))
@@ -278,7 +278,7 @@ class WorkbenchDemoTests(unittest.TestCase):
     def test_optimization_preserves_all_report_facts_rules_and_actions(self):
         payload = workbench_demo.build_payloads()["optimization-plan.json"]
         report = json.loads((ROOT / workbench_demo.REPORT_INPUT).read_text(encoding="utf-8"))
-        self.assertEqual(payload["schema_version"], "optimization-plan-0.1")
+        self.assertEqual(payload["schema_version"], "optimization-plan-0.2")
         self.assertFalse(payload["ai_may_change_action"])
         self.assertEqual(len(payload["actions"]), len(report["rows"]))
         for action, row in zip(payload["actions"], report["rows"]):

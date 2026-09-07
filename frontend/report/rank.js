@@ -14,20 +14,25 @@
     const rank = value => validRank(value) ? ui.number(value) : '—';
     const signed = value => typeof value === 'number' && Number.isFinite(value) ? (value > 0 ? '+' : '') + ui.number(value) : '—';
     const strings = value => Array.isArray(value) ? value.filter(item => typeof item === 'string' && item.trim()) : [];
+    const benchmarks = row => Array.isArray(row.benchmarks)
+      ? row.benchmarks.filter(item => item && typeof item === 'object' && validRank(item.organic_rank)).slice(0, 3)
+      : (validRank(row.benchmark_organic_rank) ? [{ asin: row.benchmark_asin, organic_rank: row.benchmark_organic_rank, rank_gap: row.rank_gap }] : []);
+    const benchmarkText = item => item ? `${ui.text(item.asin)} · #${rank(item.organic_rank)}${typeof item.rank_gap === 'number' ? ` · 差 ${signed(item.rank_gap)}` : ''}` : '—';
     const missing = row => Array.from(new Set([
       ...strings(row.missing_fields),
-      ...['my_organic_rank', 'my_ad_rank', 'benchmark_organic_rank'].filter(key => !validRank(row[key])),
-      ...['my_asin', 'benchmark_asin'].filter(key => !row[key]),
+      ...['my_organic_rank', 'my_ad_rank'].filter(key => !validRank(row[key])),
+      ...['my_asin'].filter(key => !row[key]),
+      ...(benchmarks(row).length < 3 ? ['benchmark_asins'] : []),
       ...['rank_gap', 'rank_change_7d', 'rank_change_14d', 'rank_change_30d'].filter(key => typeof row[key] !== 'number' || !Number.isFinite(row[key])),
     ]));
     ui.setMetrics([
       ['关键词', ui.number(rows.length)],
       ['有自然位', ui.number(rows.filter(row => validRank(row.my_organic_rank)).length)],
-      ['有广告位', ui.number(rows.filter(row => validRank(row.my_ad_rank)).length)],
-      ['可对比标杆', ui.number(rows.filter(row => validRank(row.my_organic_rank) && validRank(row.benchmark_organic_rank)).length)],
+      ['三标杆齐全', ui.number(rows.filter(row => benchmarks(row).length === 3).length)],
+      ['待补采', ui.number(rows.filter(row => !validRank(row.my_organic_rank) || benchmarks(row).length < 3).length)],
     ]);
     body.replaceChildren();
-    const benchmarkCount = rows.filter(row => validRank(row.my_organic_rank) && validRank(row.benchmark_organic_rank)).length;
+    const benchmarkCount = rows.filter(row => validRank(row.my_organic_rank) && benchmarks(row).length > 0).length;
     const historyCount = rows.filter(row => [row.rank_change_7d, row.rank_change_14d, row.rank_change_30d].some(value => typeof value === 'number' && Number.isFinite(value))).length;
     if (rows.length && (benchmarkCount < rows.length || historyCount < rows.length)) {
       body.append(ui.el('p', `数据覆盖不足：${rows.length} 个关键词中，仅 ${benchmarkCount} 条可对比自己与标杆自然位，${historyCount} 条有历史变化。缺失项需补采快照，当前不能形成完整标杆或趋势结论。`, 'notice'));
@@ -56,15 +61,19 @@
     function render() {
       const query = search.value.trim().toLocaleLowerCase();
       const visible = rows.filter(row => {
-        const matches = [row.keyword, row.my_asin, row.benchmark_asin].some(value => typeof value === 'string' && value.toLocaleLowerCase().includes(query));
-        return (!query || matches) && (selected === 'all' || (selected === 'ranked' && validRank(row.my_organic_rank)) || (selected === 'missing' && !validRank(row.my_organic_rank)) || (selected === 'benchmark' && validRank(row.benchmark_organic_rank)));
+        const matches = [row.keyword, row.my_asin, ...benchmarks(row).map(item => item.asin)].some(value => typeof value === 'string' && value.toLocaleLowerCase().includes(query));
+        return (!query || matches) && (selected === 'all' || (selected === 'ranked' && validRank(row.my_organic_rank)) || (selected === 'missing' && (!validRank(row.my_organic_rank) || benchmarks(row).length < 3)) || (selected === 'benchmark' && benchmarks(row).length > 0));
       });
       buttons.forEach(([key, button]) => { button.className = key === selected ? 'filter active' : 'filter'; button.setAttribute('aria-pressed', String(key === selected)); });
       result.replaceChildren(visible.length ? ui.table(
-        ['关键词', '自己 ASIN', '我的自然位', '我的广告位', '标杆 ASIN', '标杆自然位', '自然位差距', '7 天变化', '14 天变化', '30 天变化', '缺失字段'],
-        visible.map(row => [ui.text(row.keyword), ui.text(row.my_asin), rank(row.my_organic_rank), rank(row.my_ad_rank), ui.text(row.benchmark_asin), rank(row.benchmark_organic_rank), validRank(row.my_organic_rank) && validRank(row.benchmark_organic_rank) ? signed(row.rank_gap) : '—', signed(row.rank_change_7d), signed(row.rank_change_14d), signed(row.rank_change_30d), missing(row).join('、') || '—']),
+        ['关键词', '周搜索量', '统计周期', '自己 ASIN', '我的自然位', '标杆 1', '标杆 2', '标杆 3', '7 天变化', '14 天变化', '30 天变化', '缺失字段'],
+        visible.map(row => {
+          const items = benchmarks(row);
+          const period = row.aba_report_from_date || row.aba_report_to_date ? `${ui.text(row.aba_report_from_date)} 至 ${ui.text(row.aba_report_to_date)}` : '—';
+          return [ui.text(row.keyword), ui.number(row.weekly_search_volume), period, ui.text(row.my_asin), rank(row.my_organic_rank), benchmarkText(items[0]), benchmarkText(items[1]), benchmarkText(items[2]), signed(row.rank_change_7d), signed(row.rank_change_14d), signed(row.rank_change_30d), missing(row).join('、') || '—'];
+        }),
       ) : ui.el('p', rows.length ? '没有符合筛选条件的排名记录。' : '暂无排名数据；等待有排名快照的报告。', 'table-empty'));
-      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${ui.number(visible.length)} / ${ui.number(rows.length)} 条 · ${ui.text(data.schema_version)} · 来源 rank-benchmark.json`;
+      status.textContent = `${ui.statusPrefix(data)} · ${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${ui.number(visible.length)} / ${ui.number(rows.length)} 条 · ${ui.text(data.schema_version)} · 来源 rank-benchmark.json`;
     }
     search.addEventListener('input', render);
     toolbar.append(label, filters);

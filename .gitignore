@@ -16,6 +16,10 @@ runtime/private/
 # Local queues, generated storage and acceptance scratch data
 .local-acceptance-*/
 .local-worker-*/
+.local-p7-pages/
+.local-supabase-*.png
+.supabase-*.png
+tmp-*
 queue/
 storage/
 worker-storage/

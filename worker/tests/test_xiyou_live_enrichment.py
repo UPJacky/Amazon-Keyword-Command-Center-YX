@@ -66,6 +66,11 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
         _provider_result(result)
         row = result["market_rows"][0]
         self.assertEqual(37, row["competitive_difficulty"])
+        self.assertEqual(1200, row["weekly_search_volume"])
+        self.assertEqual(42, row["aba_search_frequency_rank"])
+        self.assertEqual("2026-08-23", row["aba_report_from_date"])
+        self.assertEqual("2026-08-29", row["aba_report_to_date"])
+        self.assertIsNone(row["market_search_volume"])
         self.assertEqual(1200, row["provider_observations"]["abaReport"]["weeklySearchVolume"])
         self.assertEqual("2026-08-23", row["provider_observations"]["abaReport"]["reportFromDate"])
         self.assertFalse(row["full_report_complete"])
@@ -80,7 +85,9 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
                      suggested_bid=1.2, market_opportunity_score=99, organic_rank=1)
         enrich, _, _ = self.make(response(raw))
         row = enrich(parsed("led light"), {"currency_code": "USD"})["market_rows"][0]
-        missing = MARKET_FIELDS - {"competitive_difficulty"}
+        confirmed = {"competitive_difficulty", "weekly_search_volume", "aba_search_frequency_rank",
+                     "aba_report_from_date", "aba_report_to_date"}
+        missing = MARKET_FIELDS - confirmed
         for field in missing:
             self.assertIsNone(row[field], field)
         self.assertEqual(sorted(missing), row["missing_fields"])
@@ -100,8 +107,10 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
         enrich, _, _ = self.make(response(raw))
         row = enrich(parsed("led light"), {})["market_rows"][0]
         self.assertEqual(0, row["competitive_difficulty"])
+        self.assertEqual(0, row["weekly_search_volume"])
         self.assertEqual(0, row["provider_observations"]["abaReport"]["weeklySearchVolume"])
         self.assertNotIn("competitive_difficulty", row["missing_fields"])
+        self.assertNotIn("weekly_search_volume", row["missing_fields"])
 
     def test_deduplication_cap_and_exact_join_spelling(self):
         enrich, transport, _ = self.make(max_keywords=1)

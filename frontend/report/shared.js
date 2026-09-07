@@ -52,10 +52,22 @@
   }
   function showError(error) {
     const unavailable = error?.code === 'REPORT_NOT_GENERATED';
+    const failed = error?.code === 'REPORT_MODULE_FAILED';
+    const reason = error?.details?.module_state?.reason;
+    const safeReason = typeof reason === 'string' && /^[a-z0-9_]{1,80}$/i.test(reason) ? reason : null;
     setMetrics([]);
-    document.querySelector('#module-body')?.replaceChildren(el('p', unavailable ? '该模块尚未生成可读取的真实报告。' : '报告数据暂时无法读取。请确认任务、运行记录和登录权限。', 'module-empty'));
+    const message = unavailable ? `该模块尚未生成可读取的真实报告。${safeReason ? ` 原因：${safeReason}` : ''}`
+      : failed ? `该模块生成失败。${safeReason ? ` 原因：${safeReason}` : ''}`
+      : '报告数据暂时无法读取。请确认任务、运行记录和登录权限。';
+    document.querySelector('#module-body')?.replaceChildren(el('p', message, 'module-empty'));
     const status = document.querySelector('#module-status');
-    if (status) { status.textContent = unavailable ? '真实报告尚未生成' : '加载失败 · 未生成分析结论'; status.setAttribute('role', 'alert'); }
+    if (status) { status.textContent = unavailable ? '真实报告尚未生成 · 无可读取数据' : failed ? '生成失败 · 查看失败原因' : '加载失败 · 未生成分析结论'; status.setAttribute('role', 'alert'); }
+  }
+  function statusPrefix(data) {
+    const state = data?._module_state;
+    if (state?.status === 'ready') return '数据完整';
+    if (state?.status === 'partial') return `部分数据（${text(state.reason, '原因未说明')}）`;
+    return '状态未确认';
   }
   const ready = (async () => {
     if (!await globalThis.KWCC?.ready) return false;
@@ -81,6 +93,13 @@
       });
       sidebar.replaceChildren(el('strong', '关键词作战台', 'sidebar-title'), el('p', '报告分析 · 六个独立模块', 'muted'), nav);
     }
+    const reportLinks = typeof document.querySelectorAll === 'function' ? document.querySelectorAll('.topbar a[href="index.html"]') : [];
+    reportLinks.forEach(link => {
+      const url = new URL(link.getAttribute('href'), scriptURL);
+      const current = new URL(location.href);
+      for (const key of ['task', 'run']) if (current.searchParams.get(key)) url.searchParams.set(key, current.searchParams.get(key));
+      link.href = url.href;
+    });
     return true;
   })();
   async function load(name) {
@@ -95,5 +114,5 @@
     if (!response.ok) throw new Error('artifact unavailable');
     return response.json();
   }
-  globalThis.ReportUI = Object.freeze({ ready, load, text, number, percent, money, el, metric, table, setMetrics, showError });
+  globalThis.ReportUI = Object.freeze({ ready, load, text, number, percent, money, el, metric, table, setMetrics, showError, statusPrefix });
 })();

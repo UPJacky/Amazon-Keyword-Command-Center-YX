@@ -21,7 +21,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from worker.security.path_guard import contains_link_or_reparse, is_link_or_reparse
 
-PARSER_VERSION = "ad-report-parser-0.1.0"
+PARSER_VERSION = "ad-report-parser-0.2.0"
 MONEY_TOLERANCE = Decimal("0.01")
 
 
@@ -82,7 +82,24 @@ ALIASES: Mapping[str, tuple[str, ...]] = {
     "sales": ("7天总销售额", "总销售额", "销售额", "sales", "salesamount", "revenue"),
     "orders": ("7天总订单数", "总订单数", "订单数", "订单", "orders", "order"),
     "currency": ("货币", "币种", "currency", "currencycode"),
+    # These fields are optional.  They must be carried through aggregation
+    # when present so later diagnostics can distinguish an ad entity from a
+    # search-term-only aggregate.  They never become required input fields.
+    "campaign_id": ("广告活动id", "广告活动id", "campaignid", "campaign_id"),
+    "campaign_name": ("广告活动名称", "广告活动", "campaignname", "campaign"),
+    "ad_group_id": ("广告组id", "adgroupid", "ad_group_id"),
+    "ad_group_name": ("广告组名称", "广告组", "adgroupname", "ad_group"),
+    "target_id": ("投放id", "targetid", "target_id"),
+    "target": ("投放", "投放目标", "targeting", "target"),
+    "match_type": ("匹配类型", "matchtype", "match_type", "match"),
+    "targeting_type": ("投放类型", "targetingtype", "targeting_type"),
+    "ad_type": ("广告类型", "adtype", "ad_type"),
 }
+
+ENTITY_FIELDS = (
+    "campaign_id", "campaign_name", "ad_group_id", "ad_group_name",
+    "target_id", "target", "match_type", "targeting_type", "ad_type",
+)
 
 
 def _find_column(headers: Sequence[Any], field: str) -> int | None:
@@ -105,6 +122,10 @@ def _select_header(rows: Sequence[Sequence[Any]]) -> tuple[int, list[Any], dict[
             currency = _find_column(row, "currency")
             if currency is not None:
                 columns["currency"] = currency
+            for field in ENTITY_FIELDS:
+                optional = _find_column(row, field)
+                if optional is not None:
+                    columns[field] = optional
             return row_index, list(row), columns
     raise ParseError("could not find a header containing keyword, impressions and clicks columns")
 
@@ -166,6 +187,7 @@ def _parse_once(path: Path) -> dict[str, Any]:
     valid_rows = 0
     raw_totals = {field: Decimal("0") for field in ("impressions", "clicks", "spend", "sales", "orders")}
     raw_keywords: list[str] = []
+    entity_contexts: dict[str, list[dict[str, str]]] = defaultdict(list)
 
     for row in rows[header_index + 1 :]:
         if not row or all(_is_missing(cell) for cell in row):
@@ -183,6 +205,18 @@ def _parse_once(path: Path) -> dict[str, Any]:
             values[field] = _decimal(row[index] if index < len(row) else None, field=field)
         if currency_index is not None and currency_index < len(row) and not _is_missing(row[currency_index]):
             currencies.add(_text(row[currency_index]).upper())
+        entity = {
+            field: _text(row[index])
+            for field in ENTITY_FIELDS
+            if (index := columns.get(field)) is not None
+            and index < len(row)
+            and not _is_missing(row[index])
+        }
+        if entity:
+            signature = json.dumps(entity, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            if not any(json.dumps(existing, ensure_ascii=False, sort_keys=True, separators=(",", ":")) == signature
+                       for existing in entity_contexts[keyword]):
+                entity_contexts[keyword].append(entity)
         valid_rows += 1
         raw_keywords.append(keyword)
         missing_by_keyword[keyword].update(row_missing)
@@ -210,6 +244,10 @@ def _parse_once(path: Path) -> dict[str, Any]:
         spend = _number(values["spend"]) if known["spend"] else None
         sales = _number(values["sales"]) if known["sales"] else None
         orders = _number(values["orders"]) if known["orders"] else None
+        contexts = sorted(
+            entity_contexts.get(keyword, []),
+            key=lambda value: json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
+        )
         aggregate_rows.append({
             "keyword": keyword,
             "impressions": impressions,
@@ -222,6 +260,9 @@ def _parse_once(path: Path) -> dict[str, Any]:
             "cvr": _rate(values["orders"], values["clicks"]) if all(known[field] for field in ("orders", "clicks")) else None,
             "acos": _rate(values["spend"], values["sales"]) if all(known[field] for field in ("spend", "sales")) else None,
             "roas": _rate(values["sales"], values["spend"]) if all(known[field] for field in ("sales", "spend")) else None,
+            # Empty is intentional: it means the source did not provide an
+            # ad-entity column, not that a fabricated entity was inferred.
+            "ad_entities": contexts,
         })
         if missing_fields:
             aggregate_rows[-1]["missing_fields"] = sorted(missing_fields)
@@ -250,6 +291,10 @@ def _parse_once(path: Path) -> dict[str, Any]:
         "header_mapping": {
             field: {"index": columns[field], "label": str(headers[columns[field]])}
             for field in metric_fields + ("keyword",)
+        },
+        "entity_header_mapping": {
+            field: {"index": columns[field], "label": str(headers[columns[field]])}
+            for field in ENTITY_FIELDS if field in columns
         },
         "raw_totals": {field: str(raw_totals[field]) for field in raw_totals},
         "aggregated_totals": {field: str(aggregate_totals[field]) for field in aggregate_totals},

@@ -31,6 +31,10 @@ MAX_REPORT_BYTES = 16 * 1024 * 1024
 MAX_RPC_BYTES = 1024 * 1024
 _UUID = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 _REPORT = r"report-[0-9a-f]{48}\.json"
+_MODULE_ARTIFACTS = (
+    "rank-benchmark.json", "negative-keywords.json", "competitors.json",
+    "listing-diagnostics.json", "optimization-plan.json",
+)
 _RPC_NAMES = {"kwcc_claim_run", "kwcc_heartbeat_run", "kwcc_finish_run"}
 _STAGE_TEMPLATES = {
     "new": "new_product_growth", "growth": "balanced_growth",
@@ -106,6 +110,28 @@ def _decode(raw: bytes, code: str) -> Any:
         return json.loads(raw, parse_constant=reject_constant)
     except Exception:
         raise RuntimeFailure(code) from None
+
+
+def _module_states(modules: Mapping[str, Any], report_scope: str) -> dict[str, dict[str, Any]]:
+    """Describe availability without upgrading legacy artifacts to complete."""
+    states: dict[str, dict[str, Any]] = {
+        "master-table.json": {
+            "status": "partial",
+            "reason": "advertising_only" if report_scope == "ad_only" else "full_report_not_verified",
+        }
+    }
+    for name in _MODULE_ARTIFACTS:
+        artifact = modules.get(name)
+        if artifact is None:
+            states[name] = {"status": "not_generated", "reason": "artifact_not_generated"}
+            continue
+        declared = artifact.get("module_status") if isinstance(artifact, Mapping) else None
+        if isinstance(declared, Mapping) and declared.get("status") in {"ready", "partial", "failed"}:
+            reason = declared.get("reason")
+            states[name] = {"status": declared["status"], "reason": reason if isinstance(reason, str) and reason else "module_declared_status"}
+        else:
+            states[name] = {"status": "partial", "reason": "legacy_artifact_without_status"}
+    return states
 
 
 def _uuid(value: Any, code: str = "INPUT_INVALID") -> str:
@@ -384,9 +410,10 @@ class ProductionWorker:
                 raise ValueError()
             metadata = {field: task[field] for field in ("self_asin", "store_id", "product_stage", "marketplace")
                         if isinstance(task.get(field), str) and task[field].strip()}
+            report_scope = "ad_only" if self.provider_enricher is None and self.provider_factory is None else "injected_provider_data"
             bundle = {**master, **metadata, "task_id": task["task_id"], "run_id": run["run_id"],
-                      "modules": modules, "provider_evidence": provider_state,
-                      "report_scope": "ad_only" if self.provider_enricher is None and self.provider_factory is None else "injected_provider_data",
+                      "modules": modules, "module_states": _module_states(modules, report_scope),
+                      "provider_evidence": provider_state, "report_scope": report_scope,
                       "full_report_complete": False}
             raw = _encode(bundle)
             if len(raw) > MAX_REPORT_BYTES:
@@ -479,7 +506,8 @@ class ProductionWorker:
                 try:
                     result = run_task(source, storage, task["task_id"], run["run_id"], config=cfg,
                                       provider_enricher=enrich if enricher is not None else None,
-                                      competitor_profile=self.competitor_profile)
+                                      competitor_profile=self.competitor_profile,
+                                      my_asin=task["self_asin"])
                 finally:
                     # Existing parser leaves read-only workbook cycles for GC.
                     # Release those handles before TemporaryDirectory cleanup on Windows.

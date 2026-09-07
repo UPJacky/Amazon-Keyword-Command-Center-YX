@@ -88,8 +88,9 @@ def build_payloads() -> dict[str, dict]:
                                    for row in listing.get("keyword_rows", [])],
     }
     optimization = {
-        "schema_version": "optimization-plan-0.1",
+        "schema_version": "optimization-plan-0.2",
         "ai_may_change_action": False,
+        "entity_diagnosis_contract": "entity_context_required_for_judgement",
         "actions": build_optimization_plan(report["rows"], config),
     }
     return {

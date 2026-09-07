@@ -62,6 +62,7 @@
       ['价格', row => monetary(row, 'price')], ['月销量', row => ui.number(row.monthly_sales)],
       ['评分', row => ui.number(row.rating, 1)], ['评论数', row => ui.number(row.review_count)],
       ['类目', row => display(row.category)], ['BSR', row => ui.number(row.bsr)],
+      ['数据来源', row => ui.text(row.source || data.snapshot_version)], ['采样时间', row => ui.text(row.sampled_at || data.snapshot_version)],
       ['核心关键词', row => display(row.core_keywords)], ['卖点', row => display(row.bullet_points)],
       ['有效图片 / 留底 URL', row => `${validImages(row).length} / ${imagesFor(row).length}`],
       ['未提供的比较字段', row => ['brand', 'title', 'price', 'monthly_sales', 'rating', 'review_count', 'category', 'bsr', 'bullet_points'].filter(key => row[key] == null || row[key] === '').join('、') || '—'],
@@ -98,7 +99,7 @@
         if (!urls.length) imageBody.append(ui.el('p', `${row.role === 'self' ? '自己' : '竞品'} ${ui.text(row.asin)}：尚未提供图片资料。`, 'muted'));
         urls.forEach((raw, index) => imageBody.append(imageCard(row, raw, index)));
       }
-      status.textContent = `${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · 显示 ${ui.number(visible.length)} / ${ui.number(products.length)} 个商品 · 来源 competitors.json · 本页未发起 Provider 请求`;
+      status.textContent = `${ui.statusPrefix(data)} · ${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · 显示 ${ui.number(visible.length)} / ${ui.number(products.length)} 个商品 · 来源 competitors.json · 本页未发起 Provider 请求`;
     }
     search.addEventListener('input', render);
     toolbar.append(label, filters); panel.append(toolbar, result); body.append(panel, imageSection);

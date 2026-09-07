@@ -20,7 +20,7 @@ from unittest.mock import Mock, patch
 from worker.pipeline.task_runner import run_task
 from worker.runtime.production import (
     MAX_INPUT_BYTES, ProductionWorker, RestrictedTransport, RuntimeFailure,
-    _NoRedirect, build_effective_config,
+    _NoRedirect, _module_states, build_effective_config,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -116,6 +116,17 @@ class ProductionRuntimeTests(unittest.TestCase):
         self.assertIsNone(transport.finishes[0]["p_report_path"])
         self.assertNotIn("SERVER-SECRET", json.dumps(result) + json.dumps(transport.finishes))
         return result
+
+    def test_module_state_contract_covers_ready_partial_not_generated_and_failed(self):
+        states = _module_states({
+            "rank-benchmark.json": {"module_status": {"status": "ready", "reason": "rank_snapshot_complete"}},
+            "negative-keywords.json": {},
+            "optimization-plan.json": {"module_status": {"status": "failed", "reason": "entity_input_invalid"}},
+        }, "injected_provider_data")
+        self.assertEqual("ready", states["rank-benchmark.json"]["status"])
+        self.assertEqual("partial", states["negative-keywords.json"]["status"])
+        self.assertEqual("not_generated", states["competitors.json"]["status"])
+        self.assertEqual("failed", states["optimization-plan.json"]["status"])
 
     def test_default_runtime_never_reads_credentials_or_uses_network(self):
         with patch.dict(os.environ, {"SUPABASE_URL": "invalid", "SUPABASE_SERVICE_ROLE_KEY": "SECRET"}), \
@@ -356,6 +367,9 @@ class ProductionRuntimeTests(unittest.TestCase):
         bundle = json.loads(fake.upload)
         self.assertEqual("CA", bundle["marketplace"])
         self.assertEqual(3, len(bundle["modules"]["competitors.json"]["competitors"]))
+        self.assertEqual("partial", bundle["module_states"]["competitors.json"]["status"])
+        self.assertEqual("not_generated", bundle["module_states"]["listing-diagnostics.json"]["status"])
+        self.assertEqual("partial", bundle["module_states"]["master-table.json"]["status"])
         self.assertNotIn("listing.json", bundle["modules"])
         self.assertTrue(all(row["my_organic_rank"] is None for row in bundle["modules"]["rank-benchmark.json"]["rows"]))
 

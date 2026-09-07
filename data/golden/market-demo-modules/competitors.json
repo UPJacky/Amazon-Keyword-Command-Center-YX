@@ -9,7 +9,17 @@
         "room decor"
       ],
       "image_urls": [],
-      "missing_fields": [],
+      "missing_fields": [
+        "bsr",
+        "bullet_points",
+        "category",
+        "monthly_sales",
+        "price",
+        "rating",
+        "review_count",
+        "variation_count",
+        "variations"
+      ],
       "role": "competitor",
       "title": "Demo competitor A"
     },
@@ -21,7 +31,17 @@
         "room decor"
       ],
       "image_urls": [],
-      "missing_fields": [],
+      "missing_fields": [
+        "bsr",
+        "bullet_points",
+        "category",
+        "monthly_sales",
+        "price",
+        "rating",
+        "review_count",
+        "variation_count",
+        "variations"
+      ],
       "role": "competitor",
       "title": "Demo competitor B"
     },
@@ -33,7 +53,17 @@
         "room decor"
       ],
       "image_urls": [],
-      "missing_fields": [],
+      "missing_fields": [
+        "bsr",
+        "bullet_points",
+        "category",
+        "monthly_sales",
+        "price",
+        "rating",
+        "review_count",
+        "variation_count",
+        "variations"
+      ],
       "role": "competitor",
       "title": "Demo competitor C"
     }
@@ -53,9 +83,25 @@
   "fixture_source": "data/golden/competitor-input-demo.json",
   "local_only": true,
   "marketplace": "US",
+  "missing_fields": [
+    "bsr",
+    "bullet_points",
+    "category",
+    "monthly_sales",
+    "price",
+    "rating",
+    "review_count",
+    "variation_count",
+    "variations"
+  ],
+  "module_status": {
+    "reason": "missing_product_fields",
+    "status": "partial"
+  },
   "network_calls": 0,
   "provider_calls": 0,
-  "schema_version": "competitors-0.1",
+  "schema_version": "competitors-0.2",
   "self_asin": "B000000001",
+  "self_product": null,
   "snapshot_version": "fixture-competitor-v1"
 }

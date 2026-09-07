@@ -62,6 +62,22 @@ class AdReportParserTests(unittest.TestCase):
             self.assertAlmostEqual(row["cpc"], 4 / 5)
             self.assertIsNotNone(row["acos"])
 
+    def test_optional_ad_entity_columns_are_preserved_without_becoming_required(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "entities.csv"
+            path.write_text(
+                "广告活动名称,广告组名称,投放,匹配类型,客户搜索词,展示量,点击量,花费,销售额,订单\n"
+                "Campaign A,Group A,led light,精准,led light,10,2,1.00,10,1\n"
+                "Campaign B,Group B,led light,词组,led light,5,1,0.50,0,0\n",
+                encoding="utf-8",
+            )
+            result = parse_report(path)
+            row = result["aggregated_rows"][0]
+            self.assertEqual(len(row["ad_entities"]), 2)
+            self.assertEqual({item["campaign_name"] for item in row["ad_entities"]}, {"Campaign A", "Campaign B"})
+            self.assertEqual({item["match_type"] for item in row["ad_entities"]}, {"精准", "词组"})
+            self.assertEqual(set(result["reconciliation"]["entity_header_mapping"]), {"campaign_name", "ad_group_name", "target", "match_type"})
+
     def test_zero_sales_acos_is_unknown(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "zero.csv"

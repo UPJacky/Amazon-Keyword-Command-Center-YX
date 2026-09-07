@@ -14,7 +14,8 @@ from worker.report.generate_report import build_report, shared_traceability
 from worker.report.generate_report import random_report_artifact_name
 from worker.providers.config_validation import validate_config
 from worker.rule_engine.engine import load_default_config
-from worker.report.modules import build_negative_keywords, build_rank_benchmark
+from worker.report.modules import build_negative_keywords, build_rank_benchmark, negative_module_status, rank_module_status
+from worker.diagnostics.listing_checklist import build_listing_diagnostics
 from worker.competitors.profile import build_competitor_profile
 from worker.diagnostics.optimization import build_optimization_plan
 from worker.storage.artifacts import run_root, write_json
@@ -56,7 +57,7 @@ def _write(path: Path, payload: Mapping[str, Any]) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run_id: str, config: Mapping[str, Any] | None = None, market_rows: list[Mapping[str, Any]] | None = None, provider_snapshot_version: str | None = None, competitor_profile: Mapping[str, Any] | None = None, provider_enricher: ProviderEnricher | None = None) -> TaskExecutionResult:
+def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run_id: str, config: Mapping[str, Any] | None = None, market_rows: list[Mapping[str, Any]] | None = None, provider_snapshot_version: str | None = None, competitor_profile: Mapping[str, Any] | None = None, provider_enricher: ProviderEnricher | None = None, my_asin: str | None = None) -> TaskExecutionResult:
     """Run offline by default; an explicitly injected enricher runs after gates."""
     root = run_root(storage_root, task_id, run_id)
     # A run key is immutable.  Refuse a second execution before touching any
@@ -106,6 +107,7 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
                 core_keywords=competitor_profile.get("core_keywords", []),
                 marketplace=str(competitor_profile.get("marketplace", "US")),
                 snapshot_version=competitor_profile.get("snapshot_version"),
+                self_product=competitor_profile.get("self_product"),
             )
         except (KeyError, TypeError, ValueError) as exc:
             reason = {"code": "COMPETITOR_PROFILE_INVALID", "message": str(exc), "stage": "competitors", "retryable": False}
@@ -149,9 +151,40 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
         "provider_snapshot_version": report["provider_snapshot_version"],
         "effective_config": effective_config,
     })
-    _write(root / "rank-benchmark.json", {"schema_version": "module02-0.1", "rows": build_rank_benchmark(report["rows"])})
-    _write(root / "negative-keywords.json", {"schema_version": "module03-0.1", "write_back": False, **build_negative_keywords(report["rows"], effective_config)})
-    _write(root / "optimization-plan.json", {"schema_version": "optimization-plan-0.1", "ai_may_change_action": False, "actions": build_optimization_plan(report["rows"], effective_config)})
+    rank_rows = build_rank_benchmark(report["rows"], my_asin=my_asin)
+    _write(root / "rank-benchmark.json", {
+        "schema_version": "module02-0.2",
+        "module_status": rank_module_status(rank_rows),
+        "rows": rank_rows,
+    })
+    negative_groups = build_negative_keywords(report["rows"], effective_config)
+    _write(root / "negative-keywords.json", {
+        "schema_version": "module03-0.2", "write_back": False,
+        "module_status": negative_module_status(negative_groups), **negative_groups,
+    })
+    self_images = []
+    competitor_images = []
+    if isinstance(competitor_profile, Mapping):
+        own = competitor_profile.get("self_product")
+        if isinstance(own, Mapping):
+            for index, url in enumerate(own.get("image_urls") or [], start=1):
+                if isinstance(url, str) and url.strip():
+                    self_images.append({"image_id": f"self-image-{index}", "url": url, "position": index, "source": own.get("source"), "sampled_at": own.get("sampled_at")})
+        for competitor in competitor_profile.get("competitors", []):
+            if isinstance(competitor, Mapping):
+                for index, url in enumerate(competitor.get("image_urls") or [], start=1):
+                    if isinstance(url, str) and url.strip():
+                        competitor_images.append({"image_id": f"{competitor.get('asin', 'competitor')}-image-{index}", "url": url, "position": index, "source": competitor.get("source"), "sampled_at": competitor.get("sampled_at")})
+    _write(root / "listing-diagnostics.json", build_listing_diagnostics(
+        self_images=self_images, competitor_images=competitor_images,
+        keyword_rows=report["rows"], config=effective_config,
+    ))
+    _write(root / "optimization-plan.json", {
+        "schema_version": "optimization-plan-0.2",
+        "ai_may_change_action": False,
+        "entity_diagnosis_contract": "entity_context_required_for_judgement",
+        "actions": build_optimization_plan(report["rows"], effective_config),
+    })
     if validated_competitor_profile is not None:
         _write(root / "competitors.json", validated_competitor_profile)
     # Keep the run manifest aligned with every report-0.2 artifact.  The

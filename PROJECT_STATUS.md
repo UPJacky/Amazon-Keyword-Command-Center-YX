@@ -1,20 +1,31 @@
 ---
 project: Amazon-Keyword-Command-Center-YX
 document_type: project_status
-version: 0.1
-updated_at: 2026-09-04
-current_phase: Phase 8 / local-deployment-audit
-status: project_complete
-execution_state: PROJECT_COMPLETE
-current_objective: "阶段 8 生产发布与真实端到端验收已完成；登录页、工具页和真实报告页地址栏证据已齐"
-next_safe_action: "等待新的项目需求；若新增真实市场、竞品、图片或广告结构数据，再按新增输入开启下一轮任务"
-stop_reason: "PROJECT_COMPLETE：17/17 任务完成；本地 UAT、对账/抽词、生产 Gateway/Worker、私有报告 fetch、报告门禁、未登录 API 拒绝、Pages 发布和带地址栏报告截图均已登记。"
-last_action_fingerprint: "live-gateway-worker-pages-e2e-verified; login-tool-report-address-bar-evidence-valid; report-fetch-200; reconciliation-zero"
-verified_gate_snapshot_current: "gateway=deployed_exact_origin; auth=200; rls=two_users_own_only_cross_store_zero_write_403; storage=private_own_read_200_cross_user_denied; worker=completed; report=random_private_object_fetch_rendered; pages=live_root_tool_report_200; anonymous_report=redirect_login; unauth_api=401_AUTH_REQUIRED; xiyou=local_5xx_only; live_report_scope=ad_only_missing_market_competitor_image; address_bar_screenshots=login_tool_report_valid; report_content=91_rows_5123_10_spend_1578_orders_ctr_0_7_reconciliation_zero"
-local_safe_queue: empty
+version: 0.2
+updated_at: 2026-09-07
+current_phase: Phase 9 / six-module-data-completion
+status: external_gate_in_progress
+execution_state: RUNNING
+current_objective: "Phase 9 六模块补全与报告工作台已完成本地实现和验收，已完成一次新的真实端到端 run，继续处理剩余真实数据 Gate"
+next_safe_action: "完成 phase8-ui-remediation 本地前端契约、构建审计和回归后原子领取下一个任务"
+stop_reason: ""
+last_action_fingerprint: "production-live-deployment-claimed; live-run-70092506-62f00837-module-audit"
+verified_gate_snapshot_current: "phase9-local-modules=p2-p7-verified; release-readiness=verified; phase8-local-gate=verified; live_run=completed; report_fetch=private; module_data=partial_explicit"
+local_safe_queue: in_progress
 external_blockers_only: false
-verified_gate_snapshot: "worker=269; frontend=7; orchestration=25; continuous=63; uat=20/20; pages=57; live_candidate=49; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0"
+verified_gate_snapshot: "worker=281; frontend=8; orchestration=25; continuous=63; uat=20/20; pages=57; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0; secret_value_hits=0"
 ---
+
+## 新真实端到端复核（2026-09-07）
+
+- 已在 Edge 登录并读取授权店铺；通过工具页只提交 1 次新的真实任务，task=`70092506-dad3-480b-acfb-9b7e428957a4`，run=`62f00837-bbe2-415d-83bc-5b08969b4666`。
+- 任务从 `processing/ingestion` 完成到 `completed/report`；输入对象落在 private inputs bucket，任务页可见完成状态和报告入口，未发生重复提交。
+- 报告首页通过前端私有 fetch 渲染 91 个搜索词、广告花费 `$5,123.10`、广告订单 `1,578`、整体 CTR `0.7%`，并显示对账差值为 0。
+- 自然位模块加载 `91 / 91` 条，但 0 条有自然位、0 条有标杆位次；页面明确展示缺失字段并禁止推算趋势。
+- 否定词模块加载 `28 / 28` 条：精准否定 0、词组否定 24、慎否 4、待确认 0；候选保持人工复核，不写入 Amazon。
+- 竞对对比与图片/卖点诊断模块均明确显示“真实报告尚未生成”；未以空白页面冒充完成。
+- 广告诊断与优化模块加载 `91 / 91` 个动作，但追溯字段待补 87、观察退出待补 91；页面明确禁止执行 Amazon 写入。
+- 本次验收结论：登录、RLS 读取、真实上传、Worker 处理、私有报告 fetch 和显式缺口展示均通过；完整六模块真实业务数据仍未完成，不能标记项目完成。
 
 ## 历史中间状态（2026-09-01）
 
