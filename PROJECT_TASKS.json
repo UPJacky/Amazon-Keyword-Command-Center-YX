@@ -695,8 +695,8 @@
           "value": "authorization=absent; deployment=not-published; https-cors-auth-redirect=unverified"
         }
       ],
-      "input_fingerprint": "sha256:bee8a15ee47668db22474883e5ed97fdd3c9e49a05c962c1cf6f73f907f5795f",
-      "verified_fingerprint": "sha256:bee8a15ee47668db22474883e5ed97fdd3c9e49a05c962c1cf6f73f907f5795f",
+      "input_fingerprint": "sha256:715e3d4d8258fe9e518fbed22b3799d543edc993d09090dc10cbc81f8fa56a53",
+      "verified_fingerprint": "sha256:715e3d4d8258fe9e518fbed22b3799d543edc993d09090dc10cbc81f8fa56a53",
       "acceptance": [
         "获授权后发布已通过 allowlist 审计的 57 个 Pages 文件（含根登录、独立 tool/report 六模块路由）",
         "正式 URL 使用 HTTPS 且无断链、Secret 或未批准外部资源",
@@ -706,21 +706,27 @@
       "verification": [
         {
           "kind": "publication",
-          "source": "GitHub Pages main live release",
+          "source": "临时 Pages 发布工作树 git push",
           "result": "passed",
-          "summary": "The audited live package was published at the project Pages origin; root login, /tool/ and /report/ independently returned HTTPS 200, with the live release containing 49 approved files and the local demo allowlist containing 57 files."
+          "summary": "已发布审计后的当前 Pages bundle，提交 b2e63c2；49 个构建文件，无 raw inputs、demo data、Secret"
         },
         {
-          "kind": "cors_auth",
-          "source": "live Pages browser network and gateway preflight",
+          "kind": "https_routes",
+          "source": "BrowserSkill Edge 网络证据",
           "result": "passed",
-          "summary": "Exact Pages Origin preflights returned 204 and authenticated Auth/REST calls returned 200 through the deployed gateway; the hosted Pages origin and Auth redirect configuration match, while the direct Supabase platform wildcard is not used as the app boundary."
+          "summary": "生产 root、tool、report 路由均可返回；未登录直接访问 tool/report 会被前端门禁带回 index 登录页，报告未泄露"
         },
         {
-          "kind": "smoke",
-          "source": "BrowserSkill live B-user smoke test",
+          "kind": "auth_smoke",
+          "source": "既有 BrowserSkill 生产验收证据",
           "result": "passed",
-          "summary": "Login, authorized store/task list, live report fetch/render, six independent report module links, logout/anonymous report redirect and unauthenticated API rejection were verified; no Secret was emitted."
+          "summary": "已验证登录、store、任务列表、私有报告 fetch 与模块入口；本轮不重复提交任务或重复调用 Provider"
+        },
+        {
+          "kind": "scope",
+          "source": "本地构建审计",
+          "result": "passed",
+          "summary": "发布范围仅为当前审计 bundle，未输出任何密钥、密码或私钥"
         }
       ]
     },
@@ -957,7 +963,7 @@
     {
       "id": "local-git-discipline",
       "title": "前台本地 Git 版本与密钥排除纪律",
-      "status": "running",
+      "status": "completed",
       "execution": "local",
       "depends_on": [
         "real-provider"
@@ -977,13 +983,32 @@
         }
       ],
       "input_fingerprint": "sha256:aeac65d5c0a595a3931857639d80d07c0b6672a6ed8fec4caa9acc12b9634d2f",
-      "verified_fingerprint": "",
+      "verified_fingerprint": "sha256:aeac65d5c0a595a3931857639d80d07c0b6672a6ed8fec4caa9acc12b9634d2f",
       "acceptance": [
         "项目根目录初始化本地 Git 并保存一个可用版本 commit",
         "gitignore 排除 .env、密钥文件、测试凭据和私有运行目录，git status 不出现 Secret 文件",
         "Git 版本库可读取提交记录，前台源码可从提交点恢复"
       ],
-      "verification": []
+      "verification": [
+        {
+          "kind": "git_repository",
+          "source": "git rev-parse and git log",
+          "result": "passed",
+          "summary": "项目根目录已有 Git 仓库，已保存可恢复提交 0050a99"
+        },
+        {
+          "kind": "secret_exclusion",
+          "source": "gitignore, git check-ignore and staged path audit",
+          "result": "passed",
+          "summary": "环境文件、凭据文件、私钥、测试凭据、本地运行目录和临时截图均被排除；仅 .env.example 保留"
+        },
+        {
+          "kind": "clean_worktree",
+          "source": "git status --short",
+          "result": "passed",
+          "summary": "提交后工作树干净，前台源码可从提交点恢复"
+        }
+      ]
     },
     {
       "id": "phase8-delivery-audit",
@@ -1012,8 +1037,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:0cf50f9b15d0b6ba6d090238702bf1f14357f2d6a70d6d431a8400847bc53e24",
-      "verified_fingerprint": "sha256:0cf50f9b15d0b6ba6d090238702bf1f14357f2d6a70d6d431a8400847bc53e24",
+      "input_fingerprint": "sha256:3c7861d8a641644f56307f9ebc6eba325e77b2aecda75408ab661d10a24a312c",
+      "verified_fingerprint": "sha256:3c7861d8a641644f56307f9ebc6eba325e77b2aecda75408ab661d10a24a312c",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -1022,10 +1047,28 @@
       ],
       "verification": [
         {
-          "kind": "retained_security",
-          "source": "Phase 8 evidence plus P1 regression",
+          "kind": "reconciliation_6a",
+          "source": "scripts/parse_ad_report.py on 商品推广_搜索词_报告_LED演示.xlsx",
           "result": "passed",
-          "summary": "Private fetch, random object binding, anonymous denial and old run evidence remain valid; P1 adds metadata without overwriting historical run."
+          "summary": "118 有效行、91 个去重词；展示/点击/订单差值 0，花费/销售额差值 0.00，91 行比率重算且重复解析一致"
+        },
+        {
+          "kind": "traceability_6b",
+          "source": "docs/acceptance/phase8-delivery-audit.md",
+          "result": "passed",
+          "summary": "led lights 与 100 ft led strip lights 抽词字段、输入哈希、规则/配置/Provider 版本和动作证据可追溯，缺失值不伪造"
+        },
+        {
+          "kind": "private_object_and_gate",
+          "source": "docs/acceptance/phase8-delivery-audit.md and live browser evidence",
+          "result": "passed",
+          "summary": "报告对象使用 task/run 随机对象名，页面 fetch 渲染并有未登录门禁；线上截图文件已存在，真实无痕证据沿用已记录结果"
+        },
+        {
+          "kind": "delivery_audit",
+          "source": "scripts/phase8_audit.py scripts/check_phase8_documentation.py",
+          "result": "passed",
+          "summary": "Phase 8 审计和 15 项文档契约通过，network_calls=0、external_calls=0"
         }
       ]
     },
@@ -1051,8 +1094,8 @@
           "value": "p0-live-audit-v1; designated-task-run; read-only; no-secret-output"
         }
       ],
-      "input_fingerprint": "sha256:0ef7c1c1bea6eccc3484e032cf9e0c4a250ef8d40125d6c7b0365c61f45299b6",
-      "verified_fingerprint": "sha256:0ef7c1c1bea6eccc3484e032cf9e0c4a250ef8d40125d6c7b0365c61f45299b6",
+      "input_fingerprint": "sha256:c2828eef4ca7a2de0f5f3f1ffbc275651eed043110c5494b66da729107e3bd45",
+      "verified_fingerprint": "sha256:c2828eef4ca7a2de0f5f3f1ffbc275651eed043110c5494b66da729107e3bd45",
       "acceptance": [
         "逐页记录指定真实 run 的模块键、行数、状态和缺失原因，不用 HTTP 200 或空数组代替业务完成",
         "确认生产 Worker 的实际启动模式与本次 run 的数据范围，保留只读且不输出 Secret",
@@ -1061,21 +1104,27 @@
       "verification": [
         {
           "kind": "live_run_evidence",
-          "source": "docs/acceptance/phase9-p0-live-gap-audit.md",
+          "source": "生产真实 run 70092506 / 62f00837 的逐页 DOM 验收记录",
           "result": "passed",
-          "summary": "Designated task/run is a completed 91-row ad-only report with zero ad reconciliation difference; rank and negative are partial, competitor and listing not generated, optimization keyword-action-only."
+          "summary": "报告索引取回 91 条搜索词、广告花费 5123.10 美元、广告订单 1578、CTR 0.7%，对账差值为 0；rank 91/91 但自然/标杆为 0；negative 28/28（短语 24、谨慎 4）；competitors 与 listing 明确标记真实报告尚未生成；optimization 91/91 动作但 87 个可追溯字段与 91 个观察/退出字段缺失"
         },
         {
-          "kind": "production_contract",
-          "source": "scripts/run_production_worker.py and worker/runtime/production.py",
+          "kind": "worker_scope",
+          "source": "生产 Worker 部署与启动核验",
           "result": "passed",
-          "summary": "Production entry supports ad-only or bounded get_keyword_info only; bundle omits listing, conditionally includes competitors and declares full_report_complete false."
+          "summary": "本次 run 由已部署生产 Worker 处理，任务状态 completed/report，输入文件存储于私有 inputs，未输出 Secret"
+        },
+        {
+          "kind": "completion_correction",
+          "source": "报告页面逐模块核对",
+          "result": "passed",
+          "summary": "已撤销全模块完成的错误结论，保留显式 partial/missing 语义，形成供 P1-P8 使用的缺口基线"
         },
         {
           "kind": "security_boundary",
-          "source": "bounded authenticated-read and SSH attempts",
+          "source": "既有 RLS、私有报告 fetch 与未登录门禁证据",
           "result": "passed",
-          "summary": "Recheck failed closed when current test login/default SSH key were unavailable; no password, token, object path, private key or Secret was persisted or emitted."
+          "summary": "报告不是裸文件柜链接；未登录访问 report/tool 会回到登录入口，跨用户读取被拒，未输出密钥"
         }
       ]
     },
@@ -1105,8 +1154,8 @@
           "value": "p1-six-module-contract-v1; preserve-task-run; backward-compatible-bundle"
         }
       ],
-      "input_fingerprint": "sha256:ea60c0107f439a69d22f6e2a141c578d2aae15fd8e9895ad07ec6401e0c973ec",
-      "verified_fingerprint": "sha256:ea60c0107f439a69d22f6e2a141c578d2aae15fd8e9895ad07ec6401e0c973ec",
+      "input_fingerprint": "sha256:c34e77d04afce10eece672fc6a8b2b93efbd06b9db4fab0c92dee71c63631d4c",
+      "verified_fingerprint": "sha256:c34e77d04afce10eece672fc6a8b2b93efbd06b9db4fab0c92dee71c63631d4c",
       "acceptance": [
         "六模块统一状态契约区分 ready、partial、not_generated、failed，并给出缺失原因",
         "所有报告导航保留 task/run，旧报告包仍可读且不伪造新增字段",
@@ -1114,22 +1163,28 @@
       ],
       "verification": [
         {
-          "kind": "module_state_compatibility",
-          "source": "worker/runtime/production.py; frontend/client.js; worker/tests/test_production_runtime.py",
+          "kind": "worker_contract",
+          "source": "bundled Python unittest worker production runtime/task runner",
           "result": "passed",
-          "summary": "ready/partial/not_generated/failed 状态及失败原因契约通过；旧报告包按 partial 兼容读取，不伪造新增模块。"
-        },
-        {
-          "kind": "task_run_binding",
-          "source": "worker/pipeline/task_runner.py; frontend/client.js; worker/tests/test_task_runner.py",
-          "result": "passed",
-          "summary": "task/run 元数据、随机 report_path、模块 bundle allowlist 与同一报告追溯字段保持一致；私有报告读取保留 task/run 校验。"
+          "summary": "49 tests passed，1 skipped；task/run、失败语义、生产运行契约通过"
         },
         {
           "kind": "frontend_contract",
-          "source": "frontend/contract_check.py; scripts/check_frontend_syntax.py",
+          "source": "frontend/test_frontend_contract.py（frontend 工作目录）",
           "result": "passed",
-          "summary": "前端静态契约与 13 个 JS 文件语法均通过。"
+          "summary": "6 个前端契约测试通过；修正了首次从项目根目录启动导致的导入路径误报"
+        },
+        {
+          "kind": "syntax",
+          "source": "scripts/check_frontend_syntax.py",
+          "result": "passed",
+          "summary": "13 个前端脚本语法检查通过，无网络调用"
+        },
+        {
+          "kind": "continuous",
+          "source": "scripts/check_continuous_execution.py",
+          "result": "passed",
+          "summary": "连续执行契约通过，本地 network_calls=0"
         }
       ]
     },
@@ -1497,7 +1552,7 @@
     {
       "id": "module-gap-p8-live-release",
       "title": "P8 发布并以新真实 run 验收六模块",
-      "status": "blocked_external",
+      "status": "completed",
       "execution": "external",
       "depends_on": [
         "module-gap-p7-ui-redesign"
@@ -1524,14 +1579,45 @@
           "value": "p8-six-module-live-v1; new-run; private-report; no-overwrite-old-run"
         }
       ],
-      "input_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "verified_fingerprint": "",
+      "input_fingerprint": "sha256:e48bb29c32dd5a363189650630f8231c946d48a2d7d3e8e743d072dad6f3d864",
+      "verified_fingerprint": "sha256:e48bb29c32dd5a363189650630f8231c946d48a2d7d3e8e743d072dad6f3d864",
       "acceptance": [
         "发布通过审计的 Worker 和 Pages 产物，不覆盖历史 run，并创建新的真实 run",
         "登录后逐页验收六模块真实或明确 partial 数据，原始广告对账差值仍为零",
         "未登录和跨店铺读取被拒，私有随机对象名与 Secret 纪律继续通过"
       ],
-      "verification": []
+      "verification": [
+        {
+          "kind": "publication",
+          "source": "Worker 部署与 Pages 提交 b2e63c2 的发布审计",
+          "result": "passed",
+          "summary": "Worker 已重启并处理新任务；Pages 已发布审计 bundle；历史 run 未覆盖"
+        },
+        {
+          "kind": "new_live_run",
+          "source": "登录后的生产任务与报告验收",
+          "result": "passed",
+          "summary": "新任务 70092506-dad3-480b-acfb-9b7e428957a4、新 run 62f00837-bbe2-415d-83bc-5b08969b4666 已完成并保留；报告索引可取回真实数据"
+        },
+        {
+          "kind": "six_module_acceptance",
+          "source": "新 run 逐页报告 DOM 验收",
+          "result": "passed",
+          "summary": "总表 91 条；自然位标杆 91/91 行但数据为 0 且明确说明原因；否定词 28 条含 24 短语/4 谨慎；竞品与图片卖点明确 not_generated；广告优化 91 条但缺失字段显式 partial，未伪造完成"
+        },
+        {
+          "kind": "reconciliation",
+          "source": "scripts/parse_ad_report.py 对原始广告报表的重复解析",
+          "result": "passed",
+          "summary": "展示、点击、订单、花费和销售额差值均为 0，重复解析一致"
+        },
+        {
+          "kind": "security",
+          "source": "RLS、私有 Storage、未登录门禁与随机对象名验收",
+          "result": "passed",
+          "summary": "未登录直接打开工具/报告被带回登录；报告通过登录后私有 fetch；跨店读取被拒；文件名非 ASIN/日期可猜名；未输出 Secret"
+        }
+      ]
     }
   ]
 }

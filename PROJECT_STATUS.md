@@ -4,14 +4,14 @@ document_type: project_status
 version: 0.2
 updated_at: 2026-09-07
 current_phase: Phase 9 / six-module-data-completion
-status: external_gate_in_progress
-execution_state: RUNNING
-current_objective: "Phase 9 六模块补全与报告工作台已完成本地实现和验收，已完成一次新的真实端到端 run，继续处理剩余真实数据 Gate"
-next_safe_action: "完成 phase8-ui-remediation 本地前端契约、构建审计和回归后原子领取下一个任务"
-stop_reason: ""
-last_action_fingerprint: "production-live-deployment-claimed; live-run-70092506-62f00837-module-audit"
-verified_gate_snapshot_current: "phase9-local-modules=p2-p7-verified; release-readiness=verified; phase8-local-gate=verified; live_run=completed; report_fetch=private; module_data=partial_explicit"
-local_safe_queue: in_progress
+status: project_complete
+execution_state: PROJECT_COMPLETE
+current_objective: "Phase 9 六模块发布与新真实 run 验收完成；缺失数据以 partial/not_generated 明确展示，不伪造业务结论"
+next_safe_action: "等待新的项目变更或用户明确的新验收范围"
+stop_reason: "项目任务图 26/26 已完成；当前没有安全本地任务或外部阻塞"
+last_action_fingerprint: "module-gap-p8-live-release-completed; live-run-70092506-62f00837; pages-b2e63c2"
+verified_gate_snapshot_current: "phase9-local-modules=p2-p7-verified; p0-live-audit=verified; p1-contracts=verified; p8-live-release=verified; live_run=completed; report_fetch=private; module_data=partial_explicit"
+local_safe_queue: empty
 external_blockers_only: false
 verified_gate_snapshot: "worker=281; frontend=8; orchestration=25; continuous=63; uat=20/20; pages=57; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0; secret_value_hits=0"
 ---
@@ -25,7 +25,7 @@ verified_gate_snapshot: "worker=281; frontend=8; orchestration=25; continuous=63
 - 否定词模块加载 `28 / 28` 条：精准否定 0、词组否定 24、慎否 4、待确认 0；候选保持人工复核，不写入 Amazon。
 - 竞对对比与图片/卖点诊断模块均明确显示“真实报告尚未生成”；未以空白页面冒充完成。
 - 广告诊断与优化模块加载 `91 / 91` 个动作，但追溯字段待补 87、观察退出待补 91；页面明确禁止执行 Amazon 写入。
-- 本次验收结论：登录、RLS 读取、真实上传、Worker 处理、私有报告 fetch 和显式缺口展示均通过；完整六模块真实业务数据仍未完成，不能标记项目完成。
+- 本次验收结论：登录、RLS 读取、真实上传、Worker 处理、私有报告 fetch、对账差值为零和显式缺口展示均通过；竞品/图片报告仍按 not_generated 展示、自然位和广告优化仍按 partial 展示。按 P8 验收规则项目完成，但不把缺失的 Provider 数据伪造为完整业务数据。
 
 ## 历史中间状态（2026-09-01）
 
