@@ -2284,7 +2284,7 @@
     {
       "id": "lunu04-e19",
       "title": "E19 生产新 run",
-      "status": "pending",
+      "status": "blocked_external",
       "execution": "external",
       "depends_on": [
         "lunu04-e17",
@@ -2308,13 +2308,20 @@
           "value": "lunu04-e19; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "input_fingerprint": "sha256:ddd9cb01e37289ea274c9c984613e6b77046306a62865f1d5385c18bc82e140f",
       "verified_fingerprint": "",
       "acceptance": [
         "E19 生产新 run按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
-      "verification": []
+      "verification": [
+        {
+          "kind": "external_block",
+          "source": "current-run-c83a6bee-205d-41f7-803a-2c1f0a5e132f",
+          "result": "passed",
+          "summary": "真实新 run、私有报告读取、Provider 注入分支和对账差值零均已验证；竞品 artifact 未生成，图片观察证据缺失，full_report_complete=false，不能关闭 E19/E20。"
+        }
+      ]
     },
     {
       "id": "lunu04-e20",
