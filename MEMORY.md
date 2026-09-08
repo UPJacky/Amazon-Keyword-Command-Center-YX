@@ -30,7 +30,7 @@
 - 2026-09-02：在已确认工具名后完成一次只读 `get_keyword_info` 样本：HTTP/业务状态 200，返回字段结构有效，观察到 `cost_credits=1`，业务调用 1 次、失败 0、限流 0；缓存/重复、429/5xx、成本单位和缺失值语义仍未实测。
 - 2026-09-02：追加 5 次授权范围内只读调用（重复基础指标、ABA 趋势、ASIN 信息、两组无结果边界）；均状态 200、各 1 credit，累计业务调用 6 次、失败 0、限流 0；无结果字段保持 JSON `null`，详细快照见 `docs/provider-snapshots/xiyou-tools-list-20260902.md`。
 - 2026-09-02：用户新授权后完成 3 轮、5 次真实只读请求：重复 `get_keyword_info` 两次均状态 200、各 1 credit、`cache_hits=0`，响应摘要相同；没有触发 429/5xx，未观察到成本/限流/版本响应头。快照已更新，剩余真实 Gate 为成本货币换算、429/5xx 和独立版本字段。
-- 2026-09-07：完整本地 UAT 20/20 Gate，Worker 281 项（12 项环境跳过）、前端 8 项（含 Node 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增上传、策略版本、精确Origin网关、生产Worker和西柚有界关键词指标均已完成本地回归，真实部署证据另见项目状态。
+- 2026-09-08：完整本地 UAT 20/20 Gate，Worker 299 项（12 项环境跳过）、前端 8 项（含 Node 场景）、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。新增份额异常值拒绝回归与演示优化 artifact 重建已完成，真实部署证据另见项目状态。
 - 真实 Supabase 已执行 003；显式 public schema 下七张表与 has_store_access 的匿名请求全部返回 401/42501。后置双用户复验已在临时项目通过：A/B 各自仅见授权店铺、任务和运行记录，跨店铺读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 的 A/B 自有读取、跨店/匿名/无效令牌拒绝矩阵也已通过；凭据未持久化。
 - 前端显式 live Auth/任务/策略读取、私有报告对象读取与 Gateway、Provider 缓存预算与流水线注入已实现并通过 fake 集成；上传、策略写入和真实私有报告前端仍明确禁用，不能假报上线。临时 Supabase 项目的历史 003/RLS/Storage 证据仍保留，但新版六模块尚未重新发布或做生产链复验；西柚无 5xx 测试接口，按用户确认以本地 fake transport 验收。
 - 本轮最终监督器：BLOCKED_EXTERNAL，本地任务无可执行项；Supabase RLS 与私有 Storage 已完成当前项目复验，GitHub Pages 严格精确 CORS 仍是唯一外部阻塞。`supabase-live-evidence-20260831.md` 已追加当前项目证据；不把平台 wildcard 冒充精确 Origin 配置。

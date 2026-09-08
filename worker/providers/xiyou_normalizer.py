@@ -9,6 +9,31 @@ MISSING = None
 AD_POSITION_CODES = {"sp", "sb", "sbv"}
 
 
+def _share_total(top3: list[Mapping[str, Any]], field: str) -> float | None:
+    """Return a valid percentage total; reject malformed market shares."""
+    if not top3:
+        return MISSING
+    total = 0.0
+    for item in top3:
+        if not isinstance(item, Mapping):
+            continue
+        value = item.get(field)
+        if value is None:
+            continue
+        if isinstance(value, bool):
+            raise ValueError(f"{field} must be a finite percentage")
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            raise ValueError(f"{field} must be a finite percentage") from None
+        if number != number or number in (float("inf"), float("-inf")) or not 0 <= number <= 100:
+            raise ValueError(f"{field} must be between 0 and 100")
+        total += number
+    if total > 100:
+        raise ValueError(f"{field} total exceeds 100 percent")
+    return total
+
+
 def _rank(records: Iterable[Mapping[str, Any]], codes: set[str]) -> int | None:
     values: list[int] = []
     for record in records:
@@ -34,8 +59,8 @@ def normalize_keyword_record(raw: Mapping[str, Any], *, keyword: str, asin: str)
         missing.extend(["top3_asins", "top3_click_share", "top3_conversion_share"])
         top_asins = []
     top3 = top_asins[:3]
-    top3_click_share = sum(float(item.get("clickShare", 0) or 0) for item in top3 if isinstance(item, Mapping)) if top3 else MISSING
-    top3_conversion_share = sum(float(item.get("conversionShare", 0) or 0) for item in top3 if isinstance(item, Mapping)) if top3 else MISSING
+    top3_click_share = _share_total(top3, "clickShare")
+    top3_conversion_share = _share_total(top3, "conversionShare")
     fields = {
         "keyword": keyword,
         "asin": asin,
@@ -56,4 +81,3 @@ def normalize_keyword_record(raw: Mapping[str, Any], *, keyword: str, asin: str)
             missing.append(field)
     fields["missing_fields"] = sorted(set(missing))
     return fields
-

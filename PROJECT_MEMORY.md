@@ -76,7 +76,7 @@ language: zh-CN
 
 ## 当前验证快照
 
-- 2026-09-07：完整 UAT Worker 281 项（12 项环境跳过）、前端 8 项（含 Node 场景），20/20 Gate、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。生产接入与 Provider 语义已有真实证据，六模块业务数据仍按新 run 的显式待补状态处理。
+- 2026-09-08：完整 UAT Worker 299 项（12 项环境跳过）、前端 8 项（含 Node 场景），20/20 Gate、连续执行 63 项、UAT 编排契约 25 项、Pages demo 57 文件/live候选49文件、文档 15 项通过；本地 network_calls=0、external_calls=0、Secret=0。生产接入与 Provider 语义已有真实证据，六模块业务数据仍按新 run 的显式待补状态处理。
 - Supabase 003 已执行；public schema 的七表和辅助函数匿名 HTTP 均为 401/42501。默认 Data API schema 为 api，客户端显式使用 public。迁移后双用户矩阵已复验：A/B 各自仅见授权店铺、任务和运行记录，跨店读取为 0，越权写入 HTTP 403，匿名读取 HTTP 401；私有 reports Storage 读取矩阵也已通过。
 - 默认 demo 与显式 live 分离，Auth/任务/策略读取、私有对象绑定与 Gateway、Provider 预算/缓存和流水线注入的本地链路已通过验证；禁用未配置的上传/策略写入/真实私有报告前端。六模块本地交付已收口，但新版生产上传→Worker→私有报告链及真实外部复验仍未完成。详情见 `docs/acceptance/production-adapters-local.md`。
 - 本轮最终状态 BLOCKED_EXTERNAL：本地任务无可执行项；Supabase RLS、私有 Storage 和新版 GitHub Pages 发布/复验保留为外部 Gate。真实 Provider 的 5xx 按用户确认以本地 fake transport 验收，不再重复声称存在西柚测试接口；心跳在终止态暂停，未将项目标记完成。

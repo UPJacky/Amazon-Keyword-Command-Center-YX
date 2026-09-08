@@ -21,7 +21,17 @@ class XiyouNormalizerTests(unittest.TestCase):
         self.assertIn("organic_rank", result["missing_fields"])
         self.assertNotEqual(result["organic_rank"], 0)
 
+    def test_invalid_share_total_is_rejected_instead_of_clipped(self):
+        with self.assertRaisesRegex(ValueError, "total exceeds 100"):
+            normalize_keyword_record({"topAsins": [
+                {"asin": "A", "clickShare": 70, "conversionShare": 40},
+                {"asin": "B", "clickShare": 63.8, "conversionShare": 20},
+            ]}, keyword="led", asin="SELF")
+
+    def test_invalid_share_value_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "between 0 and 100"):
+            normalize_keyword_record({"topAsins": [{"asin": "A", "clickShare": 133.8}]}, keyword="led", asin="SELF")
+
 
 if __name__ == "__main__":
     unittest.main()
-

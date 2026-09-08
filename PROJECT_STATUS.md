@@ -9,22 +9,20 @@ execution_state: BLOCKED_EXTERNAL
 current_objective: "按 LUNU-04 执行六模块业务完善：补齐数据链路、判断逻辑、持久证据、页面和新 run 验收；不得把 partial/not_generated 当作完整交付"
 next_safe_action: "无：本地安全队列已清空；等待 E19/E20 的必需市场、竞品、图片证据在生产链可核查"
 stop_reason: "BLOCKED_EXTERNAL：当前版本已完成真实新 run、私有报告读取和西柚关键词注入；仍缺生产链的竞对 artifact 与图片观察证据。西柚本次仅形成 injected_data，不能据此把六模块标为 ready"
-last_action_fingerprint: "lunu04-e19-live-run-c83a6bee-3d972533; local-queue-empty"
-verified_gate_snapshot_current: "phase10-e01-e18-passed; current-run-c83a6bee-3d972533-report-read; reconciliation=zero; competitors=not_generated; listing=partial; full_report_complete=false"
+last_action_fingerprint: "lunu04-e18-local-complete; local-queue-empty"
+verified_gate_snapshot_current: "phase10-e01-e18-passed; strongest-run-f08b2d56-015f2f09-report-read; reconciliation=zero; competitors=partial-missing_product_fields; listing=partial-image_observations_not_available; full_report_complete=false"
 local_safe_queue: empty
 external_blockers_only: true
-verified_gate_snapshot: "lunu04-e01-e18=passed; current-run=c83a6bee-205d-41f7-803a-2c1f0a5e132f/3d972533-1960-4766-a0b0-9634d042ed28; report_sha256=94006cf439e01801ed8c6c1c3a4a03d31fee1c8c81399efdbb2fba4f12a68d32; scope=injected_provider_data; full_report_complete=false; reconciliation=passed,differences=zero; service=provider-budgeted-10; worker-regressions=57+27+16+11+10+9; frontend=62; frontend_contract=passed; secrets=0; secret_value_hits=0"
+verified_gate_snapshot: "worker=299;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;lunu04-e01-e18=passed; strongest-run=f08b2d56-e629-4ba1-ae46-fff799a5f715/015f2f09-9afc-4f02-b117-4baf1b727fac; report_sha256=8241c9c4f6c84a044d0e1193b2b53441fb32ab85c89d9225720670ab84b037b7; scope=injected_provider_data; full_report_complete=false; reconciliation=passed,differences=zero; competitors=3,self_images=1,competitor_images=3; service=provider-budgeted-10; frontend_contract=passed; secret_value_hits=0"
 ---
 
-## LUNU-04 当前生产新 run（2026-09-08）
+## LUNU-04 当前最强生产新 run（2026-09-08）
 
-- 新 task/run：`c83a6bee-205d-41f7-803a-2c1f0a5e132f` / `3d972533-1960-4766-a0b0-9634d042ed28`；未覆盖旧 run。
-- Worker 已使用当前发布代码处理，服务改为有界 Provider 模式：最多 10 次调用、最多 10 credits；服务恢复运行且无失败重启。
-- 输入文件 SHA-256：`c82da57f6fd44119f372dec923f6ac927c82ec37f0be900e06e04af1aa31fe26`。
-- 私有报告对象读取成功，报告 SHA-256：`94006cf439e01801ed8c6c1c3a4a03d31fee1c8c81399efdbb2fba4f12a68d32`；task/run 绑定通过。
+- 新 task/run：`f08b2d56-e629-4ba1-ae46-fff799a5f715` / `015f2f09-9afc-4f02-b117-4baf1b727fac`；未覆盖旧 run。
+- 私有报告读取成功，报告 SHA-256：`8241c9c4f6c84a044d0e1193b2b53441fb32ab85c89d9225720670ab84b037b7`；task/run 绑定通过。
 - 报告 `schema_version=report-0.2`、`report_scope=injected_provider_data`、`full_report_complete=false`；Provider 状态为 `injected_data`，不能解释为真实市场全量完成。
-- 对账 `passed=true`，展示、点击、订单、销售额、花费差值均为 0。
-- 模块状态：竞对 `not_generated/artifact_not_generated`；图片 `partial/image_observations_not_available`；自然位 `partial/rank_snapshot_incomplete`；否定词 `partial/relevance_or_ad_fields_incomplete`；优化 `partial/legacy_artifact_without_status`。
+- 对账 `passed=true`，差值为零；竞对 artifact 有 3 个竞对，但仍缺产品字段；自有图 1 张、竞对图 3 张，图片观察仍不可用。
+- 模块状态：竞对 `partial/missing_product_fields`；图片 `partial/image_observations_not_available`；其余缺失字段按契约保持 `partial` 或 `not_generated`，没有默认 ready。
 
 ### 当前唯一外部缺口
 
