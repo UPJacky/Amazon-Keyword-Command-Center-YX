@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>关键词作战总表 · 关键词作战台</title><link rel="stylesheet" href="../styles.css"></head>
+<body class="app-shell" data-page="report" data-module="master" data-login-url="../index.html">
+  <header class="topbar"><a class="brand" href="../tool/index.html"><span class="brand-mark">K</span><span>关键词作战台</span></a><nav aria-label="主导航"><a href="../tool/index.html">返回工具页</a></nav><button class="user-chip" id="logout" type="button">退出登录</button></header>
+  <main class="report-layout" hidden>
+    <aside class="report-sidebar" aria-label="报告导航"></aside>
+    <div class="report-content">
+      <section class="module-hero"><div class="eyebrow">01 / KEYWORD COMMAND CENTER</div><h1>关键词作战总表</h1><p>从搜索词证据，到下一步投放动作 · <span id="report-period-currency">加载中</span></p></section>
+      <section id="module-metrics" class="module-metrics" aria-label="报告概览"></section>
+      <details class="panel evidence-details"><summary>报告来源、当前策略与对账记录</summary>
+        <section class="report-meta"><div><span>规则版本</span><strong id="report-rule-version">加载中</strong></div><div><span>配置版本</span><strong id="report-config-version">加载中</strong></div><div><span>报告 schema</span><strong id="report-schema-version">加载中</strong></div><div><span>币种</span><strong id="report-currency">加载中</strong></div><div><span>对账</span><strong id="report-reconciliation">加载中</strong></div><div><span>AI 状态</span><strong>未请求</strong></div></section>
+        <section class="report-traceability"><div><span>输入文件</span><code id="report-input-file">加载中</code></div><div><span>输入 SHA-256</span><code id="report-input-sha256">加载中</code></div><div><span>Provider snapshot</span><code id="report-provider-version">加载中</code></div><div><span>缺失字段</span><code id="report-missing-fields">加载中</code></div></section>
+      </details>
+      <p id="report-strategy-summary" class="module-notice">当前策略：加载中</p>
+      <section class="panel table-panel"><div class="panel-head"><div><h2 id="keyword-count">加载中</h2><p id="report-filter-status" class="muted" role="status">正在 fetch 报告 artifact</p></div><div class="toolbar-actions"><label>查找搜索词<input id="keyword-search" type="search" placeholder="输入关键词…"></label><button class="button secondary" id="export-report" type="button" disabled>导出当前结果</button></div></div>
+        <div class="filters" role="group" aria-label="按业务结论筛选"><button class="filter active" data-action-filter="all" aria-pressed="true">全部</button><button class="filter" data-action-filter="add">加投</button><button class="filter" data-action-filter="defend">防守</button><button class="filter" data-action-filter="keep">保持</button><button class="filter" data-action-filter="cautious">谨慎</button><button class="filter" data-action-filter="optimize">优化</button><button class="filter" data-action-filter="stop_loss">止损/暂停</button><button class="filter" data-action-filter="data_missing">数据待补</button></div>
+        <div class="table-scroll" role="region" aria-label="关键词宽表，可左右滚动" tabindex="0"><table class="data-table data-table--report"><thead><tr><th>搜索词</th><th>角色 / 阶段</th><th>结论</th><th>展示</th><th>点击</th><th>CTR</th><th>CPC</th><th>花费</th><th>订单</th><th>销售额</th><th>CVR</th><th>ACOS</th><th>ROAS</th><th>证据</th><th>搜索量</th><th>难度</th><th>建议竞价</th><th>自然位</th><th>广告位</th><th>下一步</th><th>缺失字段</th></tr></thead><tbody id="report-rows"><tr><td colspan="21">正在 fetch 报告 artifact…</td></tr></tbody></table></div>
+      </section>
+    </div>
+  </main><div class="toast" id="toast" role="status"></div>
+  <script src="../public-config.js" defer></script><script src="../client.js" defer></script><script src="../app.js" defer></script><script src="shared.js" defer></script><script src="../report.js" defer></script>
+</body></html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>策略中心 · 关键词作战总表</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="strategy">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="workspace.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a>
+      <div class="store-switcher"><span class="label">策略范围</span><strong>已授权店铺</strong><span class="muted">在版本列表选择店铺与阶段</span></div>
+      <nav class="side-nav" aria-label="后台导航">
+        <a data-nav="workspace" href="workspace.html"><span class="nav-icon">⌂</span>工作台</a>
+        <a data-nav="tasks" href="tasks.html"><span class="nav-icon">↗</span>任务</a>
+        <a data-nav="strategy" href="strategy.html"><span class="nav-icon">◌</span>策略中心</a>
+        <a data-nav="report" href="report.html"><span class="nav-icon">▤</span>报告</a>
+      </nav>
+      <div class="sidebar-foot"><span class="status-dot status-dot--mint"></span><span>本地预览模式</span></div>
+    </aside>
+    <main class="app-main">
+      <header class="app-header">
+        <button class="icon-button mobile-only" data-sidebar-toggle aria-label="打开导航">☰</button>
+        <div><p class="eyebrow">STRATEGY CENTER</p><h1>策略中心</h1></div>
+        <div class="header-actions"><a class="button button--secondary button--small" href="login.html">退出预览</a><div class="avatar">Y</div></div>
+      </header>
+      <section class="page-intro"><p class="muted">调整已授权店铺的数值边界。每次保存或回滚都创建新版本；规则公式不可修改。</p></section>
+      <section class="policy-banner">
+        <div><strong id="strategy-mode-label">正在确认运行模式</strong><p id="strategy-local-values" role="status">等待登录与配置读取；未保存任何配置。</p></div>
+        <span class="version-tag" id="strategy-config-version">config_version · —</span>
+      </section>
+      <section class="panel panel--large" id="strategy-live-panel" hidden>
+        <div class="panel-heading"><div><p class="eyebrow">STRATEGY VERSIONS</p><h2>配置版本与数值</h2></div><button type="button" class="button button--secondary" id="strategy-refresh-versions" disabled>刷新版本</button></div>
+        <label for="strategy-version-select">已授权配置版本（包含店铺与产品阶段）</label>
+        <select id="strategy-version-select" disabled aria-describedby="strategy-access"></select>
+        <p id="strategy-access" class="muted">正在读取店铺角色…</p>
+        <div id="strategy-numeric-fields" class="strategy-grid"></div>
+        <p class="muted">保存将以当前选择和表单数值创建版本；回滚将直接复制所选历史版本，忽略表单修改。没有已有策略时，请先由管理员初始化对应阶段。</p>
+        <div class="header-actions">
+          <button type="button" class="button button--primary" id="strategy-save-version" disabled>保存为新版本</button>
+          <button type="button" class="button button--secondary" id="strategy-rollback-version" disabled>回滚到所选历史版本</button>
+        </div>
+        <p id="strategy-operation-status" class="form-status" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+  </div>
+  <script src="public-config.js" defer></script><script src="client.js" defer></script><script src="app.js" defer></script><script src="strategy.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>自然位标杆 · 关键词作战总表</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../public-config.js" defer></script>
+  <script src="../client.js" defer></script>
+  <script src="../app.js" defer></script>
+  <script src="shared.js" defer></script>
+  <script src="rank.js" defer></script>
+</head>
+<body class="app-shell" data-page="report" data-login-url="../index.html" data-module="rank">
+  <header class="topbar">
+    <a class="brand" href="../tool/index.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a>
+    <nav aria-label="主导航"><a href="../tool/index.html">工具</a><a class="active" href="index.html" aria-current="true">报告</a></nav>
+    <button class="user-chip" id="logout" type="button">退出登录</button>
+  </header>
+  <main class="report-layout" hidden>
+    <aside class="report-sidebar" aria-label="报告模块导航"></aside>
+    <div class="report-content">
+      <section class="module-hero hero-row compact">
+        <div><div class="eyebrow">MODULE 02</div><h1>自然位标杆</h1><p class="lede">对照自己的自然位、广告位与标杆差距，保留缺失排名与历史变化。</p><p id="module-status" class="muted" role="status" aria-live="polite">正在验证会话并加载报告…</p></div>
+      </section>
+      <section id="module-metrics" class="module-metrics" aria-label="报告摘要"></section>
+      <section id="module-body" aria-label="自然位标杆内容" aria-busy="true"><p class="table-empty">正在加载报告…</p></section>
+      <noscript><p class="notice">请启用 JavaScript 以验证会话并读取报告。</p></noscript>
+    </div>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+</body>
+</html>
