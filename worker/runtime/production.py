@@ -397,7 +397,10 @@ class ProductionWorker:
                     or master.get("input_sha256") != task["input_file_hash"].lower()):
                 raise ValueError()
             modules = {}
-            for name in ("rank-benchmark", "negative-keywords", "optimization-plan", "competitors"):
+            # Keep the registry identical to _MODULE_ARTIFACTS and the frontend
+            # allowlist. Listing diagnostics used to be generated locally but
+            # silently omitted from the production bundle.
+            for name in ("rank-benchmark", "negative-keywords", "competitors", "listing-diagnostics", "optimization-plan"):
                 artifact = root / f"{name}.json"
                 if artifact.exists():
                     if artifact.is_symlink():

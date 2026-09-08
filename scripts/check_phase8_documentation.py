@@ -131,6 +131,7 @@ def main() -> int:
             "Phase 8 / local-deployment-audit",
             "Phase 3–7 / six-module-workbench",
             "Phase 9 / six-module-data-completion",
+            "Phase 10 / LUNU-04 six-module business completion",
         },
         "status_uat_counts": current_counts_match and all(key in snapshot for key in ("worker", "frontend")),
         "memory_uat_counts": memory_counts_match(memory, snapshot),

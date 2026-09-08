@@ -76,6 +76,10 @@ class AdReportParserTests(unittest.TestCase):
             self.assertEqual(len(row["ad_entities"]), 2)
             self.assertEqual({item["campaign_name"] for item in row["ad_entities"]}, {"Campaign A", "Campaign B"})
             self.assertEqual({item["match_type"] for item in row["ad_entities"]}, {"精准", "词组"})
+            by_campaign = {item["campaign_name"]: item for item in row["ad_entities"]}
+            self.assertEqual(by_campaign["Campaign A"]["spend"], 1)
+            self.assertEqual(by_campaign["Campaign B"]["spend"], 0.5)
+            self.assertEqual(row["entity_reconciliation"]["status"], "passed")
             self.assertEqual(set(result["reconciliation"]["entity_header_mapping"]), {"campaign_name", "ad_group_name", "target", "match_type"})
 
     def test_zero_sales_acos_is_unknown(self):

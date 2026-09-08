@@ -30,7 +30,7 @@ class OptimizationTests(unittest.TestCase):
             "keyword": "led light", "action_group": "defend_rank", "ui_conclusion": "defend",
             "rule_hits": ["organic_rank_in_defense_zone"], "next_action_text": "保持自然位防守",
             "clicks": 10, "impressions": 100,
-            "ad_entities": [{"campaign_name": "Campaign A", "ad_group_name": "Group A", "target": "led light", "match_type": "精准"}],
+            "ad_entities": [{"campaign_name": "Campaign A", "ad_group_name": "Group A", "target": "led light", "match_type": "精准", "impressions": 100, "clicks": 10, "spend": 1, "orders": 2, "sales": 10}],
         }
         result = build_optimization_plan([row], load_default_config())[0]
         self.assertEqual(result["entity_status"], "ready")
@@ -39,6 +39,21 @@ class OptimizationTests(unittest.TestCase):
         self.assertEqual(diagnosis["recommended_action"]["status"], "ready")
         self.assertEqual(diagnosis["exit_condition"]["status"], "pending")
         self.assertEqual(diagnosis["entity_context"]["match_type"], "精准")
+        self.assertEqual(diagnosis["facts"]["spend"], 1)
+
+    def test_entity_metrics_are_independent_and_identity_only_is_not_judged(self):
+        row = {
+            "keyword": "led light", "action_group": "defend_rank", "ui_conclusion": "defend",
+            "ad_entities": [
+                {"campaign_name": "A", "ad_group_name": "GA", "target": "led light", "match_type": "精准", "impressions": 100, "clicks": 10, "spend": 10, "orders": 10, "sales": 100},
+                {"campaign_name": "B", "ad_group_name": "GB", "target": "led light", "match_type": "词组", "impressions": 100, "clicks": 10, "spend": 100, "orders": 0, "sales": 0},
+            ],
+        }
+        result = build_optimization_plan([row], load_default_config())[0]
+        self.assertEqual([item["facts"]["spend"] for item in result["entity_diagnoses"]], [10, 100])
+        self.assertEqual([item["judgement"]["status"] for item in result["entity_diagnoses"]], ["judged", "judged"])
+        identity_only = build_optimization_plan([{"keyword": "led light", "action_group": "defend_rank", "ui_conclusion": "defend", "ad_entities": [{"campaign_name": "A", "ad_group_name": "GA", "target": "led light", "match_type": "精准"}]}], load_default_config())[0]
+        self.assertEqual(identity_only["entity_diagnoses"][0]["judgement"]["status"], "not_judged")
 
     def test_missing_entity_context_is_not_judged_and_does_not_infer_from_keyword(self):
         result = build_optimization_plan([{"keyword": "led light", "action_group": "scale_up"}], load_default_config())[0]

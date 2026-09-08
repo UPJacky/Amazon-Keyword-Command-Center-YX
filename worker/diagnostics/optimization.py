@@ -29,6 +29,7 @@ REQUIRED_ENTITY_GROUPS = (
     ("target_id", "target"),
     ("match_type",),
 )
+ENTITY_METRIC_FIELDS = ("impressions", "clicks", "spend", "orders", "sales")
 
 
 def _present(value: Any) -> bool:
@@ -47,6 +48,11 @@ def _entity_contexts(row: Mapping[str, Any]) -> list[dict[str, Any]]:
         if not isinstance(candidate, Mapping):
             continue
         context = {field: candidate.get(field) for field in ENTITY_FIELDS if _present(candidate.get(field))}
+        # Metrics are part of the entity fact, not keyword-level fallbacks.
+        # Preserve explicit nulls as missing evidence and never copy row facts.
+        for field in ENTITY_METRIC_FIELDS:
+            if field in candidate:
+                context[field] = candidate.get(field)
         if not context:
             continue
         signature = repr(sorted(context.items()))
@@ -69,6 +75,8 @@ def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], act
         for group in REQUIRED_ENTITY_GROUPS:
             if not any(_present(context.get(field)) for field in group):
                 missing.append("/".join(group))
+        missing_metrics = [field for field in ENTITY_METRIC_FIELDS if not _present(context.get(field))]
+        missing.extend(missing_metrics)
         ready = not missing
         entity_status = "ready" if ready else ("partial" if context else "not_available")
         statuses.append(entity_status)
@@ -102,11 +110,12 @@ def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], act
         exit_condition = ({"status": "ready", "value": supplied_exit}
                           if ready and _present(supplied_exit)
                           else {"status": "pending", "value": "补齐广告实体与观察窗口后定义退出条件"})
+        entity_facts = {key: context.get(key) for key in (*ENTITY_METRIC_FIELDS, "ctr", "cpc", "cvr", "acos", "roas") if key in context}
         diagnoses.append({
             "entity_context": context,
             "entity_status": entity_status,
             "missing_fields": missing,
-            "facts": dict(data_facts),
+            "facts": entity_facts,
             "judgement": judgement,
             "recommended_action": recommendation,
             "exit_condition": exit_condition,

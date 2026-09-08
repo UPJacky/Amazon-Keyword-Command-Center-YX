@@ -100,6 +100,7 @@ ENTITY_FIELDS = (
     "campaign_id", "campaign_name", "ad_group_id", "ad_group_name",
     "target_id", "target", "match_type", "targeting_type", "ad_type",
 )
+ENTITY_METRIC_FIELDS = ("impressions", "clicks", "spend", "sales", "orders")
 
 
 def _find_column(headers: Sequence[Any], field: str) -> int | None:
@@ -187,7 +188,11 @@ def _parse_once(path: Path) -> dict[str, Any]:
     valid_rows = 0
     raw_totals = {field: Decimal("0") for field in ("impressions", "clicks", "spend", "sales", "orders")}
     raw_keywords: list[str] = []
-    entity_contexts: dict[str, list[dict[str, str]]] = defaultdict(list)
+    # Keep entity facts separate from the keyword aggregate.  Identity-only
+    # contexts are not sufficient for a diagnostic decision, so every entity
+    # record carries its own raw metrics and missing-field evidence.
+    entity_aggregates: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
+    entityless_rows_by_keyword: dict[str, int] = defaultdict(int)
 
     for row in rows[header_index + 1 :]:
         if not row or all(_is_missing(cell) for cell in row):
@@ -214,9 +219,18 @@ def _parse_once(path: Path) -> dict[str, Any]:
         }
         if entity:
             signature = json.dumps(entity, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-            if not any(json.dumps(existing, ensure_ascii=False, sort_keys=True, separators=(",", ":")) == signature
-                       for existing in entity_contexts[keyword]):
-                entity_contexts[keyword].append(entity)
+            record = entity_aggregates[keyword].setdefault(signature, {
+                "context": dict(entity),
+                "metrics": {field: Decimal("0") for field in ENTITY_METRIC_FIELDS},
+                "missing_fields": set(),
+                "row_count": 0,
+            })
+            record["row_count"] += 1
+            record["missing_fields"].update(row_missing)
+            for field in ENTITY_METRIC_FIELDS:
+                record["metrics"][field] += values[field]
+        else:
+            entityless_rows_by_keyword[keyword] += 1
         valid_rows += 1
         raw_keywords.append(keyword)
         missing_by_keyword[keyword].update(row_missing)
@@ -244,10 +258,35 @@ def _parse_once(path: Path) -> dict[str, Any]:
         spend = _number(values["spend"]) if known["spend"] else None
         sales = _number(values["sales"]) if known["sales"] else None
         orders = _number(values["orders"]) if known["orders"] else None
-        contexts = sorted(
-            entity_contexts.get(keyword, []),
-            key=lambda value: json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
-        )
+        entity_records: list[dict[str, Any]] = []
+        entity_totals = {field: Decimal("0") for field in ENTITY_METRIC_FIELDS}
+        for record in sorted(entity_aggregates.get(keyword, {}).values(), key=lambda value: json.dumps(value["context"], ensure_ascii=False, sort_keys=True, separators=(",", ":"))):
+            metrics = record["metrics"]
+            entity_totals = {field: entity_totals[field] + metrics[field] for field in ENTITY_METRIC_FIELDS}
+            known_entity = {field: field not in record["missing_fields"] for field in ENTITY_METRIC_FIELDS}
+            entity_record = dict(record["context"])
+            entity_record.update({
+                field: _number(metrics[field]) if known_entity[field] else None
+                for field in ENTITY_METRIC_FIELDS
+            })
+            entity_record.update({
+                "ctr": _rate(metrics["clicks"], metrics["impressions"]) if all(known_entity[field] for field in ("clicks", "impressions")) else None,
+                "cpc": _rate(metrics["spend"], metrics["clicks"]) if all(known_entity[field] for field in ("spend", "clicks")) else None,
+                "cvr": _rate(metrics["orders"], metrics["clicks"]) if all(known_entity[field] for field in ("orders", "clicks")) else None,
+                "acos": _rate(metrics["spend"], metrics["sales"]) if all(known_entity[field] for field in ("spend", "sales")) else None,
+                "roas": _rate(metrics["sales"], metrics["spend"]) if all(known_entity[field] for field in ("sales", "spend")) else None,
+                "row_count": record["row_count"],
+            })
+            if record["missing_fields"]:
+                entity_record["missing_fields"] = sorted(record["missing_fields"])
+            entity_records.append(entity_record)
+        entity_reconciliation = {"status": "not_available", "differences": {}}
+        if entity_records and not entityless_rows_by_keyword.get(keyword):
+            differences = {field: values[field] - entity_totals[field] for field in ENTITY_METRIC_FIELDS}
+            entity_reconciliation = {
+                "status": "passed" if all(difference == 0 for difference in differences.values()) else "failed",
+                "differences": {field: str(differences[field]) for field in differences},
+            }
         aggregate_rows.append({
             "keyword": keyword,
             "impressions": impressions,
@@ -262,7 +301,8 @@ def _parse_once(path: Path) -> dict[str, Any]:
             "roas": _rate(values["sales"], values["spend"]) if all(known[field] for field in ("sales", "spend")) else None,
             # Empty is intentional: it means the source did not provide an
             # ad-entity column, not that a fabricated entity was inferred.
-            "ad_entities": contexts,
+            "ad_entities": entity_records,
+            "entity_reconciliation": entity_reconciliation,
         })
         if missing_fields:
             aggregate_rows[-1]["missing_fields"] = sorted(missing_fields)

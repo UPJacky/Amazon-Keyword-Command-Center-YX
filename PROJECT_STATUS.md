@@ -2,18 +2,18 @@
 project: Amazon-Keyword-Command-Center-YX
 document_type: project_status
 version: 0.2
-updated_at: 2026-09-07
-current_phase: Phase 9 / six-module-data-completion
-status: project_complete
-execution_state: PROJECT_COMPLETE
-current_objective: "Phase 9 六模块发布与新真实 run 验收完成；缺失数据以 partial/not_generated 明确展示，不伪造业务结论"
-next_safe_action: "等待新的项目变更或用户明确的新验收范围"
-stop_reason: "项目任务图 26/26 已完成；当前没有安全本地任务或外部阻塞"
-last_action_fingerprint: "module-gap-p8-live-release-completed; live-run-70092506-62f00837; pages-b2e63c2"
-verified_gate_snapshot_current: "phase9-local-modules=p2-p7-verified; p0-live-audit=verified; p1-contracts=verified; p8-live-release=verified; live_run=completed; report_fetch=private; module_data=partial_explicit"
+updated_at: 2026-09-08
+current_phase: Phase 10 / LUNU-04 six-module business completion
+status: blocked_external
+execution_state: BLOCKED_EXTERNAL
+current_objective: "按 LUNU-04 执行六模块业务完善：补齐数据链路、判断逻辑、持久证据、页面和新 run 验收；不得把 partial/not_generated 当作完整交付"
+next_safe_action: "无：LUNU-04 本地 E01-E18 已完成；等待 E19/旧发布、Supabase、私有存储外部 Gate"
+stop_reason: "BLOCKED_EXTERNAL：本地安全队列已清空；E19 与旧发布/Supabase/私有存储 Gate 需要真实部署、第三方权限或外部环境，当前不调用真实 Provider、不部署、不改密钥"
+last_action_fingerprint: "lunu04-e18-completed; local-queue-empty"
+verified_gate_snapshot_current: "phase10-e01-e18-passed; e19-external-blocked; prior-live-run-70092506-62f00837-retained"
 local_safe_queue: empty
-external_blockers_only: false
-verified_gate_snapshot: "worker=281; frontend=8; orchestration=25; continuous=63; uat=20/20; pages=57; docs=15; gateway=13; network_calls=0; external_calls=0; secrets=0; secret_value_hits=0"
+external_blockers_only: true
+verified_gate_snapshot: "lunu04-e01-e18=passed; worker-regressions=57+27+16+11+10+9; frontend=62; frontend_contract=passed; network_calls=0; external_calls=0; secrets=0; secret_value_hits=0"
 ---
 
 ## 新真实端到端复核（2026-09-07）

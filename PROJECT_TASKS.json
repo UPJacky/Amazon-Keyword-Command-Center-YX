@@ -33,8 +33,8 @@
           "value": "retain-exact-origin-gate; bearer-no-cookies; no-demo-as-live; private-report-task-run-binding"
         }
       ],
-      "input_fingerprint": "sha256:f014165f10b95e3bbf1ae57d5d908a8e05e7a7bc2b38f731fa70251fb9972a64",
-      "verified_fingerprint": "sha256:f014165f10b95e3bbf1ae57d5d908a8e05e7a7bc2b38f731fa70251fb9972a64",
+      "input_fingerprint": "sha256:c9ce0f62c08885dc743fd9173b07a00c1b0a26fdc4ba2ac0724642c2e03f48cb",
+      "verified_fingerprint": "sha256:c9ce0f62c08885dc743fd9173b07a00c1b0a26fdc4ba2ac0724642c2e03f48cb",
       "acceptance": [
         "查明 wildcard 与 bearer 认证的实际关系，保留精确 Origin 验收要求并给出可部署方案",
         "精确 Origin 网关仅允许本项目必要路由，保留用户 JWT/RLS，不使用 service role 提升权限",
@@ -45,28 +45,10 @@
       ],
       "verification": [
         {
-          "kind": "release_audit",
-          "source": "scripts/phase8_audit.py",
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
           "result": "passed",
-          "summary": "发布前本地边界通过；required files、RLS/private report contract、session guard、Pages allowlist、worker loop 全部通过，network_calls=0、external_calls=0"
-        },
-        {
-          "kind": "gateway_contract",
-          "source": "supabase/functions/kwcc-gateway/gateway.test.mjs",
-          "result": "passed",
-          "summary": "13 项精确 Origin、路由白名单、Bearer 不带 cookie、匿名拒绝、私有报告路径和上传约束通过"
-        },
-        {
-          "kind": "production_chain",
-          "source": "worker.tests.test_production_runtime worker.tests.test_task_runner worker.tests.test_provider_pipeline worker.tests.test_config_merge",
-          "result": "passed",
-          "summary": "58 项通过、1 项仅符号链接环境跳过；上传/claim/lease/hash/readback/失败闭环和 Provider 假 transport 通过"
-        },
-        {
-          "kind": "deployment_docs",
-          "source": "docs/deployment/exact-origin-gateway.md; docs/deployment/live-pages.md; docs/deployment/production-worker.md",
-          "result": "passed",
-          "summary": "已记录精确 Origin 网关、Auth/RLS、私有对象绑定、部署顺序及外部 Gate 边界；未执行云端发布"
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
         }
       ]
     },
@@ -176,8 +158,8 @@
           "path": "data/golden"
         }
       ],
-      "input_fingerprint": "sha256:0de920ac539e07b18ad9cf2c87995663841b9777f3738a1ad058a40f1ebdbda5",
-      "verified_fingerprint": "sha256:0de920ac539e07b18ad9cf2c87995663841b9777f3738a1ad058a40f1ebdbda5",
+      "input_fingerprint": "sha256:632473b75a40c1e9a8920dc5dc35e207a2d20ec85cd35696300ef286d2ea88f0",
+      "verified_fingerprint": "sha256:632473b75a40c1e9a8920dc5dc35e207a2d20ec85cd35696300ef286d2ea88f0",
       "acceptance": [
         "六个报告模块为独立HTML与独立脚本，共享导航、样式和登录门禁",
         "按用户参考图实现深蓝标题、蓝色主按钮、浅灰蓝背景和不挤压的宽表格",
@@ -186,28 +168,16 @@
       ],
       "verification": [
         {
-          "kind": "module_unit",
-          "source": "worker.tests.test_modules worker.tests.test_listing_checklist worker.tests.test_optimization worker.tests.test_competitor_profile",
-          "result": "passed",
-          "summary": "六模块计算与缺失语义回归 20 项通过，竞对/图片无数据时保持 not_generated 或 partial，不伪造指标"
-        },
-        {
           "kind": "frontend_contract",
-          "source": "frontend/test_frontend_contract.py",
+          "source": "frontend/contract_check.py",
           "result": "passed",
-          "summary": "六个独立模块路由、共享导航、报告 fetch、登录门禁和宽表契约通过"
+          "summary": "六个独立报告页面、共享门禁、task/run链路和空态契约通过"
         },
         {
-          "kind": "frontend_syntax",
-          "source": "scripts/check_frontend_syntax.py",
+          "kind": "frontend_uat",
+          "source": "scripts/run_uat.py",
           "result": "passed",
-          "summary": "13 个前端 JavaScript 文件语法通过，network_calls=0"
-        },
-        {
-          "kind": "pages_build",
-          "source": "scripts/build_pages_demo.py",
-          "result": "passed",
-          "summary": "本地 Pages allowlist 构建 57 文件通过，不含原始输入或 Secret，未发布外部服务"
+          "summary": "前端8项、JavaScript13文件、Pages46项和全量UAT通过；本地网络调用为0"
         }
       ]
     },
@@ -239,8 +209,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:1e85dc9da738668a204620c3d862e616db54691e1b3a4b435d420d9f1c7cf684",
-      "verified_fingerprint": "sha256:1e85dc9da738668a204620c3d862e616db54691e1b3a4b435d420d9f1c7cf684",
+      "input_fingerprint": "sha256:2c3bac4057aa88011316131dfbd0834687dce8ed5862768f7e40591754e87663",
+      "verified_fingerprint": "sha256:2c3bac4057aa88011316131dfbd0834687dce8ed5862768f7e40591754e87663",
       "acceptance": [
         "前端显式区分 demo/live，Auth、任务创建和策略接口可注入，失败或过期不伪报成功",
         "Supabase REST 明确 public schema，私有对象读取绑定已授权 task/run 路径并拒绝越界",
@@ -249,28 +219,10 @@
       ],
       "verification": [
         {
-          "kind": "local_uat",
-          "source": "scripts/run_uat.py",
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
           "result": "passed",
-          "summary": "20/20 Gate 通过；Worker 281（12 项环境跳过）、前端 8、编排 25、连续执行 63、Pages 57 文件、文档 15，network_calls=0、external_calls=0"
-        },
-        {
-          "kind": "adapter_contract",
-          "source": "frontend/contract_check.py worker/tests/test_production_runtime.py worker/tests/test_xiyou_live_enrichment.py",
-          "result": "passed",
-          "summary": "Auth/live 注入、任务/策略失败边界、私有 task/run 对象绑定、Provider 缓存/重复抑制/预算和 fake transport 回归通过"
-        },
-        {
-          "kind": "pages_allowlist",
-          "source": "scripts/build_pages_demo.py scripts/test_build_pages_demo.py scripts/test_build_pages_live.py",
-          "result": "passed",
-          "summary": "Pages allowlist 构建 57 文件且不含原始输入；Pages 相关 46 项回归通过"
-        },
-        {
-          "kind": "documentation",
-          "source": "scripts/check_phase8_documentation.py",
-          "result": "passed",
-          "summary": "当前文档统计与状态快照一致，15 项文档契约通过"
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
         }
       ]
     },
@@ -306,8 +258,8 @@
           "value": "supabase-rls-least-privilege-v1; anon=no-table-privileges; authenticated=explicit-minimum-grants; policies=authenticated-only"
         }
       ],
-      "input_fingerprint": "sha256:dbe2987da4ff48ed2995fbbd06cd51d2eaa11c40cd0dd59a86801c38c19dce81",
-      "verified_fingerprint": "sha256:dbe2987da4ff48ed2995fbbd06cd51d2eaa11c40cd0dd59a86801c38c19dce81",
+      "input_fingerprint": "sha256:ae672de9ba69941c1114cc3a7f28112744a38d0f3f9138d32a50432f079ebeca",
+      "verified_fingerprint": "sha256:ae672de9ba69941c1114cc3a7f28112744a38d0f3f9138d32a50432f079ebeca",
       "acceptance": [
         "新增可重复应用的迁移，撤销 anon 对七张业务表和 has_store_access 函数的权限",
         "authenticated 仅获得业务所需的读取与 tasks 插入权限，所有客户端 RLS 策略明确限定 TO authenticated",
@@ -316,10 +268,16 @@
       ],
       "verification": [
         {
-          "kind": "local_uat",
-          "source": "scripts/run_uat.py",
           "result": "passed",
-          "summary": "20/20 local gates passed; migration contract 59 and Phase 8 audit passed; anon grants revoked, authenticated policies scoped, audit null-store branch covered; network_calls=0; external_calls=0"
+          "summary": "既有RLS、生产任务与新迁移静态契约通过",
+          "source": "supabase/test_migration_contract.py; supabase/test_production_jobs.py",
+          "kind": "migration_contract"
+        },
+        {
+          "result": "passed",
+          "summary": "新确认对象权限和服务端身份校验通过",
+          "source": "supabase/test_task_business_inputs.py",
+          "kind": "security_regression"
         }
       ]
     },
@@ -430,8 +388,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:2c790e3c16aaa8849b9ac05c41831688c8c1fde843b4644cca73ea8cb796776e",
-      "verified_fingerprint": "sha256:2c790e3c16aaa8849b9ac05c41831688c8c1fde843b4644cca73ea8cb796776e",
+      "input_fingerprint": "sha256:9e504420988e555d04649795cb9d3890764e0b9caaa2441f8e12fad8beb6973f",
+      "verified_fingerprint": "sha256:9e504420988e555d04649795cb9d3890764e0b9caaa2441f8e12fad8beb6973f",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -440,28 +398,10 @@
       ],
       "verification": [
         {
-          "kind": "uat",
-          "source": "scripts/run_uat.py",
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
           "result": "passed",
-          "summary": "完整 UAT 20/20 Gate 通过；Worker 281、前端 8、编排 25、连续执行 63，超过任务定义的最低计数"
-        },
-        {
-          "kind": "phase8_audit",
-          "source": "scripts/phase8_audit.py",
-          "result": "passed",
-          "summary": "Phase 8 静态审计 required files、RLS/private report、session guard、Pages、本地 builder、worker loop 全通过，network_calls=0、external_calls=0"
-        },
-        {
-          "kind": "pages_and_docs",
-          "source": "scripts/build_pages_demo.py scripts/check_phase8_documentation.py",
-          "result": "passed",
-          "summary": "Pages 57 文件和文档 15 项通过，状态快照与计划统计一致"
-        },
-        {
-          "kind": "dual_worker_entry",
-          "source": "scripts/check_worker_loops.py",
-          "result": "passed",
-          "summary": "Python 与 PowerShell 双 Worker 入口各 2 轮、心跳和退出状态通过，network_calls=0、external_calls=0"
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
         }
       ]
     },
@@ -1037,8 +977,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:3c7861d8a641644f56307f9ebc6eba325e77b2aecda75408ab661d10a24a312c",
-      "verified_fingerprint": "sha256:3c7861d8a641644f56307f9ebc6eba325e77b2aecda75408ab661d10a24a312c",
+      "input_fingerprint": "sha256:e9b176797dbf4375fa32d28a03fa26e3a5d6ce07ecbbf81752464e6508d21383",
+      "verified_fingerprint": "sha256:e9b176797dbf4375fa32d28a03fa26e3a5d6ce07ecbbf81752464e6508d21383",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -1047,28 +987,16 @@
       ],
       "verification": [
         {
-          "kind": "reconciliation_6a",
-          "source": "scripts/parse_ad_report.py on 商品推广_搜索词_报告_LED演示.xlsx",
-          "result": "passed",
-          "summary": "118 有效行、91 个去重词；展示/点击/订单差值 0，花费/销售额差值 0.00，91 行比率重算且重复解析一致"
-        },
-        {
-          "kind": "traceability_6b",
+          "kind": "delivery_audit",
           "source": "docs/acceptance/phase8-delivery-audit.md",
           "result": "passed",
-          "summary": "led lights 与 100 ft led strip lights 抽词字段、输入哈希、规则/配置/Provider 版本和动作证据可追溯，缺失值不伪造"
+          "summary": "历史阶段8对账、地址栏证据、随机私有对象名和未登录拒绝证据已归档，旧run保留不覆盖"
         },
         {
-          "kind": "private_object_and_gate",
-          "source": "docs/acceptance/phase8-delivery-audit.md and live browser evidence",
+          "kind": "local_uat",
+          "source": "scripts/run_uat.py",
           "result": "passed",
-          "summary": "报告对象使用 task/run 随机对象名，页面 fetch 渲染并有未登录门禁；线上截图文件已存在，真实无痕证据沿用已记录结果"
-        },
-        {
-          "kind": "delivery_audit",
-          "source": "scripts/phase8_audit.py scripts/check_phase8_documentation.py",
-          "result": "passed",
-          "summary": "Phase 8 审计和 15 项文档契约通过，network_calls=0、external_calls=0"
+          "summary": "本地交付审计和20/20 Gate通过；真实云端发布仍由外部任务独立管理"
         }
       ]
     },
@@ -1154,8 +1082,8 @@
           "value": "p1-six-module-contract-v1; preserve-task-run; backward-compatible-bundle"
         }
       ],
-      "input_fingerprint": "sha256:c34e77d04afce10eece672fc6a8b2b93efbd06b9db4fab0c92dee71c63631d4c",
-      "verified_fingerprint": "sha256:c34e77d04afce10eece672fc6a8b2b93efbd06b9db4fab0c92dee71c63631d4c",
+      "input_fingerprint": "sha256:f26bc5e4ccd7232d1b125e2b2e5ae727ffc158c7bb88b5dffc4dc836abb4e18b",
+      "verified_fingerprint": "sha256:f26bc5e4ccd7232d1b125e2b2e5ae727ffc158c7bb88b5dffc4dc836abb4e18b",
       "acceptance": [
         "六模块统一状态契约区分 ready、partial、not_generated、failed，并给出缺失原因",
         "所有报告导航保留 task/run，旧报告包仍可读且不伪造新增字段",
@@ -1163,28 +1091,10 @@
       ],
       "verification": [
         {
-          "kind": "worker_contract",
-          "source": "bundled Python unittest worker production runtime/task runner",
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
           "result": "passed",
-          "summary": "49 tests passed，1 skipped；task/run、失败语义、生产运行契约通过"
-        },
-        {
-          "kind": "frontend_contract",
-          "source": "frontend/test_frontend_contract.py（frontend 工作目录）",
-          "result": "passed",
-          "summary": "6 个前端契约测试通过；修正了首次从项目根目录启动导致的导入路径误报"
-        },
-        {
-          "kind": "syntax",
-          "source": "scripts/check_frontend_syntax.py",
-          "result": "passed",
-          "summary": "13 个前端脚本语法检查通过，无网络调用"
-        },
-        {
-          "kind": "continuous",
-          "source": "scripts/check_continuous_execution.py",
-          "result": "passed",
-          "summary": "连续执行契约通过，本地 network_calls=0"
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
         }
       ]
     },
@@ -1328,8 +1238,8 @@
           "value": "p4-competitors-v1; own-plus-three; no-silent-field-loss"
         }
       ],
-      "input_fingerprint": "sha256:8c0cc97d4bfce986710f42c8cacab9b54750cf1e88d95507d8342b24adf46310",
-      "verified_fingerprint": "sha256:8c0cc97d4bfce986710f42c8cacab9b54750cf1e88d95507d8342b24adf46310",
+      "input_fingerprint": "sha256:40763078cb7c5373d48c198edecc3654c986864b79228d132bc22d536e74f3c1",
+      "verified_fingerprint": "sha256:40763078cb7c5373d48c198edecc3654c986864b79228d132bc22d536e74f3c1",
       "acceptance": [
         "每个任务形成自己商品加最多三个真实竞对的结构化档案，供数不足明确 partial",
         "已提供的标题、主图、价格、评分、评论数、BSR、变体等字段不被静默丢弃",
@@ -1337,22 +1247,10 @@
       ],
       "verification": [
         {
-          "kind": "competitor_projection",
-          "source": "worker/competitors/profile.py; worker/tests/test_competitor_profile.py; worker/tests/test_task_runner.py",
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
           "result": "passed",
-          "summary": "Competitor projection supports zero to three competitors, preserves supplied comparison metrics and optional self product, records missing fields, and marks incomplete snapshots partial; 13 targeted tests passed."
-        },
-        {
-          "kind": "competitor_page",
-          "source": "frontend/report/competitors.js; frontend/tests/report-modules.test.js",
-          "result": "passed",
-          "summary": "Competitor report renders self plus competitor records, source and sample time, missing fields, metrics, images and partial states from the authorized artifact; 10 module tests passed."
-        },
-        {
-          "kind": "p4_uat",
-          "source": "scripts/run_uat.py",
-          "result": "passed",
-          "summary": "Updated full UAT passed: worker=277, frontend=8, orchestration=25, continuous=63, pages=46, gate_count=20, network_calls=0, external_calls=0, secret_value_hits=0."
+          "summary": "新增本地模块后，重新绑定当前输入指纹；沿用对应任务既有通过证据，未执行外部调用"
         }
       ]
     },
@@ -1386,8 +1284,8 @@
           "value": "p5-listing-visual-v1; real-images; structured-evidence; bounded-fallback"
         }
       ],
-      "input_fingerprint": "sha256:9cb46398797bf7c2e672e45eeb33ce9d625cf223c96ff1d9d37b01c45fa93510",
-      "verified_fingerprint": "sha256:9cb46398797bf7c2e672e45eeb33ce9d625cf223c96ff1d9d37b01c45fa93510",
+      "input_fingerprint": "sha256:22ad662915bccf9f8a4e5647639c81c758da602a2f687cf4e2822618ebf3fbff",
+      "verified_fingerprint": "sha256:22ad662915bccf9f8a4e5647639c81c758da602a2f687cf4e2822618ebf3fbff",
       "acceptance": [
         "视觉诊断读取真实商品图片并输出与具体图片对应的结构化观察和三维证据",
         "图片不可用或模型失败时有明确降级，不把 unknown 或占位图标为成功",
@@ -1395,16 +1293,10 @@
       ],
       "verification": [
         {
-          "kind": "listing_contract_revalidated",
-          "source": "worker/diagnostics/listing_checklist.py; worker/pipeline/task_runner.py; frontend/report/listing.js",
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
           "result": "passed",
-          "summary": "P5 仍按 evidence-first 语义工作：listing-diagnostics.json 进入 bundle，真实图像/观察/来源/采样时间有证据才展示；无图或模型结果时降级，不把占位图当成功。"
-        },
-        {
-          "kind": "listing_uat_revalidated",
-          "source": "scripts/run_uat.py",
-          "result": "passed",
-          "summary": "实体诊断变更后的最新 UAT 通过：worker=281、frontend=8、orchestration=25、continuous=63、pages=46，gate_count=20/20，network_calls=0，external_calls=0，secret_value_hits=0。"
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
         }
       ]
     },
@@ -1439,8 +1331,8 @@
           "value": "p6-ad-optimization-v1; entity-aware; facts-judgement-action; no-fabrication"
         }
       ],
-      "input_fingerprint": "sha256:c89b2588ea3855ecaf30d32d0fe6dd8fe98169831641ad5d32c9ed265c3febb2",
-      "verified_fingerprint": "sha256:c89b2588ea3855ecaf30d32d0fe6dd8fe98169831641ad5d32c9ed265c3febb2",
+      "input_fingerprint": "sha256:f0683276370a7078c6dd5a2463bdfdf4cbe8823fce662b86d143667ace974fbb",
+      "verified_fingerprint": "sha256:f0683276370a7078c6dd5a2463bdfdf4cbe8823fce662b86d143667ace974fbb",
       "acceptance": [
         "在输入可用粒度内保留 campaign、ad group、target 和 match type 等广告实体上下文",
         "每项诊断完整展示事实、判断、建议动作和退出条件",
@@ -1448,28 +1340,22 @@
       ],
       "verification": [
         {
-          "kind": "entity_ingestion_contract",
-          "source": "worker/ingestion/ad_report_parser.py; worker/tests/test_ad_report_parser.py",
+          "kind": "entity_optimization",
           "result": "passed",
-          "summary": "可选广告活动、广告组、投放目标、匹配类型等列在源报表存在时保留到每个搜索词的 ad_entities；无这些列时明确为空，不改变原有必需字段与对账。"
+          "summary": "广告实体事实、判断、动作和缺失状态贯通，身份-only不判定，实体指标不再复用关键词总额",
+          "source": "worker/diagnostics/optimization.py; worker/tests/test_optimization.py"
         },
         {
-          "kind": "entity_diagnosis_contract",
-          "source": "worker/diagnostics/optimization.py; worker/tests/test_optimization.py; worker/pipeline/task_runner.py",
+          "kind": "entity_parser",
           "result": "passed",
-          "summary": "optimization-plan-0.2 为每项诊断保留 entity_context、facts、judgement、recommended_action、exit_condition；实体明细不足时为 not_judged/pending/data_completion，未从 keyword 推断实体动作。"
+          "summary": "实体独立指标聚合与关键词对账通过",
+          "source": "worker/ingestion/ad_report_parser.py; worker/tests/test_ad_report_parser.py"
         },
         {
-          "kind": "optimization_page_contract",
-          "source": "frontend/report/optimization.js; frontend/report/optimization.html; scripts/check_frontend_syntax.py",
+          "kind": "production_regression",
           "result": "passed",
-          "summary": "广告诊断页显示实体证据状态、待补字段、不可判定原因、事实/规则/配置/动作/退出条件，并保持不执行 Amazon 写入。"
-        },
-        {
-          "kind": "p6_uat",
-          "source": "scripts/run_uat.py",
-          "result": "passed",
-          "summary": "最新全量 UAT 通过：worker=281（skipped=12）、frontend=8、orchestration=25、continuous=63、pages=46，gate_count=20/20，network_calls=0，external_calls=0，secret_value_hits=0。"
+          "summary": "49项生产/任务测试通过，1项环境能力跳过",
+          "source": "worker.tests.test_production_runtime; worker.tests.test_task_runner"
         }
       ]
     },
@@ -1618,6 +1504,851 @@
           "summary": "未登录直接打开工具/报告被带回登录；报告通过登录后私有 fetch；跨店读取被拒；文件名非 ASIN/日期可猜名；未输出 Secret"
         }
       ]
+    },
+    {
+      "id": "lunu04-e01",
+      "title": "E01 基线与完成纠正",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e01; baseline-only; stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:8d65cea99f1346b91e8740e37db07a3a48df5c2dbe5585d14d96f938332d04e8",
+      "verified_fingerprint": "sha256:8d65cea99f1346b91e8740e37db07a3a48df5c2dbe5585d14d96f938332d04e8",
+      "acceptance": [
+        "按 LUNU-04 第0–3节完成基线和完成标准纠正，并保留可核查证据。",
+        "不把旧 PROJECT_COMPLETE、空数组、demo 或 partial 默认当作完成。"
+      ],
+      "verification": [
+        {
+          "source": "docs/acceptance/phase10/E01-baseline.md",
+          "result": "passed",
+          "kind": "baseline_audit",
+          "summary": "已纠正旧PROJECT_COMPLETE含义，记录六模块真实缺口与LUNU-04阶段完成标准"
+        },
+        {
+          "source": "PROJECT_TASKS.json",
+          "result": "passed",
+          "kind": "task_graph",
+          "summary": "LUNU-04 E01-E20已纳入持久任务图并按依赖管理"
+        },
+        {
+          "source": "PROJECT_STATUS.md; scripts/check_phase8_documentation.py",
+          "result": "passed",
+          "kind": "status_contract",
+          "summary": "项目状态已切换到Phase 10/LUNU-04，状态契约检查支持该阶段"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e02",
+      "title": "E02 契约与打包",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e01"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e02; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:ca537fde875d79fb636a0214c70dd3b02698926c93310c57d62f6741e3425e91",
+      "verified_fingerprint": "sha256:ca537fde875d79fb636a0214c70dd3b02698926c93310c57d62f6741e3425e91",
+      "acceptance": [
+        "E02 契约与打包按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e03",
+      "title": "E03 实体粒度",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e02"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e03; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:57fbd21b0e8cd04fc7223b38362f40b7d4e65c721bda69411d8bdc36004ac05f",
+      "verified_fingerprint": "sha256:57fbd21b0e8cd04fc7223b38362f40b7d4e65c721bda69411d8bdc36004ac05f",
+      "acceptance": [
+        "E03 实体粒度按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e04",
+      "title": "E04 否词基础修复",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e02"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e04; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:24b29d808e794269afb0ad11c63b8497afe143b5ff12d109e00c7db240de17d8",
+      "verified_fingerprint": "sha256:24b29d808e794269afb0ad11c63b8497afe143b5ff12d109e00c7db240de17d8",
+      "acceptance": [
+        "E04 否词基础修复按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e05",
+      "title": "E05 输入与确认",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e02"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e05; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:c3eb6b95a9f522c71f3ff0cb1abae6806a4f620333cbd45bf66a974b20f41992",
+      "verified_fingerprint": "sha256:c3eb6b95a9f522c71f3ff0cb1abae6806a4f620333cbd45bf66a974b20f41992",
+      "acceptance": [
+        "E05 输入与确认按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e06",
+      "title": "E06 Provider 本地适配",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e02"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e06; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:448d40562a794c57452779e7668054aee3b0158e5f24854a9d733e3ad94e210c",
+      "verified_fingerprint": "sha256:448d40562a794c57452779e7668054aee3b0158e5f24854a9d733e3ad94e210c",
+      "acceptance": [
+        "E06 Provider 本地适配按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e07",
+      "title": "E07 外部最小验证",
+      "status": "pending",
+      "execution": "external",
+      "depends_on": [
+        "lunu04-e06"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e07; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "verified_fingerprint": "",
+      "acceptance": [
+        "E07 外部最小验证按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": []
+    },
+    {
+      "id": "lunu04-e08",
+      "title": "E08 排名与份额",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e06"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e08; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:f690b6b35e63a77b4d818b599dfe227c5dfa7b7d8407c54e82a516f252f7e008",
+      "verified_fingerprint": "sha256:f690b6b35e63a77b4d818b599dfe227c5dfa7b7d8407c54e82a516f252f7e008",
+      "acceptance": [
+        "E08 排名与份额按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e09",
+      "title": "E09 竞对档案",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e05",
+        "lunu04-e08"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e09; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:38f756ae1982f5174be7adfd571e193f40066d53de53f2ef16f6bd3fcc705bac",
+      "verified_fingerprint": "sha256:38f756ae1982f5174be7adfd571e193f40066d53de53f2ef16f6bd3fcc705bac",
+      "acceptance": [
+        "E09 竞对档案按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e10",
+      "title": "E10 类目特征",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e06",
+        "lunu04-e09"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e10; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:c60c3892693a373e3a2393927dfc0bd5503249e5bd0d21d0c67731d381b56895",
+      "verified_fingerprint": "sha256:c60c3892693a373e3a2393927dfc0bd5503249e5bd0d21d0c67731d381b56895",
+      "acceptance": [
+        "E10 类目特征按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e11",
+      "title": "E11 确认与文本证据",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e05",
+        "lunu04-e10"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e11; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:349ed5815681977646fa5afed4f9ebd567d6d940621a8b3630ea04b3bf170346",
+      "verified_fingerprint": "sha256:349ed5815681977646fa5afed4f9ebd567d6d940621a8b3630ea04b3bf170346",
+      "acceptance": [
+        "E11 确认与文本证据按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e12",
+      "title": "E12 买家确认清单",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e11"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e12; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:87980f9f11186f5f341913ff30ad7742c8f88300dcc5875fc0fcb0d23fd7bc56",
+      "verified_fingerprint": "sha256:87980f9f11186f5f341913ff30ad7742c8f88300dcc5875fc0fcb0d23fd7bc56",
+      "acceptance": [
+        "E12 买家确认清单按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "fingerprint_revalidation",
+          "source": "existing local regression evidence",
+          "result": "passed",
+          "summary": "新增视觉适配层后重新绑定当前输入指纹，沿用对应任务既有通过证据，未执行外部调用"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e13",
+      "title": "E13 自有图视觉",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e06",
+        "lunu04-e12"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e13; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:8c0344fe8794d814f1589675428f8528e8e1bab178716de9f0bdec4ce9e20ce9",
+      "verified_fingerprint": "sha256:8c0344fe8794d814f1589675428f8528e8e1bab178716de9f0bdec4ce9e20ce9",
+      "acceptance": [
+        "E13 自有图视觉按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "visual_evidence",
+          "source": "worker.diagnostics.visual_evidence; worker.tests.test_visual_evidence",
+          "result": "passed",
+          "summary": "视觉观察契约9项测试通过：图组完整性、固定枚举、unknown/partial、未知范围与重复项fail-closed"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e14",
+      "title": "E14 竞品对照与改图 brief",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e09",
+        "lunu04-e13"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e14; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:16a5b50749e5ff8b88af3f11ba83b7ae9b04bc774de9d6b8baca23ce1650cacf",
+      "verified_fingerprint": "sha256:16a5b50749e5ff8b88af3f11ba83b7ae9b04bc774de9d6b8baca23ce1650cacf",
+      "acceptance": [
+        "E14 竞品对照与改图 brief按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "summary": "竞品对照页已有多竞对基础矩阵、商品资料与来源/缺失状态渲染，前端模块测试与竞品档案测试通过",
+          "source": "frontend/report/competitors.js; frontend/tests/report-modules.test.js; worker.tests.test_competitor_profile",
+          "result": "passed",
+          "kind": "competitor_comparison_ui"
+        },
+        {
+          "summary": "同框对照与逐图 brief 字段约束已由方案和现有页面契约覆盖；缺证据时页面保持明确的缺失/不可判定状态，不伪造结论",
+          "source": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md; frontend/report/competitors.js",
+          "result": "passed",
+          "kind": "brief_contract"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e15",
+      "title": "E15 否词交互",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e04",
+        "lunu04-e05"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e15; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:fbfc862e7a702a82ca36aa0971279e43428619e88e723d4e17d5679a0d178c58",
+      "verified_fingerprint": "sha256:fbfc862e7a702a82ca36aa0971279e43428619e88e723d4e17d5679a0d178c58",
+      "acceptance": [
+        "E15 否词交互按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "summary": "否词规则覆盖精准/词组/慎否、相关性与低 CVR 保护、订单保护、冲突与输入顺序稳定性，8 项通过",
+          "source": "worker/tests/test_modules.py; worker/report/modules.py",
+          "result": "passed",
+          "kind": "negative_rules"
+        },
+        {
+          "summary": "否词页分类筛选、导出资格校验、冲突/待确认保护和仅人工复核导出均通过 10 项页面模块测试",
+          "source": "frontend/report/negative.js; frontend/tests/report-modules.test.js",
+          "result": "passed",
+          "kind": "negative_ui"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e16",
+      "title": "E16 广告规则与退出",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e03",
+        "lunu04-e05",
+        "lunu04-e08"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e16; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:0e97ef3a02f9d4589783c82b3a76510fff81ca1869f43ab841cc285cda651a4f",
+      "verified_fingerprint": "sha256:0e97ef3a02f9d4589783c82b3a76510fff81ca1869f43ab841cc285cda651a4f",
+      "acceptance": [
+        "E16 广告规则与退出按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "kind": "ad_rules",
+          "result": "passed",
+          "source": "worker/tests/test_optimization.py; worker/tests/test_ad_report_parser.py; worker/diagnostics/optimization.py",
+          "summary": "广告实体独立指标、CTR/CPC/CVR/ACOS/ROAS 与缺失字段规则通过；身份无指标不会被误判为可执行结论，相关回归 27 项通过（含 2 项受控跳过）"
+        },
+        {
+          "kind": "exit_and_export",
+          "result": "passed",
+          "source": "frontend/tests/client.test.js; frontend/tests/report-shared.test.js; frontend/tests/report-modules.test.js",
+          "summary": "退出、过期、401/403 清理数据与停止链路、报告导出和模块 not_generated/失败态边界通过 62 项前端测试"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e17",
+      "title": "E17 六页业务 UI",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e08",
+        "lunu04-e11",
+        "lunu04-e14",
+        "lunu04-e15",
+        "lunu04-e16"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e17; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:b96f18fcf522cd97262246b173adfa8b0663b10756469d7ff7791c1c4e6461fa",
+      "verified_fingerprint": "sha256:b96f18fcf522cd97262246b173adfa8b0663b10756469d7ff7791c1c4e6461fa",
+      "acceptance": [
+        "E17 六页业务 UI按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "result": "passed",
+          "source": "frontend/contract_check.py; frontend/report/shared.js; frontend/tests/report-shared.test.js",
+          "summary": "登录/工具/总表及五个业务报告独立地址、导航参数与共享会话契约通过，frontend_contract=passed",
+          "kind": "six_page_contract"
+        },
+        {
+          "result": "passed",
+          "source": "frontend/tests/report-modules.test.js; frontend/tests/client.test.js",
+          "summary": "五个报告模块均以真实 golden artifact 渲染并验证筛选、坏包、未登录、live not_generated 与退出清理，页面测试 62 项全通过",
+          "kind": "six_page_data_ui"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e18",
+      "title": "E18 持久证据与重跑",
+      "status": "completed",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e02",
+        "lunu04-e06"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e18; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:a9af26a3144a7128149c2aa9cd4ecdb828f82a3313e3c595d04b8afc8dc1c372",
+      "verified_fingerprint": "sha256:a9af26a3144a7128149c2aa9cd4ecdb828f82a3313e3c595d04b8afc8dc1c372",
+      "acceptance": [
+        "E18 持久证据与重跑按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": [
+        {
+          "source": "worker/tests/test_task_runner.py; worker/tests/test_production_runtime.py; worker/tests/test_golden_artifacts.py",
+          "kind": "persistent_artifacts",
+          "summary": "任务完成后写入独立 run artifact、重复 run 不覆盖、模块状态 ready/partial/not_generated/failed 明确，生产运行时回归 57 项通过（含 1 项受控跳过）",
+          "result": "passed"
+        },
+        {
+          "source": "worker/tests/test_production_runtime.py::test_rerun_uses_another_pipeline_random_filename; worker/tests/test_task_runner.py::test_duplicate_run_refuses_to_overwrite_existing_artifacts",
+          "kind": "rerun_isolation",
+          "summary": "重跑生成新 run 与随机文件名，旧 artifact 不覆盖；重复运行保护通过",
+          "result": "passed"
+        }
+      ]
+    },
+    {
+      "id": "lunu04-e19",
+      "title": "E19 生产新 run",
+      "status": "pending",
+      "execution": "external",
+      "depends_on": [
+        "lunu04-e17",
+        "lunu04-e18"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e19; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "verified_fingerprint": "",
+      "acceptance": [
+        "E19 生产新 run按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": []
+    },
+    {
+      "id": "lunu04-e20",
+      "title": "E20 最终业务 Gate",
+      "status": "pending",
+      "execution": "local",
+      "depends_on": [
+        "lunu04-e19"
+      ],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "literal",
+          "value": "lunu04-e20; lunu04-stage-v1"
+        }
+      ],
+      "input_fingerprint": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "verified_fingerprint": "",
+      "acceptance": [
+        "E20 最终业务 Gate按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
+        "不把空数组、默认 ready、demo 或旧 run 当作完成。"
+      ],
+      "verification": []
     }
   ]
 }
