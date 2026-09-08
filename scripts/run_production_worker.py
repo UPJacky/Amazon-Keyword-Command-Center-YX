@@ -62,7 +62,7 @@ def main(argv=None):
                 def factory(task):
                     return XiyouLiveEnricher(transport=provider_transport, country=task.get("marketplace"),
                                              asin=task.get("self_asin"), max_keywords=args.xiyou_keywords,
-                                             budget=budget)
+                                             budget=budget, enable_competitors=True)
                 worker.provider_factory = factory
         stats = worker.run_loop(poll_interval=args.poll_interval, max_cycles=args.max_cycles,
                                 on_cycle=lambda result: print(json.dumps({"event": "worker_cycle", **result}), flush=True))

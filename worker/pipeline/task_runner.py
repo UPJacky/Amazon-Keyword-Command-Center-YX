@@ -25,8 +25,9 @@ ProviderEnricher = Callable[[Mapping[str, Any], Mapping[str, Any]], Mapping[str,
 _USAGE_FIELDS = {"requested_keywords", "estimated_calls", "cache_hits", "actual_calls", "rate_limited", "failures", "requested_requests", "unique_requests", "duplicates_suppressed", "retries"}
 
 
-def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str, int]]:
-    if not isinstance(value, Mapping) or set(value) != {"market_rows", "provider_snapshot_version", "usage"}:
+def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str, int], Mapping[str, Any] | None]:
+    allowed = {"market_rows", "provider_snapshot_version", "usage", "competitor_profile"}
+    if not isinstance(value, Mapping) or not set(value) <= allowed or not {"market_rows", "provider_snapshot_version", "usage"} <= set(value):
         raise ValueError("invalid provider enrichment shape")
     rows, version, usage = value["market_rows"], value["provider_snapshot_version"], value["usage"]
     if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
@@ -39,7 +40,12 @@ def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str
         raise ValueError("invalid provider usage counter")
     # Reject non-JSON/NaN payloads before they can reach report artifacts.
     json.dumps(rows, allow_nan=False)
-    return copy.deepcopy(rows), version, dict(usage)
+    competitor_profile = value.get("competitor_profile")
+    if competitor_profile is not None and (not isinstance(competitor_profile, Mapping)
+                                           or competitor_profile.get("self_asin") is None
+                                           or not isinstance(competitor_profile.get("competitors"), list)):
+        raise ValueError("invalid provider competitor profile")
+    return copy.deepcopy(rows), version, dict(usage), copy.deepcopy(competitor_profile)
 
 
 @dataclass(frozen=True)
@@ -120,7 +126,17 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
             # An integration may gather facts, but may not mutate the inputs or
             # rule configuration used by deterministic report generation.
             enrichment = provider_enricher(copy.deepcopy(parsed), copy.deepcopy(effective_config))
-            market_rows, provider_snapshot_version, usage = _provider_result(enrichment)
+            market_rows, provider_snapshot_version, usage, provider_competitor_profile = _provider_result(enrichment)
+            if provider_competitor_profile is not None:
+                validated_provider_profile = build_competitor_profile(
+                    self_asin=str(provider_competitor_profile["self_asin"]),
+                    competitors=provider_competitor_profile["competitors"],
+                    core_keywords=provider_competitor_profile.get("core_keywords", []),
+                    marketplace=str(provider_competitor_profile.get("marketplace", "US")),
+                    snapshot_version=provider_competitor_profile.get("snapshot_version"),
+                    self_product=provider_competitor_profile.get("self_product"),
+                )
+                validated_competitor_profile = validated_provider_profile
             write_json(storage_root, task_id, run_id, "provider-usage.json", {
                 "schema_version": "provider-usage-0.1",
                 "provider_snapshot_version": provider_snapshot_version,
@@ -164,13 +180,13 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
     })
     self_images = []
     competitor_images = []
-    if isinstance(competitor_profile, Mapping):
-        own = competitor_profile.get("self_product")
+    if isinstance(validated_competitor_profile, Mapping):
+        own = validated_competitor_profile.get("self_product")
         if isinstance(own, Mapping):
             for index, url in enumerate(own.get("image_urls") or [], start=1):
                 if isinstance(url, str) and url.strip():
                     self_images.append({"image_id": f"self-image-{index}", "url": url, "position": index, "source": own.get("source"), "sampled_at": own.get("sampled_at")})
-        for competitor in competitor_profile.get("competitors", []):
+        for competitor in validated_competitor_profile.get("competitors", []):
             if isinstance(competitor, Mapping):
                 for index, url in enumerate(competitor.get("image_urls") or [], start=1):
                     if isinstance(url, str) and url.strip():

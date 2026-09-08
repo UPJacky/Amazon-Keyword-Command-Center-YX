@@ -374,6 +374,22 @@ class ProductionRuntimeTests(unittest.TestCase):
         self.assertNotIn("listing.json", bundle["modules"])
         self.assertTrue(all(row["my_organic_rank"] is None for row in bundle["modules"]["rank-benchmark.json"]["rows"]))
 
+    def test_provider_competitor_profile_is_persisted_into_bundle(self):
+        fake = FakeTransport()
+        profile = {"self_asin": "B012345678", "marketplace": "US", "core_keywords": ["led light"],
+                   "competitors": [{"asin": "B012345671"}, {"asin": "B012345672"}, {"asin": "B012345673"}],
+                   "self_product": {"asin": "B012345678", "image_urls": ["https://img.example/self.jpg"]}}
+
+        def provider(parsed, config):
+            return {"market_rows": [], "provider_snapshot_version": "snapshot-provider-profile",
+                    "usage": {"actual_calls": 2}, "competitor_profile": profile}
+
+        result = ProductionWorker(fake, provider_enricher=provider).run_once()
+        self.assertEqual("completed", result["status"], result)
+        bundle = json.loads(fake.upload)
+        self.assertEqual(3, len(bundle["modules"]["competitors.json"]["competitors"]))
+        self.assertEqual("https://img.example/self.jpg", bundle["modules"]["listing-diagnostics.json"]["self_images"]["images"][0]["url"])
+
     def test_invalid_local_master_contract_is_never_uploaded(self):
         fake = FakeTransport()
 

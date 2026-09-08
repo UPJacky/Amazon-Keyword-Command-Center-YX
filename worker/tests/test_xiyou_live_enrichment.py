@@ -80,6 +80,41 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
         self.assertEqual(1, budget.used_calls)
         self.assertEqual(1, budget.used_credits)
 
+    def test_optional_competitor_snapshot_projects_asins_and_images(self):
+        transport = Mock()
+        keyword_payload = response(record())
+        competitor_payload = response(
+            {"asin": ASIN, "country": "US", "asinInfo": {
+                "title": "Own product", "picUrl": "https://img.example/self.jpg",
+                "price": 9.99, "currency": "USD", "stars": 4.4, "ratings": 100,
+            }, "trafficSummary": {}, "ranks": []},
+            {"asin": "B098765432", "country": "US", "asinInfo": {
+                "title": "Competitor one", "picUrl": "https://img.example/one.jpg",
+                "price": 12.99, "currency": "USD", "stars": 4.5, "ratings": 200,
+            }, "trafficSummary": {}, "ranks": []},
+            {"asin": "B087654321", "country": "US", "asinInfo": {
+                "title": "Competitor two", "picUrl": "https://img.example/two.jpg",
+                "price": 11.99, "currency": "USD", "stars": 4.3, "ratings": 150,
+            }, "trafficSummary": {}, "ranks": []},
+            {"asin": "B076543210", "country": "US", "asinInfo": {
+                "title": "Competitor three", "picUrl": "https://img.example/three.jpg",
+                "price": 10.99, "currency": "USD", "stars": 4.2, "ratings": 90,
+            }, "trafficSummary": {}, "ranks": []},
+        )
+        transport.call.side_effect = [keyword_payload, competitor_payload]
+        budget = XiyouCallBudget(3, 3)
+        enrich = XiyouLiveEnricher(transport=transport, country="US", asin=ASIN,
+                                    max_keywords=10, budget=budget,
+                                    enable_competitors=True)
+        result = enrich(parsed("led light"), {})
+        self.assertEqual(2, result["usage"]["actual_calls"])
+        self.assertEqual(2, budget.used_credits)
+        profile = result["competitor_profile"]
+        self.assertEqual(3, len(profile["competitors"]))
+        self.assertEqual(ASIN, profile["self_product"]["asin"])
+        self.assertEqual("https://img.example/one.jpg", profile["competitors"][0]["image_urls"][0])
+        self.assertEqual("get_keyword_asin_analysis", transport.call.call_args_list[1].args[0])
+
     def test_unknown_fields_do_not_gain_invented_units_ranks_or_shares(self):
         raw = record(ranks=[{"positionCode": "or", "totalRank": 1}],
                      suggested_bid=1.2, market_opportunity_score=99, organic_rank=1)

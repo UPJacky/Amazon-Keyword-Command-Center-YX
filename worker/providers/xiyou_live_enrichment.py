@@ -21,6 +21,7 @@ from worker.providers.orchestrator import CallBudget, ProviderBatchError
 
 CONTRACT_VERSION = "xiyou-get-keyword-info-recorded-20260902-v1"
 TOOL_NAME = "get_keyword_info"
+COMPETITOR_TOOL_NAME = "get_keyword_asin_analysis"
 
 
 def _integer(value: Any) -> bool:
@@ -114,7 +115,8 @@ class XiyouLiveEnricher:
     full_report_complete = False
 
     def __init__(self, *, transport: ProviderTransport, country: str, asin: str,
-                 max_keywords: int, budget: XiyouCallBudget):
+                 max_keywords: int, budget: XiyouCallBudget,
+                 enable_competitors: bool = False):
         if not callable(getattr(transport, "call", None)):
             raise ValueError("transport must provide a single-attempt call method")
         if not isinstance(country, str) or not re.fullmatch(r"[A-Z]{2}", country):
@@ -130,6 +132,7 @@ class XiyouLiveEnricher:
         self._asin = asin
         self._max_keywords = max_keywords
         self._budget = budget
+        self._enable_competitors = enable_competitors is True
 
     def __call__(self, parsed: Mapping[str, Any], effective_config: Mapping[str, Any]) -> dict[str, Any]:
         usage = dict(requested_keywords=0, estimated_calls=0, actual_calls=0,
@@ -189,6 +192,10 @@ class XiyouLiveEnricher:
                 except (TypeError, ValueError):
                     _fail("INVALID_KEYWORD_RESPONSE", usage)
 
+        competitor_profile = None
+        if self._enable_competitors and selected:
+            competitor_profile = self._fetch_competitor_profile(next(iter(selected.values())), usage)
+
         market_rows = [self._market_row(original, observations.get(key), key in selected)
                        for original, key in originals.items()]
         # A local content digest, not an assertion about the live server version.
@@ -198,8 +205,78 @@ class XiyouLiveEnricher:
         digest = hashlib.sha256(json.dumps(version_input, ensure_ascii=False,
                                          sort_keys=True, allow_nan=False,
                                          separators=(",", ":")).encode("utf-8")).hexdigest()
-        return {"market_rows": market_rows,
-                "provider_snapshot_version": "snapshot-xiyou-" + digest, "usage": usage}
+        result = {"market_rows": market_rows,
+                  "provider_snapshot_version": "snapshot-xiyou-" + digest, "usage": usage}
+        if competitor_profile is not None:
+            result["competitor_profile"] = competitor_profile
+        return result
+
+    def _fetch_competitor_profile(self, keyword: str, usage: dict[str, int]) -> dict[str, Any] | None:
+        """Best-effort keyword-to-ASIN snapshot for the competitor module.
+
+        The keyword analysis endpoint returns product identity and image URLs,
+        which are sufficient to persist a comparison evidence set.  Missing or
+        malformed provider rows remain a partial module; they never become
+        invented competitors and do not abort the already valid ad report.
+        """
+        reserved = 1
+        try:
+            with self._budget._lock:
+                self._budget._reserve(reserved, usage)
+                usage["actual_calls"] += 1
+                response = self._transport.call(COMPETITOR_TOOL_NAME, {
+                    "keyword": keyword, "country": self._country, "page": 1,
+                    "page_size": 5, "sort_field": "traffic", "sort_order": "desc",
+                })
+                structured = self._envelope(response, usage)
+                self._budget._settle(structured.get("cost_credits"), reserved, usage)
+                if structured.get("status") != 200:
+                    return None
+                data = structured.get("data")
+                entries = data.get("list") if isinstance(data, Mapping) else None
+                if not isinstance(entries, list):
+                    return None
+                rows = [self._product_row(entry, role="competitor") for entry in entries]
+                rows = [row for row in rows if row is not None and row["asin"] != self._asin]
+                rows = rows[:3]
+                own_entry = next((entry for entry in entries
+                                  if isinstance(entry, Mapping) and entry.get("asin") == self._asin), None)
+                own = self._product_row(own_entry, role="self") if own_entry is not None else {
+                    "asin": self._asin, "image_urls": [], "source": COMPETITOR_TOOL_NAME,
+                    "provider_sampled": True,
+                }
+                if not rows:
+                    return None
+                return {
+                    "self_asin": self._asin, "marketplace": self._country,
+                    "core_keywords": [keyword], "competitors": rows,
+                    "self_product": own,
+                    "snapshot_version": "snapshot-xiyou-competitors-v1",
+                }
+        except Exception:
+            # The market keyword call remains usable even when the optional
+            # competitor endpoint has no result or changes schema.
+            return None
+
+    @staticmethod
+    def _product_row(entry: Any, *, role: str) -> dict[str, Any] | None:
+        if not isinstance(entry, Mapping):
+            return None
+        asin = entry.get("asin")
+        info = entry.get("asinInfo")
+        if not isinstance(asin, str) or not re.fullmatch(r"[A-Z0-9]{10}", asin):
+            return None
+        info = info if isinstance(info, Mapping) else {}
+        image = info.get("picUrl")
+        row = {
+            "asin": asin.upper(), "role": role,
+            "title": info.get("title"), "main_image_url": image,
+            "image_urls": [image] if isinstance(image, str) and image.strip() else [],
+            "price": info.get("price"), "currency_code": info.get("currency"),
+            "rating": info.get("stars"), "review_count": info.get("ratings"),
+            "source": COMPETITOR_TOOL_NAME, "provider_sampled": True,
+        }
+        return row
 
     @staticmethod
     def _envelope(response: Any, usage: dict[str, int]) -> Mapping[str, Any]:
