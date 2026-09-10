@@ -39,6 +39,8 @@ __pycache__/
 
 # User-provided credential/test fixtures (never commit)
 西柚新的mcp.txt
+sorftime-MCP.txt
+Sorftime-CLI.txt
 Supabase（密钥 → Settings → API）.agent.md
 用于测试的.txt
 *密钥*.txt

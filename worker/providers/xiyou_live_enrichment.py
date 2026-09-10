@@ -112,6 +112,11 @@ class XiyouLiveEnricher:
     it is NOT sent to this keyword-only tool or used to invent rank data.
     """
 
+    # This class is constructed only around an explicitly supplied live MCP
+    # transport by the production worker.  The production runtime uses this
+    # marker to distinguish verified live-provider provenance from injected
+    # fixtures; the marker is deliberately not inferred from returned data.
+    real_provider_verified = True
     full_report_complete = False
 
     def __init__(self, *, transport: ProviderTransport, country: str, asin: str,

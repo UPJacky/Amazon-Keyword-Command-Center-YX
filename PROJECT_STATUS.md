@@ -2,18 +2,18 @@
 project: Amazon-Keyword-Command-Center-YX
 document_type: project_status
 version: 0.2
-updated_at: 2026-09-08
+updated_at: 2026-09-10
 current_phase: Phase 10 / LUNU-04 six-module business completion
-status: blocked_external
-execution_state: BLOCKED_EXTERNAL
+status: in_progress
+execution_state: RUNNING
 current_objective: "按 LUNU-04 执行六模块业务完善：补齐数据链路、判断逻辑、持久证据、页面和新 run 验收；不得把 partial/not_generated 当作完整交付"
-next_safe_action: "无：本地安全队列已清空；等待 E19/E20 的必需市场、竞品、图片证据在生产链可核查"
-stop_reason: "BLOCKED_EXTERNAL：当前版本已完成真实新 run、私有报告读取和西柚关键词注入；仍缺生产链的竞对 artifact 与图片观察证据。西柚本次仅形成 injected_data，不能据此把六模块标为 ready"
-last_action_fingerprint: "lunu04-e18-local-complete; local-queue-empty"
-verified_gate_snapshot_current: "phase10-e01-e18-passed; strongest-run-f08b2d56-015f2f09-report-read; reconciliation=zero; competitors=partial-missing_product_fields; listing=partial-image_observations_not_available; full_report_complete=false"
-local_safe_queue: empty
-external_blockers_only: true
-verified_gate_snapshot: "worker=299;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;lunu04-e01-e18=passed; strongest-run=f08b2d56-e629-4ba1-ae46-fff799a5f715/015f2f09-9afc-4f02-b117-4baf1b727fac; report_sha256=8241c9c4f6c84a044d0e1193b2b53441fb32ab85c89d9225720670ab84b037b7; scope=injected_provider_data; full_report_complete=false; reconciliation=passed,differences=zero; competitors=3,self_images=1,competitor_images=3; service=provider-budgeted-10; frontend_contract=passed; secret_value_hits=0"
+next_safe_action: "验证 github-pages：确认 main 发布分支已包含当前 49 文件前端包，并复核正式 HTTPS 根入口、tool 与六模块报告脚本；完成后继续下一个外部 Gate"
+stop_reason: ""
+last_action_fingerprint: "github-pages:sha256:d3b3f3; publish-main=3e57721; verification=2026-09-10"
+verified_gate_snapshot_current: "lunu04-e01-e18-passed; lunu04-e19=blocked_external,terminal_missing; github-pages=main:3e57721,pages_https=200,live_scripts=updated,local_bundle=49,raw_inputs=0,network_calls=0; e19-new-run=f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4/5ab0176b-d357-4389-b1e4-d41e897a7e90; ad_reconciliation=passed,difference=0; rank=partial,91_rows,organic_and_benchmark_missing; negative=partial,28_pending_review,orders_protected; competitors=partial,4_products,product_fields_partly_present,brand_monthly_sales_category_bsr_bullet_points_missing,feature_quotes_missing; listing=partial,4_checks_unknown,self_images=1,competitor_images=3,visual_provider_not_requested; optimization=partial,91_actions,87_trace_fields_missing,91_observation_exit_fields_missing; report_scope=live_provider_data; full_report_complete=false; server_terminal=session_missing; sorftime=enabled_local_adapter_not_live"
+local_safe_queue: in_progress
+external_blockers_only: false
+verified_gate_snapshot: "worker=325;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;lunu04-e01-e18=passed; local_status_fix=passed; sorftime_alias_contract=passed; strongest-run=f08b2d56-e629-4ba1-ae46-fff799a5f715/015f2f09-9afc-4f02-b117-4baf1b727fac; report_sha256=8241c9c4f6c84a044d0e1193b2b53441fb32ab85c89d9225720670ab84b037b7; scope=injected_provider_data; full_report_complete=false; reconciliation=passed,differences=zero; competitors=3,self_images=1,competitor_images=3; service=provider-budgeted-10; frontend_contract=passed; secret_value_hits=0"
 ---
 
 ## LUNU-04 当前最强生产新 run（2026-09-08）

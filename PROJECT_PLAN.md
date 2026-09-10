@@ -3,7 +3,7 @@ project: Amazon-Keyword-Command-Center-YX
 project_cn: 关键词作战总表
 document_type: implementation_plan
 version: 1.4
-updated_at: 2026-09-04
+updated_at: 2026-09-10
 status: current
 language: zh-CN
 
@@ -1246,9 +1246,9 @@ Worker：云服务器后台进程
 
 备案完成后的迁移单独执行“Deployment Migration Gate”，不与业务 V1 Gate 混在一起。
 
-### 当前执行状态（2026-09-04）
+### 当前执行状态（2026-09-10）
 
-- 本地 Phase 8 Gate 已通过：完整 UAT 20/20 Gate、Worker 299 项（12 项环境能力跳过）、前端 8 项（Node 场景由前端门禁调用）、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、live 候选49文件、Pages构建46项、迁移静态合同59项、Smoke、Phase 4～7 CLI、双Worker入口、Phase 8 静态审计、compileall 和文档契约 15 项均通过；network_calls=0、external_calls=0、Secret value 命中为0。
+- 本地 Phase 8 Gate 已通过：完整 UAT 20/20 Gate、Worker 325 项（12 项环境能力跳过）、前端 8 项（Node 场景由前端门禁调用）、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、live 候选49文件、Pages构建46项、迁移静态合同59项、Smoke、Phase 4～7 CLI、双Worker入口、Phase 8 静态审计、compileall 和文档契约 15 项均通过；network_calls=0、external_calls=0、Secret value 命中为0。
 - Pages 生产候选已通过 allowlist 审计并发布到 GitHub Pages；根入口以及独立 `tool/`、`report/` 路由均 HTTPS 200。生产包共 49 个文件，不含演示报告、原始输入或 Secret；本地 demo 构建仍固定生成离线 public-config。
 - 真实任务报告对象名使用 `report-` 加 48 位十六进制随机串，`run-meta.json.report_path` 固化 task/run/对象路径；解析器在 `reconciliation.header_mapping` 留存实际表头与列序号，6a/6b 本地证据见 `docs/acceptance/phase8-delivery-audit.md`。
 - 前端 live Auth、私有上传、任务/run登记与重跑、策略追加版本/回滚、私有报告及六模块 bundle 读取、精确Origin Gateway、租约Worker和live打包均已完成线上复验；真实 B 任务已完成，报告经私有 Storage fetch 后在线渲染。报告仍明确标注广告范围，市场/竞品/图片证据待补。
