@@ -45,8 +45,8 @@ task/run/store/created_by/lease_token 必须为非零、小写标准 UUID，run 
 - `task_id`、`run_id`：对应当前领取的任务与运行。
 - `self_asin`、`store_id`、`product_stage`、`marketplace`：仅在任务实际提供非空字符串时加入；不推断 marketplace。
 - `modules`：以已有 artifact 完整文件名为键，内容为该 JSON 对象。固定包含 `rank-benchmark.json`、`negative-keywords.json`、`optimization-plan.json`；只有 pipeline 实际生成时才包含 `competitors.json`。可显式注入与任务 self_asin 匹配的 competitor_profile；不凭 ASIN 列表虚构竞品数据。未生成 Listing artifact 就不添加对应键。
-- `provider_evidence`：默认 `{status:"not_requested", real_provider_verified:false}`；注入后按有无 market_rows 标记 `injected_data` 或 `no_market_data`，注入本身不证明真实 Provider 来源。
-- `report_scope`：默认 `ad_only`，注入 Provider 后为 `injected_provider_data`；`full_report_complete:false`。缺失排名、市场或模块数据继续保留原有 null/missing_fields/unknown，不填 0 或伪造成功状态。
+- `provider_evidence`：默认 `{status:"not_requested", real_provider_verified:false}`；普通注入按有无 market_rows 标记 `injected_data` 或 `no_market_data`。只有显式标记 `real_provider_verified:true` 的真实 Provider 适配器才会进入 `real_provider_data`，注入本身不证明真实 Provider 来源。
+- `report_scope`：默认 `ad_only`；普通注入为 `injected_provider_data`；真实 Provider 适配器为 `live_provider_data`。`full_report_complete` 只有在主表非空、真实 Provider 已验证且五个必需业务 artifact（rank、negative、competitors、listing、optimization）全部声明 `module_status.status=ready` 时才为 `true`，不再硬编码。缺失排名、市场或模块数据继续保留原有 null/missing_fields/unknown，不填 0 或伪造成功状态。
 
 直接使用 pipeline 随机生成的 `report-<48hex>.json` 文件名。上传对象键为 `taskUUID/runUUID/report-<48hex>.json`，不含 reports 前缀，与前端私有报告读取及 RPC 合同一致。bundle 在内存组装，不覆盖 pipeline 的历史 artifact。
 

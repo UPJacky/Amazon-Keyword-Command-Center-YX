@@ -5,6 +5,9 @@ from __future__ import annotations
 import re
 from typing import Any, Mapping
 
+from worker.diagnostics.visual_evidence import build_visual_evidence
+from worker.diagnostics.visual_brief import build_visual_brief
+
 
 IMAGE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")
 
@@ -41,7 +44,9 @@ def build_image_group(images: list[Mapping[str, Any]], *, group_id: str) -> dict
         normalized.append(row)
     return {"schema_version": "image-group-0.2", "group_id": group_id, "images": normalized,
             "provider_calls": sum(item["provider_calls"] for item in normalized),
-            "observation_status": "ready" if any(item["observations"] for item in normalized) else "not_requested"}
+            # Raw observations have not been validated against the confirmed
+            # image/element scope. Presence alone cannot establish coverage.
+            "observation_status": "partial" if any(item["observations"] for item in normalized) else "not_requested"}
 
 
 def build_checklist(*, image_group_id: str, competitor_group_id: str | None = None, evaluations: Mapping[str, Mapping[str, Any]] | None = None) -> dict[str, Any]:
@@ -65,20 +70,93 @@ def build_checklist(*, image_group_id: str, competitor_group_id: str | None = No
             "competitor_group_id": competitor_group_id, "items": items, "ai_status": ai_status}
 
 
-def build_listing_diagnostics(*, self_images: list[Mapping[str, Any]], competitor_images: list[Mapping[str, Any]], config: Mapping[str, Any], keyword_rows: list[Mapping[str, Any]] = ()) -> dict[str, Any]:
+def _attach_visual_observations(images: list[Mapping[str, Any]], evidence: Mapping[str, Any]) -> list[dict[str, Any]]:
+    rows_by_image: dict[str, list[dict[str, Any]]] = {}
+    for row in evidence.get("observations", []):
+        if isinstance(row, Mapping):
+            rows_by_image.setdefault(str(row.get("image_id")), []).append(dict(row))
+    result = []
+    for image in images:
+        item = dict(image)
+        observations = list(item.get("observations") or [])
+        observations.extend(rows_by_image.get(str(item.get("image_id")), []))
+        item["observations"] = observations
+        result.append(item)
+    return result
+
+
+def _normalize_visual_evidence(*, image_ids: list[str], visual_evidence: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    if visual_evidence is None:
+        return None
+    if not isinstance(visual_evidence, Mapping):
+        raise ValueError("visual evidence must be an object")
+    expected_elements = visual_evidence.get("expected_element_ids")
+    observations = visual_evidence.get("observations")
+    version = visual_evidence.get("evidence_version") or visual_evidence.get("version")
+    if not isinstance(expected_elements, list) or not isinstance(observations, list) or not isinstance(version, str) or not version.strip():
+        raise ValueError("visual evidence requires expected elements, observations and version")
+    return build_visual_evidence(
+        image_ids=image_ids,
+        observations=observations,
+        expected_element_ids=expected_elements,
+        evidence_version=version,
+    )
+
+
+def build_listing_diagnostics(*, self_images: list[Mapping[str, Any]], competitor_images: list[Mapping[str, Any]], config: Mapping[str, Any], keyword_rows: list[Mapping[str, Any]] = (), visual_evidence: Mapping[str, Any] | None = None, checklist_evaluations: Mapping[str, Mapping[str, Any]] | None = None, competitor_comparisons: list[Mapping[str, Any]] | None = None, image_briefs: list[Mapping[str, Any]] | None = None, competitor_asins: list[str] | None = None) -> dict[str, Any]:
     """Build a private, provider-neutral listing artifact from supplied evidence."""
     self_group = build_image_group(self_images, group_id="self-images")
     competitor_group = build_image_group(competitor_images, group_id="competitor-images")
+    all_image_ids = [item["image_id"] for item in self_group["images"] + competitor_group["images"]]
+    normalized_evidence = _normalize_visual_evidence(image_ids=all_image_ids, visual_evidence=visual_evidence)
+    if normalized_evidence is not None:
+        self_group = build_image_group(_attach_visual_observations(self_group["images"], normalized_evidence), group_id="self-images")
+        competitor_group = build_image_group(_attach_visual_observations(competitor_group["images"], normalized_evidence), group_id="competitor-images")
     provider_calls = self_group["provider_calls"] + competitor_group["provider_calls"]
-    status = "ready" if self_group["observation_status"] == "ready" else "partial"
+    checklist = build_checklist(
+        image_group_id="self-images", competitor_group_id="competitor-images",
+        evaluations=checklist_evaluations,
+    )
+    evidence_ready = normalized_evidence is not None and normalized_evidence["status"] == "ready"
+    checklist_ready = all(item["status"] in {"pass", "fail"} for item in checklist["items"])
+    expected_elements = normalized_evidence.get("expected_element_ids", []) if normalized_evidence else []
+    brief_input = competitor_comparisons is not None or image_briefs is not None
+    if brief_input:
+        visual_brief = build_visual_brief(
+            self_image_ids=[item["image_id"] for item in self_group["images"]],
+            competitor_image_ids=[item["image_id"] for item in competitor_group["images"]],
+            competitor_asins=competitor_asins or [],
+            expected_element_ids=expected_elements,
+            comparisons=competitor_comparisons or [],
+            briefs=image_briefs or [],
+        )
+    else:
+        visual_brief = {
+            "schema_version": "visual-brief-0.1",
+            "version": "visual-brief-v1",
+            "module_status": {"status": "not_generated", "reason": "comparison_and_brief_not_available"},
+            "comparison_scope": "one_competitor_per_row",
+            "comparisons": [], "briefs": [],
+            "coverage": {"self_images_expected": len(self_group["images"]), "self_images_briefed": 0, "comparison_rows": 0, "competitors_referenced": []},
+        }
+    brief_ready = visual_brief["module_status"]["status"] == "ready"
+    if normalized_evidence is not None and normalized_evidence["status"] == "failed":
+        status, reason = "failed", "visual_provider_evidence_invalid"
+    elif evidence_ready and checklist_ready and brief_ready:
+        status, reason = "ready", "visual_evidence_and_checklist_complete"
+    elif normalized_evidence is not None:
+        status, reason = "partial", "visual_evidence_incomplete_or_checklist_unconfirmed"
+    else:
+        status, reason = "partial", "image_observations_not_available"
     return {
         "schema_version": "listing-diagnostics-0.2",
-        "module_status": {"status": status, "reason": "visual_observations_present" if status == "ready" else "image_observations_not_available"},
+        "module_status": {"status": status, "reason": reason},
         "self_images": self_group,
         "competitor_images": competitor_group,
-        "checklist": build_checklist(image_group_id="self-images", competitor_group_id="competitor-images"),
+        "checklist": checklist,
+        "visual_brief": visual_brief,
         "conversion_diagnostics": [diagnose_conversion_gap(row, config) for row in keyword_rows],
-        "provider_calls": provider_calls,
+        "provider_calls": provider_calls + (normalized_evidence.get("provider_calls", 0) if normalized_evidence else 0),
     }
 
 

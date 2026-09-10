@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from worker.diagnostics.optimization import build_optimization_plan
+from worker.diagnostics.optimization import build_optimization_plan, optimization_module_status
 from worker.rule_engine.engine import load_default_config
 
 
@@ -10,6 +10,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class OptimizationTests(unittest.TestCase):
+    def test_module_status_is_partial_when_entity_judgement_is_missing(self):
+        actions = build_optimization_plan([{"keyword": "led light", "action_group": "scale_up"}], load_default_config())
+        self.assertEqual("partial", optimization_module_status(actions)["status"])
     def test_each_action_is_traceable_to_facts_rules_and_config(self):
         report = json.loads((ROOT / "data" / "golden" / "market-demo-report" / "master-table.json").read_text(encoding="utf-8"))
         actions = build_optimization_plan(report["rows"][:10], load_default_config())

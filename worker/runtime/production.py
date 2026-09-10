@@ -35,6 +35,7 @@ _MODULE_ARTIFACTS = (
     "rank-benchmark.json", "negative-keywords.json", "competitors.json",
     "listing-diagnostics.json", "optimization-plan.json",
 )
+_SUPPLEMENTARY_ARTIFACTS = ("category-features.json",)
 _RPC_NAMES = {"kwcc_claim_run", "kwcc_heartbeat_run", "kwcc_finish_run"}
 _STAGE_TEMPLATES = {
     "new": "new_product_growth", "growth": "balanced_growth",
@@ -131,7 +132,36 @@ def _module_states(modules: Mapping[str, Any], report_scope: str) -> dict[str, d
             states[name] = {"status": declared["status"], "reason": reason if isinstance(reason, str) and reason else "module_declared_status"}
         else:
             states[name] = {"status": "partial", "reason": "legacy_artifact_without_status"}
+    for name in _SUPPLEMENTARY_ARTIFACTS:
+        artifact = modules.get(name)
+        if artifact is None:
+            continue
+        declared = artifact.get("module_status") if isinstance(artifact, Mapping) else None
+        if isinstance(declared, Mapping) and declared.get("status") in {"ready", "partial", "failed"}:
+            reason = declared.get("reason")
+            states[name] = {"status": declared["status"], "reason": reason if isinstance(reason, str) and reason else "module_declared_status"}
+        else:
+            states[name] = {"status": "partial", "reason": "legacy_artifact_without_status"}
     return states
+
+
+def _full_report_complete(master: Mapping[str, Any], modules: Mapping[str, Any],
+                          states: Mapping[str, Mapping[str, Any]], report_scope: str,
+                          provider_state: Mapping[str, Any]) -> bool:
+    """Return true only for a non-empty, real-provider, all-module bundle.
+
+    A completed queue run is allowed to be an advertising-only or partial
+    report.  This separate flag must never be inferred from an array being
+    present, from injected test data, or from a successful upload.
+    """
+    if report_scope != "live_provider_data" or provider_state.get("real_provider_verified") is not True:
+        return False
+    if not isinstance(master.get("rows"), list) or not master["rows"]:
+        return False
+    for name in _MODULE_ARTIFACTS:
+        if name not in modules or states.get(name, {}).get("status") != "ready":
+            return False
+    return True
 
 
 def _uuid(value: Any, code: str = "INPUT_INVALID") -> str:
@@ -400,28 +430,36 @@ class ProductionWorker:
             # Keep the registry identical to _MODULE_ARTIFACTS and the frontend
             # allowlist. Listing diagnostics used to be generated locally but
             # silently omitted from the production bundle.
-            for name in ("rank-benchmark", "negative-keywords", "competitors", "listing-diagnostics", "optimization-plan"):
+            for name in ("rank-benchmark", "negative-keywords", "competitors", "listing-diagnostics", "optimization-plan", "category-features"):
                 artifact = root / f"{name}.json"
                 if artifact.exists():
                     if artifact.is_symlink():
                         raise ValueError()
                     modules[f"{name}.json"] = _decode(artifact.read_bytes(), "REPORT_INVALID")
-                elif name != "competitors":
+                elif name not in {"competitors", "category-features"}:
                     raise ValueError()
             if (master.get("schema_version") != "report-0.2" or not isinstance(master.get("rows"), list)
                     or any(not isinstance(row, dict) for row in master["rows"])):
                 raise ValueError()
             metadata = {field: task[field] for field in ("self_asin", "store_id", "product_stage", "marketplace")
                         if isinstance(task.get(field), str) and task[field].strip()}
-            report_scope = "ad_only" if self.provider_enricher is None and self.provider_factory is None else "injected_provider_data"
+            report_scope = ("ad_only" if self.provider_enricher is None and self.provider_factory is None
+                            else ("live_provider_data" if provider_state.get("real_provider_verified") is True
+                                  else "injected_provider_data"))
+            states = _module_states(modules, report_scope)
+            complete = _full_report_complete(master, modules, states, report_scope, provider_state)
+            states["master-table.json"] = {
+                "status": "ready" if complete else "partial",
+                "reason": "all_required_modules_complete" if complete else states["master-table.json"]["reason"],
+            }
             bundle = {**master, **metadata, "task_id": task["task_id"], "run_id": run["run_id"],
-                      "modules": modules, "module_states": _module_states(modules, report_scope),
+                      "modules": modules, "module_states": states,
                       "provider_evidence": provider_state, "report_scope": report_scope,
-                      "full_report_complete": False}
+                      "full_report_complete": complete}
             raw = _encode(bundle)
             if len(raw) > MAX_REPORT_BYTES:
                 raise ValueError()
-            return f"{task['task_id']}/{run['run_id']}/{path.name}", raw, master
+            return f"{task['task_id']}/{run['run_id']}/{path.name}", raw, master, complete
         except Exception:
             raise RuntimeFailure("REPORT_INVALID") from None
 
@@ -502,8 +540,11 @@ class ProductionWorker:
                     lease.check()
                     value = enricher(parsed, config)
                     lease.check()
-                    provider_state["status"] = "injected_data" if isinstance(value, Mapping) and value.get("market_rows") else "no_market_data"
-                    # Injection is evidence of data, not proof of live Provider provenance.
+                    provider_state["real_provider_verified"] = getattr(enricher, "real_provider_verified", False) is True
+                    provider_state["status"] = ("real_provider_data" if provider_state["real_provider_verified"]
+                                                  else ("injected_data" if isinstance(value, Mapping) and value.get("market_rows")
+                                                        else "no_market_data"))
+                    # Data injection is not proof of live Provider provenance.
                     return value
 
                 try:
@@ -520,7 +561,7 @@ class ProductionWorker:
                 if result.status != "completed":
                     code = result.failure_reason.get("code") if isinstance(result.failure_reason, dict) else None
                     raise RuntimeFailure(code if code in _FAILURE_STAGES and code in _MESSAGES else "PIPELINE_FAILED")
-                report_path, bundle, master = self._bundle(result, storage, task, run, provider_state)
+                report_path, bundle, master, full_report_complete = self._bundle(result, storage, task, run, provider_state)
             # Cleanup must also succeed before publishing or committing completion.
             lease.check()
             try:
@@ -538,8 +579,10 @@ class ProductionWorker:
             finish("completed", report_path=report_path, master=master)
             return {"status": "completed", "task_id": task["task_id"], "run_id": run["run_id"],
                     "report_path": report_path, "report_sha256": hashlib.sha256(bundle).hexdigest(),
-                    "report_scope": "ad_only" if enricher is None else "injected_provider_data",
-                    "full_report_complete": False}
+                    "report_scope": ("ad_only" if enricher is None else
+                                     ("live_provider_data" if provider_state.get("real_provider_verified") is True
+                                      else "injected_provider_data")),
+                    "full_report_complete": full_report_complete}
         except Exception as exc:
             safe = exc if isinstance(exc, RuntimeFailure) else RuntimeFailure("WORKER_FAILED")
             if attempted_finish:

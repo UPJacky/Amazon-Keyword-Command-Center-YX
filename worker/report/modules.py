@@ -17,6 +17,92 @@ def _positive_rank(value: Any) -> int | None:
     return value if type(value) is int and value > 0 else None
 
 
+def _finite_number(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if number == number and number not in (float("inf"), float("-inf")) else None
+
+
+def normalize_ratio(value: Any, *, denominator: Any = None) -> dict[str, Any]:
+    """Normalize a ratio without guessing units or hiding invalid values.
+
+    Provider ratios are decimals (``0.2`` means 20%).  A string with an
+    explicit percent sign is accepted as presentation input (``"20%"``), but
+    a bare numeric value above 1 is invalid rather than silently treated as a
+    percentage.  The original value is always retained for audit display.
+    """
+    result: dict[str, Any] = {
+        "raw_value": value,
+        "value": None,
+        "display_percent": None,
+        "status": "unknown",
+        "denominator": denominator,
+    }
+    denominator_number = _finite_number(denominator) if denominator is not None else None
+    if denominator is not None and (denominator_number is None or denominator_number <= 0):
+        result["status"] = "unknown_denominator"
+        return result
+    if value is None or (isinstance(value, str) and not value.strip()):
+        return result
+    explicit_percent = isinstance(value, str) and value.strip().endswith("%")
+    candidate_text = value.strip()[:-1] if explicit_percent else value.strip() if isinstance(value, str) else value
+    number = _finite_number(candidate_text)
+    if number is None:
+        result["status"] = "invalid_value"
+        return result
+    if explicit_percent:
+        number /= 100.0
+    if not 0 <= number <= 1:
+        result["status"] = "invalid_value"
+        result["display_percent"] = number * 100
+        return result
+    result.update({"value": number, "display_percent": number * 100, "status": "valid"})
+    return result
+
+
+def _share_entry(row: Mapping[str, Any], field: str, denominator_field: str) -> dict[str, Any]:
+    return normalize_ratio(row.get(field), denominator=row.get(denominator_field))
+
+
+def build_share_board(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    """Build the two-denominator share board from explicit provider fields.
+
+    ``keyword_market_share`` and ``asin_keyword_dependency`` are deliberately
+    separate from ``traffic_acquisition_rate``.  Missing values stay unknown;
+    no share is inferred from rank, clicks, or another denominator.
+    """
+    output: list[dict[str, Any]] = []
+    for source in rows:
+        row = dict(source)
+        output.append({
+            "keyword": row.get("keyword"),
+            "asin": row.get("asin") or row.get("my_asin"),
+            "period": row.get("share_period") or row.get("period"),
+            "scope": row.get("share_scope") or "unknown",
+            "keyword_market_share": _share_entry(row, "keyword_market_share", "keyword_market_share_denominator"),
+            "asin_keyword_dependency": _share_entry(row, "asin_keyword_dependency", "asin_keyword_dependency_denominator"),
+            "traffic_acquisition_rate": _share_entry(row, "traffic_acquisition_rate", "traffic_acquisition_rate_denominator"),
+            "source": row.get("provider_source") or row.get("source") or "provider_snapshot",
+        })
+    return sorted(output, key=_stable_row_key)
+
+
+def share_module_status(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    records = list(rows)
+    valid_market = sum(item.get("keyword_market_share", {}).get("status") == "valid" for item in records)
+    valid_dependency = sum(item.get("asin_keyword_dependency", {}).get("status") == "valid" for item in records)
+    complete = bool(records) and valid_market == len(records) and valid_dependency == len(records)
+    return {
+        "status": "ready" if complete else "partial",
+        "reason": "share_denominators_complete" if complete else "share_denominators_incomplete",
+        "coverage": {"total_rows": len(records), "keyword_market_share": valid_market, "asin_keyword_dependency": valid_dependency},
+    }
+
+
 def rank_module_status(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     records = list(rows)
     complete = bool(records) and all(

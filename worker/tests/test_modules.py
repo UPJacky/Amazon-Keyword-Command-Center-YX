@@ -1,10 +1,31 @@
 import unittest
 
-from worker.report.modules import build_negative_keywords, build_rank_benchmark, rank_module_status
+from worker.report.modules import build_negative_keywords, build_rank_benchmark, build_share_board, normalize_ratio, rank_module_status, share_module_status
 from worker.rule_engine.engine import load_default_config
 
 
 class ModuleReportTests(unittest.TestCase):
+    def test_ratio_preserves_decimal_semantics_and_rejects_out_of_range(self):
+        self.assertEqual((0.2, 20.0, "valid"), tuple(normalize_ratio(0.2)[key] for key in ("value", "display_percent", "status")))
+        self.assertEqual((0.05, 5.0), tuple(normalize_ratio("5%")[key] for key in ("value", "display_percent")))
+        invalid = normalize_ratio(1.338)
+        self.assertEqual("invalid_value", invalid["status"])
+        self.assertIsNone(invalid["value"])
+        self.assertEqual(1.338, invalid["raw_value"])
+        self.assertEqual(133.8, invalid["display_percent"])
+
+    def test_zero_or_unknown_denominator_does_not_count_as_share(self):
+        self.assertEqual("unknown_denominator", normalize_ratio(0.2, denominator=0)["status"])
+        rows = build_share_board([{
+            "keyword": "led lights", "asin": "SELF",
+            "keyword_market_share": 0.2, "asin_keyword_dependency": 0.05,
+            "traffic_acquisition_rate": 0.7,
+        }])
+        self.assertEqual(20.0, rows[0]["keyword_market_share"]["display_percent"])
+        self.assertEqual(5.0, rows[0]["asin_keyword_dependency"]["display_percent"])
+        self.assertEqual(70.0, rows[0]["traffic_acquisition_rate"]["display_percent"])
+        self.assertEqual("ready", share_module_status(rows)["status"])
+
     def test_rank_benchmark_keeps_unknown_as_none_and_calculates_gap(self):
         result = build_rank_benchmark([
             {"keyword": "led light", "asin": "MY-ASIN", "organic_rank": 5, "ad_rank": 3, "benchmark_asins": [{"asin": "COMP-1", "organic_rank": 2}]},

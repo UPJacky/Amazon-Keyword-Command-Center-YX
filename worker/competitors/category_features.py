@@ -10,6 +10,7 @@ because the product currently lacks it.
 from __future__ import annotations
 
 from copy import deepcopy
+import re
 from typing import Any, Iterable, Mapping
 
 
@@ -17,10 +18,31 @@ def _number(value: Any) -> float | None:
     if value is None or isinstance(value, bool):
         return None
     try:
+        if isinstance(value, str):
+            match = re.match(r"^\s*(-?(?:\d+(?:\.\d+)?|\.\d+))\s*%?", value)
+            if not match:
+                return None
+            value = match.group(1)
         result = float(value)
     except (TypeError, ValueError):
         return None
     return result if result == result and result not in (float("inf"), float("-inf")) else None
+
+
+def _share(value: Any) -> tuple[float | None, float | None]:
+    """Return (percentage-points, decimal ratio) without guessing silently.
+
+    Sorftime samples commonly use ``64.2%`` or ``64.2`` for percentage
+    points. A numeric value in [0, 1] is treated as an already-normalized
+    ratio. Both representations are retained explicitly in the artifact.
+    """
+    number = _number(value)
+    if number is None or number < 0:
+        return None, None
+    explicit_percent = isinstance(value, str) and "%" in value
+    if explicit_percent or number >= 1:
+        return number, number / 100.0 if number <= 100 else None
+    return number * 100.0, number
 
 
 def _first(source: Mapping[str, Any], *names: str) -> Any:
@@ -67,16 +89,22 @@ def normalize_category_features(payload: Mapping[str, Any]) -> dict[str, Any]:
             continue
         feature_id = _first(item, "feature_id", "id")
         feature_id = str(feature_id).strip() if feature_id is not None and str(feature_id).strip() else f"feature-{index + 1:03d}"
-        product_count_share = _number(_first(item, "product_count_share", "productCountShare", "count_share"))
-        monthly_sales_share = _number(_first(item, "monthly_sales_share", "monthlySalesShare", "sales_share"))
+        product_share_raw = _first(item, "product_count_share", "productCountShare", "count_share")
+        sales_share_raw = _first(item, "monthly_sales_share", "monthlySalesShare", "sales_share")
+        product_count_share, product_count_share_ratio = _share(product_share_raw)
+        monthly_sales_share, monthly_sales_share_ratio = _share(sales_share_raw)
         description = _first(item, "feature_description", "description", "desc")
         row = {
             "feature_id": feature_id,
             "name": name,
             "feature_description": str(description).strip() if description is not None and str(description).strip() else None,
+            "product_count_share_raw": deepcopy(product_share_raw),
             "product_count_share": product_count_share,
+            "product_count_share_ratio": product_count_share_ratio,
+            "monthly_sales_share_raw": deepcopy(sales_share_raw),
             "monthly_sales_share": monthly_sales_share,
-            "ratio": product_count_share,
+            "monthly_sales_share_ratio": monthly_sales_share_ratio,
+            "ratio": product_count_share_ratio,
             "source_index": index,
             "source_refs": deepcopy(_first(item, "source_refs", "sources")) if isinstance(_first(item, "source_refs", "sources"), list) else [],
         }
@@ -120,7 +148,9 @@ def build_feature_cleaning_draft(snapshot: Mapping[str, Any], *, self_facts: Ite
             "feature_id": feature["feature_id"],
             "name": name,
             "product_count_share": feature.get("product_count_share"),
+            "product_count_share_ratio": feature.get("product_count_share_ratio"),
             "monthly_sales_share": feature.get("monthly_sales_share"),
+            "monthly_sales_share_ratio": feature.get("monthly_sales_share_ratio"),
             "proposal": "keep" if present else "gap",
             "reason": "confirmed_in_product_facts" if present else "category_feature_not_confirmed_in_current_facts",
             "confirmed": False,

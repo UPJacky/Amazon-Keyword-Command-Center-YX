@@ -20,7 +20,7 @@ from unittest.mock import Mock, patch
 from worker.pipeline.task_runner import run_task
 from worker.runtime.production import (
     MAX_INPUT_BYTES, ProductionWorker, RestrictedTransport, RuntimeFailure,
-    _NoRedirect, _module_states, build_effective_config,
+    _NoRedirect, _full_report_complete, _module_states, build_effective_config,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -127,6 +127,20 @@ class ProductionRuntimeTests(unittest.TestCase):
         self.assertEqual("partial", states["negative-keywords.json"]["status"])
         self.assertEqual("not_generated", states["competitors.json"]["status"])
         self.assertEqual("failed", states["optimization-plan.json"]["status"])
+
+    def test_full_report_requires_real_provider_and_every_required_module(self):
+        modules = {name: {"module_status": {"status": "ready", "reason": "fixture"}}
+                   for name in ("rank-benchmark.json", "negative-keywords.json", "competitors.json",
+                                "listing-diagnostics.json", "optimization-plan.json")}
+        states = _module_states(modules, "injected_provider_data")
+        master = {"rows": [{"keyword": "led lights"}]}
+        self.assertFalse(_full_report_complete(master, modules, states, "injected_provider_data",
+                                               {"real_provider_verified": False}))
+        self.assertTrue(_full_report_complete(master, modules, states, "live_provider_data",
+                                              {"real_provider_verified": True}))
+        self.assertFalse(_full_report_complete(master, {**modules, "optimization-plan.json": {}},
+                                               _module_states({**modules, "optimization-plan.json": {}}, "live_provider_data"),
+                                               "live_provider_data", {"real_provider_verified": True}))
 
     def test_default_runtime_never_reads_credentials_or_uses_network(self):
         with patch.dict(os.environ, {"SUPABASE_URL": "invalid", "SUPABASE_SERVICE_ROLE_KEY": "SECRET"}), \

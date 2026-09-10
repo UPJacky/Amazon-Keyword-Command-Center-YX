@@ -166,3 +166,23 @@ def build_optimization_plan(rows: Iterable[Mapping[str, Any]], config: Mapping[s
             "ai_may_change_action": False,
         })
     return result
+
+
+def optimization_module_status(actions: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    """Describe whether every action has the entity evidence it needs."""
+    records = list(actions)
+    ready = bool(records) and all(
+        row.get("entity_status") == "ready"
+        and bool(row.get("entity_diagnoses"))
+        and all(isinstance(item, Mapping)
+                and item.get("judgement", {}).get("status") == "judged"
+                and item.get("recommended_action", {}).get("status") == "ready"
+                for item in row.get("entity_diagnoses") or [])
+        for row in records
+    )
+    return {
+        "status": "ready" if ready else "partial",
+        "reason": "entity_judgement_complete" if ready else "entity_context_or_exit_incomplete",
+        "coverage": {"total_actions": len(records),
+                      "entity_ready_actions": sum(row.get("entity_status") == "ready" for row in records)},
+    }

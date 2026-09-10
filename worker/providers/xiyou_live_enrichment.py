@@ -116,7 +116,8 @@ class XiyouLiveEnricher:
 
     def __init__(self, *, transport: ProviderTransport, country: str, asin: str,
                  max_keywords: int, budget: XiyouCallBudget,
-                 enable_competitors: bool = False):
+                 enable_competitors: bool = False, catalog_adapter: Any = None,
+                 primary_core_keyword: str | None = None):
         if not callable(getattr(transport, "call", None)):
             raise ValueError("transport must provide a single-attempt call method")
         if not isinstance(country, str) or not re.fullmatch(r"[A-Z]{2}", country):
@@ -133,6 +134,10 @@ class XiyouLiveEnricher:
         self._max_keywords = max_keywords
         self._budget = budget
         self._enable_competitors = enable_competitors is True
+        if catalog_adapter is not None and not callable(getattr(catalog_adapter, "enrich_profile", None)):
+            raise ValueError("catalog_adapter must provide enrich_profile")
+        self._catalog_adapter = catalog_adapter
+        self._primary_core_keyword = primary_core_keyword.strip() if isinstance(primary_core_keyword, str) and primary_core_keyword.strip() else None
 
     def __call__(self, parsed: Mapping[str, Any], effective_config: Mapping[str, Any]) -> dict[str, Any]:
         usage = dict(requested_keywords=0, estimated_calls=0, actual_calls=0,
@@ -195,6 +200,13 @@ class XiyouLiveEnricher:
         competitor_profile = None
         if self._enable_competitors and selected:
             competitor_profile = self._fetch_competitor_profile(next(iter(selected.values())), usage)
+            if competitor_profile is not None and self._catalog_adapter is not None:
+                try:
+                    competitor_profile = self._catalog_adapter.enrich_profile(competitor_profile)
+                except Exception:
+                    # The keyword snapshot remains valid but the product
+                    # profile must retain its partial state.
+                    competitor_profile["sorftime_enrichment_failed"] = True
 
         market_rows = [self._market_row(original, observations.get(key), key in selected)
                        for original, key in originals.items()]
@@ -209,6 +221,9 @@ class XiyouLiveEnricher:
                   "provider_snapshot_version": "snapshot-xiyou-" + digest, "usage": usage}
         if competitor_profile is not None:
             result["competitor_profile"] = competitor_profile
+            category_features = getattr(self._catalog_adapter, "last_category_features", None)
+            if isinstance(category_features, Mapping):
+                result["category_features"] = dict(category_features)
         return result
 
     def _fetch_competitor_profile(self, keyword: str, usage: dict[str, int]) -> dict[str, Any] | None:
@@ -249,7 +264,9 @@ class XiyouLiveEnricher:
                     return None
                 return {
                     "self_asin": self._asin, "marketplace": self._country,
-                    "core_keywords": [keyword], "competitors": rows,
+                    "core_keywords": [self._primary_core_keyword or keyword],
+                    "primary_core_keyword": self._primary_core_keyword or keyword,
+                    "competitors": rows,
                     "self_product": own,
                     "snapshot_version": "snapshot-xiyou-competitors-v1",
                 }

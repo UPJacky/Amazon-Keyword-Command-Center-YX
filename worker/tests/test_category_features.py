@@ -19,6 +19,9 @@ class CategoryFeatureTests(unittest.TestCase):
         })
         self.assertEqual(["易安装", "调光", "无效空名"], [row["name"] for row in result["features"]])
         self.assertEqual(64.2, result["features"][1]["product_count_share"])
+        self.assertAlmostEqual(0.642, result["features"][1]["product_count_share_ratio"])
+        self.assertAlmostEqual(0.4, result["features"][1]["monthly_sales_share_ratio"])
+        self.assertAlmostEqual(0.642, result["features"][1]["ratio"])
         self.assertEqual("s1", result["snapshot_version"])
         self.assertEqual("ready", category_feature_module_status(result)["status"])
 
