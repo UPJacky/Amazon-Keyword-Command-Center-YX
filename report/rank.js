@@ -38,6 +38,17 @@
       body.append(ui.el('p', `数据覆盖不足：${rows.length} 个关键词中，仅 ${benchmarkCount} 条可对比自己与标杆自然位，${historyCount} 条有历史变化。缺失项需补采快照，当前不能形成完整标杆或趋势结论。`, 'notice'));
     }
     body.append(ui.el('p', '位次越小越靠前。差距 = 我的自然位 − 标杆自然位；正数表示落后。未上榜或未返回一律显示 —。7 / 14 / 30 天变化按原始快照呈现；缺少历史时不推算趋势。', 'notice'));
+    const shareRows = Array.isArray(data.share_board) ? data.share_board.filter(row => row && typeof row === 'object' && !Array.isArray(row)) : [];
+    const sharePanel = ui.el('section', undefined, 'panel table-panel');
+    sharePanel.append(ui.el('h2', '流量份额与依赖度'), ui.el('p', shareRows.length
+      ? '市场份额、ASIN 对该词依赖度、流量获取率使用各自明确口径；不同分母不合并计算。'
+      : '当前报告没有可核查的份额数据，不能用自然位或广告数据代替份额。', shareRows.length ? 'muted' : 'notice'));
+    const shareValue = item => item && item.status === 'valid' ? ui.percent(item.value) : item && item.status === 'invalid_value' ? `不可用（原值 ${ui.text(item.raw_value)}）` : '—';
+    if (shareRows.length) sharePanel.append(ui.table(
+      ['关键词', '市场份额（市场分母）', 'ASIN 关键词依赖度（ASIN 分母）', '流量获取率（独立口径）', '状态'],
+      shareRows.map(row => [ui.text(row.keyword), shareValue(row.keyword_market_share), shareValue(row.asin_keyword_dependency), shareValue(row.traffic_acquisition_rate), ui.text(row.status)]),
+    ));
+    body.append(sharePanel);
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar');
     const label = ui.el('label', '搜索关键词或 ASIN ');

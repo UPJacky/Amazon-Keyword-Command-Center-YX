@@ -13,6 +13,10 @@
     const items = data.checklist.items;
     const self = data.self_images;
     const competitors = data.competitor_images;
+    const visualBrief = data.visual_brief && typeof data.visual_brief === 'object' ? data.visual_brief : {
+      module_status: { status: 'not_generated', reason: 'comparison_and_brief_not_available' },
+      comparisons: [], briefs: [], coverage: {},
+    };
     const strings = value => Array.isArray(value) ? value.filter(item => typeof item === 'string' && item.trim()) : [];
     const values = value => value == null ? '—' : typeof value === 'object' ? JSON.stringify(value) : ui.text(value);
     const states = { pass: ['通过', 'badge green'], fail: ['未通过', 'badge red'], unknown: ['待核验', 'badge gray'] };
@@ -96,9 +100,33 @@
     }
     body.append(renderImages(self, '自有图片组'), renderImages(competitors, '竞品图片组'));
     const matrix = ui.el('section', undefined, 'panel');
-    matrix.append(ui.el('h2', '卖点与图片对比矩阵'), ui.el('p', '当前 checklist 只记录总体状态。自有与竞品分组的具体观察、卖点差异尚未结构化提供。', 'muted'));
-    matrix.append(items.length ? ui.table(['检查问题', '自有图组', '竞品图组', '卖点差异'], items.map(item => [ui.text(item.question), '—（分组证据待补）', '—（分组证据待补）', '—（待人工复核）'])) : ui.el('p', '暂无可对比的检查项。', 'table-empty'));
+    const comparisons = Array.isArray(visualBrief.comparisons) ? visualBrief.comparisons : [];
+    const briefs = Array.isArray(visualBrief.briefs) ? visualBrief.briefs : [];
+    const briefStatus = visualBrief.module_status?.status || 'not_generated';
+    matrix.append(ui.el('h2', '卖点与图片对比矩阵'), ui.el('p', `状态：${ui.text(briefStatus)} · 每行只引用一家竞品，并明确自己哪张图与竞品哪张图对照；未知不等于未表达。`, briefStatus === 'ready' ? 'muted' : 'notice'));
+    matrix.append(comparisons.length ? ui.table(
+      ['竞品', '要素', '判断', '自己的图', '参考竞品图', '观察证据', '借鉴方法 / 具体改动'],
+      comparisons.map(row => [
+        ui.text(row.competitor_asin), ui.text(row.element_id), ui.text(row.status),
+        ui.text(row.target_self_image_id), ui.text(row.reference_competitor_image_id),
+        Array.isArray(row.evidence) && row.evidence.length ? row.evidence.map(ui.text).join('、') : '—（未知）',
+        [row.borrowing_method, row.specific_change].filter(value => typeof value === 'string' && value.trim()).map(ui.text).join('；') || '—（待补）',
+      ]),
+    ) : ui.el('p', '尚无结构化竞品对照证据；没有证据时不把图片差异写成结论。', 'table-empty'));
     body.append(matrix);
+    const briefPanel = ui.el('section', undefined, 'panel table-panel');
+    briefPanel.append(ui.el('h2', '逐图改图 Brief'), ui.el('p', '每张自有图一张卡。建议只写已确认的产品能力；英文文案是草案，不会自动上传或替换 Amazon 图片。', 'muted'));
+    briefPanel.append(briefs.length ? ui.table(
+      ['自己的图', '标签 / 已有表达', '薄弱要素', '需保留', '构图与文字层级', '英文文案草案', '关联关键词', '参考图 / 真实性约束'],
+      briefs.map(row => [
+        ui.text(row.self_image_id), [row.label, row.existing_expression].filter(value => typeof value === 'string' && value.trim()).map(ui.text).join('；') || '—',
+        strings(row.weak_elements).join('、') || '—', strings(row.keep_content).join('、') || '—',
+        [row.composition, row.subject, row.text_hierarchy].filter(value => typeof value === 'string' && value.trim()).map(ui.text).join('；') || '—',
+        ui.text(row.english_copy_draft), strings(row.keywords).join('、') || '—',
+        [...(Array.isArray(row.references) ? row.references.map(reference => `${reference.competitor_asin || '—'} / ${reference.image_id || '—'}`) : []), ...strings(row.truth_constraints).map(value => `约束：${value}`)].map(ui.text).join('；') || '—',
+      ]),
+    ) : ui.el('p', '尚无逐图 Brief；只有图片元数据或总体 checklist 不能冒充可交美工的改图方案。', 'table-empty'));
+    body.append(briefPanel);
     const conversion = ui.el('section', undefined, 'panel');
     conversion.append(ui.el('h2', '广告转化承接检查'), ui.el('p', '保留机会评分、CVR、触发规则与 checklist 编号，便于核对检查来源。', 'muted'));
     conversion.append(data.conversion_diagnostics.length ? ui.table(

@@ -6,6 +6,11 @@
   try {
     if (!ui || (await ui.ready) !== true) return;
     const data = await ui.load('competitors.json');
+    // Category features are a separate private artifact. A missing artifact
+    // is shown as unavailable; it must not make the basic profile disappear.
+    const category = globalThis.KWCC?.mode === 'live'
+      ? await ui.load('category-features.json').catch(() => null)
+      : null;
     if (!data || !Array.isArray(data.competitors) || data.competitors.some(row => !row || typeof row !== 'object' || Array.isArray(row))) {
       throw new Error('竞对档案结构无效：缺少 competitors 行数组。');
     }
@@ -38,6 +43,23 @@
     const meta = ui.el('section', undefined, 'panel');
     meta.append(ui.el('h2', '档案来源'), ui.el('p', `站点：${ui.text(data.marketplace)} · 快照：${ui.text(data.snapshot_version)} · Schema：${ui.text(data.schema_version)}`), ui.el('p', `缓存键：${ui.text(data.cache_key)}`, 'muted'));
     body.append(meta);
+    const featurePanel = ui.el('section', undefined, 'panel');
+    featurePanel.append(ui.el('h2', '类目特征表达'), ui.el('p', category ? `主核心词：${ui.text(category.primary_core_keyword)} · 站点：${ui.text(category.marketplace)} · 来源：${ui.text(category.source)}` : '类目特征报告尚未生成；没有 Provider 证据时不编造维度或占比。', category ? 'muted' : 'notice'));
+    if (category && Array.isArray(category.features) && category.features.length) {
+      const featurePercent = value => typeof value === 'number' && Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : '—';
+      const featureRatio = (feature, key) => {
+        const ratioKey = `${key}_ratio`;
+        if (typeof feature[ratioKey] === 'number' && Number.isFinite(feature[ratioKey])) return feature[ratioKey];
+        const points = feature[key];
+        return typeof points === 'number' && Number.isFinite(points) ? points / 100 : null;
+      };
+      featurePanel.append(ui.table(['特征', '商品覆盖占比', '月销量占比', '说明', '来源序号'], category.features.map(feature => [
+        ui.text(feature.name), featurePercent(featureRatio(feature, 'product_count_share')), featurePercent(featureRatio(feature, 'monthly_sales_share')),
+        ui.text(feature.feature_description), ui.text(feature.source_index),
+      ])));
+      featurePanel.append(ui.el('p', category.module_status?.status === 'ready' ? '类目特征已完成结构校验；剔除与缺口仍需按确认版本参与正式判断。' : `类目特征状态：${ui.text(category.module_status?.reason, '待复核')}`, 'muted'));
+    }
+    body.append(featurePanel);
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar');
     const label = ui.el('label', '搜索 ASIN / 品牌 / 标题 ');
