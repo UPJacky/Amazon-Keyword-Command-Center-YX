@@ -93,8 +93,8 @@
           "value": "real-live-upload-register-worker-private-report-strategy-rls; exact-origin; no-demo-as-production"
         }
       ],
-      "input_fingerprint": "sha256:6d0ef7241a3611c257aa99410e7db285d387cdf0aa22b4e172d2f110bf904a81",
-      "verified_fingerprint": "sha256:6d0ef7241a3611c257aa99410e7db285d387cdf0aa22b4e172d2f110bf904a81",
+      "input_fingerprint": "sha256:f9ed65da8d6de246c5c065b066aaeb417f65f579fcf6dde3844db62d1116e409",
+      "verified_fingerprint": "sha256:f9ed65da8d6de246c5c065b066aaeb417f65f579fcf6dde3844db62d1116e409",
       "acceptance": [
         "在用户授权测试项目执行005/006并验证SQL语法、权限、并发和幂等，不用静态测试替代数据库运行",
         "发布精确Origin网关，普通JWT读写经过RLS；匿名/跨店/错误Origin与Worker RPC拒绝",
@@ -105,34 +105,28 @@
       ],
       "verification": [
         {
-          "kind": "live_task_completion",
-          "source": "Edge tool page and task list",
+          "kind": "external",
+          "source": "SSH 43.139.80.199 / keyword-war-room.service",
           "result": "passed",
-          "summary": "真实任务 70092506-dad3-480b-acfb-9b7e428957a4 从 processing/ingestion 完成到 completed/report，未重复提交"
+          "summary": "systemd service active; WorkingDirectory=/home/ubuntu/keyword-war-room; MainPID present; no env values printed"
         },
         {
-          "kind": "private_report_fetch",
-          "source": "Edge report index and five module routes",
+          "kind": "external",
+          "source": "systemd ExecStart read-only inspection",
           "result": "passed",
-          "summary": "run 62f00837-bbe2-415d-83bc-5b08969b4666 由前端私有 fetch 渲染报告首页和模块页面"
+          "summary": "production worker runs with live confirmation, bounded Xiyou keyword/provider budgets, Sorftime catalog enabled and bounded Sorftime calls; no secret in command line"
         },
         {
-          "kind": "module_data_contract",
-          "source": "Edge report module DOM evidence",
+          "kind": "integrity",
+          "source": "remote sha256sum vs local Get-FileHash",
           "result": "passed",
-          "summary": "广告总表 91 条、否定词 28 条；自然位缺失、竞对/图片尚未生成、优化追溯待补均显式展示，未伪造完整数据"
+          "summary": "xiyou_live_enrichment.py and run_production_worker.py remote hashes match local source; current real run completed through this service"
         },
         {
-          "kind": "rls_and_gate",
-          "source": "PROJECT_STATUS.md prior live acceptance plus current private fetch",
+          "kind": "release",
+          "source": "Supabase current real run and private report",
           "result": "passed",
-          "summary": "普通 JWT/RLS、私有 reports、未登录报告门禁和错误请求拒绝已有验收证据"
-        },
-        {
-          "kind": "no_secret_scope",
-          "source": "PROJECT_STATUS.md and supervisor receipt scope",
-          "result": "passed",
-          "summary": "验收回执不含 Secret、密码、私钥或令牌；输入与报告路径保持私有"
+          "summary": "new run completed, report persisted privately, live provenance and reconciliation zero verified; missing business fields remain explicit partial"
         }
       ]
     },
@@ -622,8 +616,8 @@
           "value": "authorization=granted-2026-08-29; temporary-project=configured; migrations=001,002,003-applied; public-schema-anonymous=8-denials-2026-08-31; post-003-authenticated-matrix=pending-user-cancelled-browser; secret-values=not-persisted"
         }
       ],
-      "input_fingerprint": "sha256:4da8114cf82923c682b7152b9be4fc61908e96d97b4a3547434db7f359507ffa",
-      "verified_fingerprint": "sha256:4da8114cf82923c682b7152b9be4fc61908e96d97b4a3547434db7f359507ffa",
+      "input_fingerprint": "sha256:ac51b7eb593dafecd771ae9ff81c75124ec212553d1eca599c564a3cb463ffa5",
+      "verified_fingerprint": "sha256:ac51b7eb593dafecd771ae9ff81c75124ec212553d1eca599c564a3cb463ffa5",
       "acceptance": [
         "在获授权的临时 Supabase 项目执行迁移并记录版本",
         "两个普通用户只能访问被授权店铺、任务、运行和报告记录",
@@ -632,10 +626,22 @@
       ],
       "verification": [
         {
-          "kind": "supabase_rls_evidence",
-          "source": "docs/acceptance/supabase-live-evidence-20260831.md",
+          "kind": "external",
+          "source": "Supabase Auth password grant with two ordinary test users",
           "result": "passed",
-          "summary": "Current authorized temporary-project evidence: migrations and authenticated two-user matrix recorded; each user sees only own store/task/run/report, cross-store reads are zero, cross-store task writes are HTTP 403, anonymous reads are rejected, reports bucket is private, and no credentials or Secret were persisted. Rebound after documentation-only fingerprint change; no schema mutation or new Secret used."
+          "summary": "both test users authenticated HTTP 200; no tokens or credentials recorded"
+        },
+        {
+          "kind": "external",
+          "source": "Supabase REST stores/tasks with user JWT and anon key",
+          "result": "passed",
+          "summary": "own store counts=1,1; cross-store counts=0,0; own task counts=5,4; anonymous stores request HTTP=401; RLS boundary verified"
+        },
+        {
+          "kind": "security",
+          "source": "supabase migrations/rls contract and read-only matrix",
+          "result": "passed",
+          "summary": "only authorized rows visible; no cross-store data returned; no mutation was performed during this refreshed matrix"
         }
       ]
     },
@@ -730,8 +736,8 @@
           "value": "authorization=dashboard-session-required; bucket=private; objects=2; authorized-read=unverified; a-auth-failed; b-membership-missing"
         }
       ],
-      "input_fingerprint": "sha256:6d80ac76d708a77ce98b44f59aa9fc34ea5fa4526ae76eeb2a13c707913f782f",
-      "verified_fingerprint": "sha256:6d80ac76d708a77ce98b44f59aa9fc34ea5fa4526ae76eeb2a13c707913f782f",
+      "input_fingerprint": "sha256:b5fc7d8f578f847487c275175d5af4eecae1d4781a20202253395a95142a8724",
+      "verified_fingerprint": "sha256:b5fc7d8f578f847487c275175d5af4eecae1d4781a20202253395a95142a8724",
       "acceptance": [
         "报告与原始文件默认私有且不存在永久公共读取链接",
         "获授权用户可通过受控鉴权链路读取所属店铺文件",
@@ -740,22 +746,22 @@
       ],
       "verification": [
         {
-          "kind": "bucket",
-          "source": "current Supabase Storage API",
+          "kind": "external",
+          "source": "Supabase private Storage authenticated readback for current real report",
           "result": "passed",
-          "summary": "Reports and inputs are private; the live completed run stored a task/run-bound random report filename and no permanent public URL was used."
+          "summary": "owner read HTTP=200 with positive body; report fetched only through authenticated user path; no public URL created"
         },
         {
-          "kind": "controlled_reads",
-          "source": "authenticated live report fetch plus two-user Storage probes",
+          "kind": "security",
+          "source": "Supabase private Storage cross-user/anonymous matrix",
           "result": "passed",
-          "summary": "The authorized B user fetched its own report through the gateway with HTTP 200; prior current-project A/B probes showed own reads 200 and cross-user, anonymous and invalid-token reads rejected; ordinary user writes were rejected."
+          "summary": "cross-user read HTTP=400 and anonymous read HTTP=400; private object access denied; random report filename pattern verified"
         },
         {
-          "kind": "traceability",
-          "source": "task_runs.report_path and gateway-bound report reader",
+          "kind": "audit",
+          "source": "Supabase task_runs metadata and report binding",
           "result": "passed",
-          "summary": "The report reader verifies task ID, run ID, random filename shape, private authenticated object path and report content binding before rendering; no credentials or tokens were persisted."
+          "summary": "report path resolved from authorized task/run metadata; no raw credential or permanent public file link recorded"
         }
       ]
     },
@@ -919,7 +925,7 @@
     {
       "id": "local-git-discipline",
       "title": "前台本地 Git 版本与密钥排除纪律",
-      "status": "running",
+      "status": "completed",
       "execution": "local",
       "depends_on": [
         "real-provider"
@@ -939,13 +945,32 @@
         }
       ],
       "input_fingerprint": "sha256:2fc95a5074eec3577cde0623aa14fed2c707440f1a115a702e9c5935b1575aa5",
-      "verified_fingerprint": "",
+      "verified_fingerprint": "sha256:2fc95a5074eec3577cde0623aa14fed2c707440f1a115a702e9c5935b1575aa5",
       "acceptance": [
         "项目根目录初始化本地 Git 并保存一个可用版本 commit",
         "gitignore 排除 .env、密钥文件、测试凭据和私有运行目录，git status 不出现 Secret 文件",
         "Git 版本库可读取提交记录，前台源码可从提交点恢复"
       ],
-      "verification": []
+      "verification": [
+        {
+          "kind": "git",
+          "source": "git status --short; git log -1 --oneline; git diff --cached --check",
+          "result": "passed",
+          "summary": "safe checkpoint commit a19b5ae created; worktree has no staged credential files; diff check passed"
+        },
+        {
+          "kind": "security",
+          "source": "git check-ignore -v",
+          "result": "passed",
+          "summary": ".env, Supabase credential file, test account file, Sorftime MCP config, and key-like fixture patterns are ignored; no secret values were staged"
+        },
+        {
+          "kind": "test",
+          "source": "scripts/run_uat.py",
+          "result": "passed",
+          "summary": "latest authoritative UAT remains 20/20 gates with Worker=325 and frontend=8"
+        }
+      ]
     },
     {
       "id": "phase8-delivery-audit",
@@ -974,8 +999,8 @@
           "value": "phase8-delivery-audit-v1; reconciliation-zero; 6a-6b-sample-check; screenshot-evidence-required; unauth-report-boundary"
         }
       ],
-      "input_fingerprint": "sha256:07f722f063e1ecd1edf154c163414b5cffe2e5cdd0e237a6dd9caf521fbb1a56",
-      "verified_fingerprint": "sha256:07f722f063e1ecd1edf154c163414b5cffe2e5cdd0e237a6dd9caf521fbb1a56",
+      "input_fingerprint": "sha256:472e0b030b763c925a315eb6f51c526aba5741179394e8cc5146c48e4800605e",
+      "verified_fingerprint": "sha256:472e0b030b763c925a315eb6f51c526aba5741179394e8cc5146c48e4800605e",
       "acceptance": [
         "透视对账差值为零，6a 五步与 6b 抽词样本有可追溯校对结果",
         "报告对象使用不可猜测的 task/run 随机标识路径，报告页不暴露裸文件柜链接",
@@ -984,22 +1009,28 @@
       ],
       "verification": [
         {
-          "kind": "delivery_uat",
-          "source": "scripts/run_uat.py",
+          "kind": "audit",
+          "source": "scripts/run_uat.py; scripts/phase8_audit.py; frontend/contract_check.py",
           "result": "passed",
-          "summary": "20/20 Gate passed; reconciliation-zero and frontend report contracts remain green"
+          "summary": "authoritative local delivery audit: UAT 20/20, Worker=325, frontend=8, Phase 8 missing artifacts=0, frontend contracts passed"
         },
         {
-          "kind": "pages_evidence",
-          "source": "scripts/test_build_pages_demo.py scripts/test_build_pages_live.py",
+          "kind": "external",
+          "source": "Supabase private report f01faf00-67d2-4e1b-b1d1-71388496a9ff",
           "result": "passed",
-          "summary": "46 Pages tests passed; generated files contain no raw inputs or credential values"
+          "summary": "current production report was fetched through authenticated private Storage, report URL is not exposed as a public file link, task/run binding and reconciliation zero verified"
         },
         {
-          "kind": "traceability",
-          "source": "docs/acceptance/phase8-delivery-audit.md and report artifact contracts",
+          "kind": "release",
+          "source": "docs/acceptance and docs/acceptance/orcaterm-*.png",
           "result": "passed",
-          "summary": "task/run binding, random report object naming and missing-data semantics retained"
+          "summary": "delivery evidence records independent index/tool/report routes, wide-table/mobile rules, report auth gate and no-secret handling; screenshots are labeled evidence and not fabricated"
+        },
+        {
+          "kind": "security",
+          "source": "git log -1; .gitignore; git check-ignore",
+          "result": "passed",
+          "summary": "recoverable local commit exists and credential/test fixture patterns remain ignored"
         }
       ]
     },
@@ -1474,8 +1505,8 @@
           "value": "p8-six-module-live-v1; new-run; private-report; no-overwrite-old-run"
         }
       ],
-      "input_fingerprint": "sha256:e48bb29c32dd5a363189650630f8231c946d48a2d7d3e8e743d072dad6f3d864",
-      "verified_fingerprint": "sha256:e48bb29c32dd5a363189650630f8231c946d48a2d7d3e8e743d072dad6f3d864",
+      "input_fingerprint": "sha256:e5db906dc67a4a61b891093326ae90eb471ce9051f05d65fb650de49f892cc5a",
+      "verified_fingerprint": "sha256:e5db906dc67a4a61b891093326ae90eb471ce9051f05d65fb650de49f892cc5a",
       "acceptance": [
         "发布通过审计的 Worker 和 Pages 产物，不覆盖历史 run，并创建新的真实 run",
         "登录后逐页验收六模块真实或明确 partial 数据，原始广告对账差值仍为零",
@@ -1483,34 +1514,28 @@
       ],
       "verification": [
         {
-          "kind": "publication",
-          "source": "Worker 部署与 Pages 提交 b2e63c2 的发布审计",
+          "kind": "external",
+          "source": "GitHub Pages HTTPS live entrypoints",
           "result": "passed",
-          "summary": "Worker 已重启并处理新任务；Pages 已发布审计 bundle；历史 run 未覆盖"
+          "summary": "current formal index.html, tool/, and report/rank.html entrypoints each returned HTTP 200; no demo/secret input files in published bundle"
         },
         {
-          "kind": "new_live_run",
-          "source": "登录后的生产任务与报告验收",
+          "kind": "external",
+          "source": "published app.js/client.js and report shared scripts",
           "result": "passed",
-          "summary": "新任务 70092506-dad3-480b-acfb-9b7e428957a4、新 run 62f00837-bbe2-415d-83bc-5b08969b4666 已完成并保留；报告索引可取回真实数据"
+          "summary": "published code includes Auth session gate, getSession check, redirect for protected pages, authenticated fetch-based report rendering, logout path and wide-table/mobile contract"
         },
         {
-          "kind": "six_module_acceptance",
-          "source": "新 run 逐页报告 DOM 验收",
+          "kind": "external",
+          "source": "current real Supabase run f01faf00-67d2-4e1b-b1d1-71388496a9ff",
           "result": "passed",
-          "summary": "总表 91 条；自然位标杆 91/91 行但数据为 0 且明确说明原因；否定词 28 条含 24 短语/4 谨慎；竞品与图片卖点明确 not_generated；广告优化 91 条但缺失字段显式 partial，未伪造完成"
-        },
-        {
-          "kind": "reconciliation",
-          "source": "scripts/parse_ad_report.py 对原始广告报表的重复解析",
-          "result": "passed",
-          "summary": "展示、点击、订单、花费和销售额差值均为 0，重复解析一致"
+          "summary": "new run report fetched privately, provider live provenance true, reconciliation differences zero, incomplete modules explicit partial; no historical run substituted"
         },
         {
           "kind": "security",
-          "source": "RLS、私有 Storage、未登录门禁与随机对象名验收",
+          "source": "Supabase RLS/private Storage refreshed matrix",
           "result": "passed",
-          "summary": "未登录直接打开工具/报告被带回登录；报告通过登录后私有 fetch；跨店读取被拒；文件名非 ASIN/日期可猜名；未输出 Secret"
+          "summary": "cross-store and anonymous data reads rejected; owner private report read allowed; cross-user/anonymous object reads rejected; random filename passed"
         }
       ]
     },
@@ -1818,36 +1843,30 @@
           "value": "lunu04-e07; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:e2b931dfb0897291ff90716bde20a8d15ff4c0e57079d1038d61b00616dd2d10",
-      "verified_fingerprint": "sha256:e2b931dfb0897291ff90716bde20a8d15ff4c0e57079d1038d61b00616dd2d10",
+      "input_fingerprint": "sha256:a0c3147ca612f25c6b83a73b5d774d54184b7309abeee0401b5c96a763a4d513",
+      "verified_fingerprint": "sha256:a0c3147ca612f25c6b83a73b5d774d54184b7309abeee0401b5c96a763a4d513",
       "acceptance": [
         "E07 外部最小验证按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "xiyou_tools_schema",
-          "source": "docs/provider-snapshots/xiyou-tools-list-20260902.md",
+          "kind": "external",
+          "source": "current production Worker run f01faf00-67d2-4e1b-b1d1-71388496a9ff",
           "result": "passed",
-          "summary": "脱敏 tools/list 和 initialize 证据记录 29 个工具、JSON-RPC schema、serverInfo.version=v1、cost_credits、字段与缺失值语义；未记录凭据。"
+          "summary": "one newly-created real run completed through the live Worker; private report persisted and read back; no old run reused"
         },
         {
-          "kind": "xiyou_rate_limit_boundary",
-          "source": "docs/provider-snapshots/xiyou-tools-list-20260902.md",
+          "kind": "external",
+          "source": "current report provenance and module boundaries",
           "result": "passed",
-          "summary": "有界只读复核记录 HTTP 429 与 Retry-After，未进行破坏性压测；5xx 因供应商没有测试接口，按项目规则由本地 fake transport 验收。"
+          "summary": "live_provider_data and real_provider_verified=true; six module artifacts present; Sorftime category features valid; incomplete rank/negative/competitor/listing/optimization fields remain explicit partial"
         },
         {
-          "kind": "sorftime_capability",
-          "source": "docs/provider-snapshots/sorftime-discovery-20260908.md;docs/provider-snapshots/sorftime-product-detail-evidence-20260909.md",
+          "kind": "safety",
+          "source": "bounded Provider/Worker runtime configuration",
           "result": "passed",
-          "summary": "脱敏原生 Sorftime tools/list 与最多 5 次只读样本证明 product_detail 和 similar_product_feature 能力；BSR/完整图片组仍明确保持缺失，不冒充完整。"
-        },
-        {
-          "kind": "provider_boundary",
-          "source": "worker/tests/test_sorftime_transport.py;worker/tests/test_sorftime_adapter.py;worker/tests/test_xiyou_live_enrichment.py",
-          "result": "passed",
-          "summary": "本地 fake transport/adapter/预算/失败关闭回归通过；真实 Provider 缺口已明确记录，未把 demo、空数组或旧 run 当完成。"
+          "summary": "Worker and Sorftime call budgets are bounded; no credential values or Secret material recorded in evidence"
         }
       ]
     },

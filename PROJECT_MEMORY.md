@@ -3,13 +3,25 @@ project: Amazon-Keyword-Command-Center-YX
 project_cn: 关键词作战总表
 document_type: project_memory
 version: 1.4
-updated_at: 2026-09-04
+updated_at: 2026-09-10
 status: current
 language: zh-CN
 
 ## 2026-09-10 当前验证快照
 
-- 完整 UAT 20/20 Gate：Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。Worker 全量回归通过；UAT 文档契约正在同步当前 E19 外部运行状态。
+## 2026-09-10 LUNU-04 完成快照（以本节和 PROJECT_STATUS.md 为准）
+
+- 监督器状态为 `PROJECT_COMPLETE`，46/46 任务完成；当前没有安全本地下一项，不要重复领取或重跑已完成任务。
+- 最新真实 task/run：`f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4` / `f01faf00-67d2-4e1b-b1d1-71388496a9ff`；报告读取 HTTP 200、task/run 绑定通过、`scope=live_provider_data`、`provider_status=real_provider_data`、`real_provider_verified=true`。
+- 对账五项差值为零；类别特征 20 条有效；竞对 3 个。报告仍为 `full_report_complete=false`，这是对真实缺失字段的诚实标记，不是 Worker 未运行。
+- 业务模块边界：排名为 `rank_snapshot_incomplete`；否定词为 `relevance_or_ad_fields_incomplete`；竞对为 `missing_product_fields`；图片为 `image_observations_not_available`；优化为 `entity_context_or_exit_incomplete`。这些状态不得被改成默认 ready，也不得用演示数据填充。
+- 已验证认证/RLS/私有 Storage/随机报告文件名/前端 fetch 门禁/Pages 三入口/远程 Worker；服务 active，远端关键文件哈希与本地一致。无 Secret 写入聊天、回执或 Git。
+- Git 最新代码存档为 `a19b5ae`；后续若只更新状态文档，仍需单独提交并先复核监督器状态。
+
+### 验收统计
+
+- 完整 UAT 20/20 Gate：Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
+- 西柚无测试接口；5xx 仅使用本地模拟作为验收证据。真实生产调用只保留已授权、已记录的 bounded run，不重复调用。
 
 ## 最新生产接入纠正（2026-09-03）
 

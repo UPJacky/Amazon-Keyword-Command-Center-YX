@@ -2,7 +2,16 @@
 
 ## 2026-09-10 当前验证快照
 
-- 完整 UAT 20/20 Gate：Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。Worker 全量回归通过；UAT 文档契约正在同步当前 E19 外部运行状态。
+## 2026-09-10 LUNU-04 完成快照（优先于历史记录）
+
+- 监督器已返回 `PROJECT_COMPLETE`，46/46 任务完成；没有安全本地下一项，不要重复执行已完成任务。
+- 最新真实 task/run 为 `f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4` / `f01faf00-67d2-4e1b-b1d1-71388496a9ff`，报告为 `live_provider_data`，真实 Provider 已验证，认证、Worker、私有报告 fetch、RLS/Storage 和对账链路通过。
+- 报告 `full_report_complete=false`：排名、否定词、竞对、图片、优化模块分别保留真实 partial 原因，不能伪造为完整数据。对账五项差值为零，类别特征 20 条有效，竞对 3 个。
+- 代码存档为 `a19b5ae`；西柚没有测试接口，5xx 用本地模拟验收。所有 Secret 不得写入聊天、日志、回执或 Git。
+
+### 当前验证快照（统计）
+
+- 完整 UAT 20/20 Gate：Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
 
 ## Phase 9 六模块补全重新开启（2026-09-07，优先于旧完成结论）
 

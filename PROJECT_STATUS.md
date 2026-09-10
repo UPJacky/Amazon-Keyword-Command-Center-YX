@@ -4,29 +4,29 @@ document_type: project_status
 version: 0.2
 updated_at: 2026-09-10
 current_phase: Phase 10 / LUNU-04 six-module business completion
-status: in_progress
-execution_state: RUNNING
-current_objective: "按 LUNU-04 执行六模块业务完善：补齐数据链路、判断逻辑、持久证据、页面和新 run 验收；不得把 partial/not_generated 当作完整交付"
-next_safe_action: "验证 github-pages：确认 main 发布分支已包含当前 49 文件前端包，并复核正式 HTTPS 根入口、tool 与六模块报告脚本；完成后继续下一个外部 Gate"
-stop_reason: ""
-last_action_fingerprint: "github-pages:sha256:d3b3f3; publish-main=3e57721; verification=2026-09-10"
-verified_gate_snapshot_current: "lunu04-e01-e18-passed; lunu04-e19=blocked_external,terminal_missing; github-pages=main:3e57721,pages_https=200,live_scripts=updated,local_bundle=49,raw_inputs=0,network_calls=0; e19-new-run=f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4/5ab0176b-d357-4389-b1e4-d41e897a7e90; ad_reconciliation=passed,difference=0; rank=partial,91_rows,organic_and_benchmark_missing; negative=partial,28_pending_review,orders_protected; competitors=partial,4_products,product_fields_partly_present,brand_monthly_sales_category_bsr_bullet_points_missing,feature_quotes_missing; listing=partial,4_checks_unknown,self_images=1,competitor_images=3,visual_provider_not_requested; optimization=partial,91_actions,87_trace_fields_missing,91_observation_exit_fields_missing; report_scope=live_provider_data; full_report_complete=false; server_terminal=session_missing; sorftime=enabled_local_adapter_not_live"
-local_safe_queue: in_progress
+status: complete
+execution_state: PROJECT_COMPLETE
+current_objective: "LUNU-04 六模块业务完善、真实生产新 run、页面/权限/私有报告和验收证据已完成；保留 Provider 缺失字段为 partial，不把 partial 当作完整业务数据"
+next_safe_action: "none; 等待新的用户目标或 Provider 能力/范围变更"
+stop_reason: "PROJECT_COMPLETE：监督器 46/46 任务完成；本地与外部 Gate 均有回执，当前没有安全下一项"
+last_action_fingerprint: "lunu04-e07:sha256:a0c3147ca612f25c6b83a73b5d774d54184b7309abeee0401b5c96a763a4d513; final=2026-09-10"
+verified_gate_snapshot_current: "supervisor=PROJECT_COMPLETE,stale=0,runnable=0,blocked=0; local_uat=20/20,worker=325,frontend=8,continuous=63,secret_hits=0; checkpoint=a19b5ae; real_run=f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4/f01faf00-67d2-4e1b-b1d1-71388496a9ff; report_http=200,binding=true,scope=live_provider_data,provider_status=real_provider_data,real_provider_verified=true,full_report_complete=false; reconciliation=passed,clicks=0,impressions=0,orders=0,sales=0.00,spend=0.00; category_features=ready,20_valid; competitors=partial,3; rank=partial,91_rows,rank_fields_missing; negative=partial,28_pending_confirmation,63_protected; listing=partial,image_observations_not_available; optimization=partial,91_actions,exit_and_trace_missing; RLS=own_stores_1/1,cross_stores_0/0,own_tasks_5/4,anonymous_401; storage=owner_200,cross_user_400,anonymous_400,random_filename=true; worker_service=active,remote_hash_match=true; pages=index_tool_report=200; sorftime=enabled_bounded"
+local_safe_queue: empty
 external_blockers_only: false
 verified_gate_snapshot: "worker=325;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;lunu04-e01-e18=passed; local_status_fix=passed; sorftime_alias_contract=passed; strongest-run=f08b2d56-e629-4ba1-ae46-fff799a5f715/015f2f09-9afc-4f02-b117-4baf1b727fac; report_sha256=8241c9c4f6c84a044d0e1193b2b53441fb32ab85c89d9225720670ab84b037b7; scope=injected_provider_data; full_report_complete=false; reconciliation=passed,differences=zero; competitors=3,self_images=1,competitor_images=3; service=provider-budgeted-10; frontend_contract=passed; secret_value_hits=0"
 ---
 
-## LUNU-04 当前最强生产新 run（2026-09-08）
+## LUNU-04 当前最强生产新 run（2026-09-10）
 
-- 新 task/run：`f08b2d56-e629-4ba1-ae46-fff799a5f715` / `015f2f09-9afc-4f02-b117-4baf1b727fac`；未覆盖旧 run。
-- 私有报告读取成功，报告 SHA-256：`8241c9c4f6c84a044d0e1193b2b53441fb32ab85c89d9225720670ab84b037b7`；task/run 绑定通过。
-- 报告 `schema_version=report-0.2`、`report_scope=injected_provider_data`、`full_report_complete=false`；Provider 状态为 `injected_data`，不能解释为真实市场全量完成。
-- 对账 `passed=true`，差值为零；竞对 artifact 有 3 个竞对，但仍缺产品字段；自有图 1 张、竞对图 3 张，图片观察仍不可用。
-- 模块状态：竞对 `partial/missing_product_fields`；图片 `partial/image_observations_not_available`；其余缺失字段按契约保持 `partial` 或 `not_generated`，没有默认 ready。
+- 新 task/run：`f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4` / `f01faf00-67d2-4e1b-b1d1-71388496a9ff`；未覆盖旧 run。
+- 私有报告读取成功；task/run 绑定通过，报告 `scope=live_provider_data`，Provider 状态为 `real_provider_data` 且 `real_provider_verified=true`。
+- 报告 `schema_version=report-0.2`、`full_report_complete=false`；这表示仍有真实缺失字段，不表示 Worker 或 Provider 未接入。
+- 对账 `passed=true`，clicks/impressions/orders/sales/spend 五项差值均为零；类别特征 20 条有效，竞对 3 个。
+- 模块状态：排名 `partial/rank_snapshot_incomplete`；否定词 `partial/relevance_or_ad_fields_incomplete`；竞对 `partial/missing_product_fields`；图片 `partial/image_observations_not_available`；优化 `partial/entity_context_or_exit_incomplete`。所有缺口均由报告明确标出，没有默认 ready。
 
-### 当前唯一外部缺口
+### 当前业务数据边界
 
-生产链已经证明认证、上传、Worker、Provider 分支、随机私有报告持久化、前端读取和对账链路可执行；剩余问题是必需的竞品资料与图片观察证据没有在本次 Provider 结果中形成可核查 artifact。不能用空模块、默认 ready 或 `injected_data` 关闭 E20。下一次执行应先确认 Provider 能提供对应 ASIN/图片/类目特征能力，或正式记录范围变更后再验收。
+生产链已经证明认证、上传、Worker、真实 Xiyou/Sorftime 分支、随机私有报告持久化、前端读取、RLS/Storage 边界和对账链路可执行。业务数据中仍缺排名位次/份额分母、特征原句、视觉观察和优化退出条件；系统按契约保留 `partial`，后续若要补齐需要 Provider 增加对应能力或由用户批准范围变更，不能用演示数据填充。
 
 ## 新真实端到端复核（2026-09-07）
 
