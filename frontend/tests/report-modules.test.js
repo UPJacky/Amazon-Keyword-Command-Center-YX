@@ -60,3 +60,15 @@ for (const [name, artifact] of Object.entries(artifacts)) {
     assert.equal(descendants(denied.body).filter(el=>el.tagName==='table').length,0);
   });
 }
+
+test('listing: structured competitor comparison and designer brief render explicit references', async () => {
+  const data = JSON.parse(fs.readFileSync(path.join(root, 'data/golden/market-demo-modules/listing-diagnostics.json'), 'utf8'));
+  data.visual_brief = {
+    module_status: {status: 'ready', reason: 'comparison_and_brief_complete'},
+    comparisons: [{competitor_asin: 'B000000002', element_id: 'hero_value_prop', status: '弱', target_self_image_id: 'self-image-1', reference_competitor_image_id: 'B000000002-image-1', evidence: ['B000000002-image-1'], borrowing_method: '保留结构', specific_change: '强化层级'}],
+    briefs: [{self_image_id: 'self-image-1', label: '主图', existing_expression: '产品主体', weak_elements: ['卖点层级'], keep_content: ['产品主体'], composition: '主体居中', subject: '灯带', text_hierarchy: '先识别后卖点', english_copy_draft: 'RGB LED Strip Lights', keywords: ['led lights'], references: [{competitor_asin: 'B000000002', image_id: 'B000000002-image-1'}], truth_constraints: ['只写已确认功能']}],
+  };
+  const f = await run('listing', data);
+  assert.ok(descendants(f.body).some(el => el.textContent === 'B000000002-image-1'));
+  assert.ok(descendants(f.body).some(el => el.textContent === 'RGB LED Strip Lights'));
+});

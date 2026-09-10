@@ -104,7 +104,7 @@
   })();
   async function load(name) {
     if (!await ready) throw new Error('report access denied');
-    if (!['rank-benchmark.json', 'negative-keywords.json', 'competitors.json', 'listing-diagnostics.json', 'optimization-plan.json'].includes(name)) throw new Error('unknown artifact');
+    if (!['rank-benchmark.json', 'negative-keywords.json', 'competitors.json', 'category-features.json', 'listing-diagnostics.json', 'optimization-plan.json'].includes(name)) throw new Error('unknown artifact');
     if (globalThis.KWCC.mode === 'live') {
       const params = new URL(location.href).searchParams;
       return globalThis.KWCC.reports.readModule(params.get('task'), params.get('run'), name);
