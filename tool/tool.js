@@ -5,6 +5,8 @@
   const asin = document.querySelector('#tool-asin');
   const file = document.querySelector('#tool-file');
   const stage = document.querySelector('#tool-stage');
+  const primaryKeyword = document.querySelector('#tool-primary-keyword');
+  const competitorInput = document.querySelector('#tool-competitors');
   const confirm = document.querySelector('#tool-confirm');
   const button = document.querySelector('#tool-submit');
   const status = document.querySelector('#tool-form-status');
@@ -42,7 +44,7 @@
       button.disabled = false;
     } catch (error) { setStatus(error.message || '店铺读取失败'); }
   }
-  [asin, stage, file, store].filter(Boolean).forEach(input => input.addEventListener('change', () => { submissionIds = null; }));
+  [asin, stage, primaryKeyword, competitorInput, file, store].filter(Boolean).forEach(input => input.addEventListener('change', () => { submissionIds = null; }));
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (submitting || !serviceReady) return;
@@ -53,11 +55,16 @@
       validateFile(file.files?.[0]);
       if (live && !store.value) throw new Error('请选择已授权店铺');
       if (!confirm.checked) throw new Error('请确认输入文件属于当前分析任务');
+      const competitors = String(competitorInput?.value || '').split(/[\s,，;；]+/).map(item => item.trim().toUpperCase()).filter(Boolean);
+      if (competitors.some(item => !/^B0[A-Z0-9]{8}$/.test(item))) throw new Error('指定竞对必须全部是 B0 开头的 10 位 ASIN');
+      if (new Set(competitors).size !== competitors.length || competitors.includes(value)) throw new Error('指定竞对 ASIN 不能重复，也不能包含自己的 ASIN');
       if (PHASE3_ORDER.join(' → ') !== 'ingestion → reconciliation → config/provider → report') throw new Error('阶段顺序配置无效');
       submitting = true; button.disabled = true; button.textContent = '提交中…';
       if (live && !submissionIds) submissionIds = { task_id: crypto.randomUUID(), run_id: crypto.randomUUID() };
       const result = await globalThis.KWCC.tasks.create({ ...submissionIds, store_id: store?.value,
-        self_asin: value, product_stage: stage.value, file: file.files[0] });
+        self_asin: value, product_stage: stage.value, file: file.files[0],
+        primary_core_keyword: String(primaryKeyword?.value || '').trim(), competitor_asins: competitors,
+        core_keywords: String(primaryKeyword?.value || '').trim() ? [String(primaryKeyword.value).trim()] : [] });
       setStatus(result?.demo ? '本地校验通过；演示模式未上传、未创建真实任务。' : `任务 ${result.task_id} 已提交。`, true);
       if (live) { submissionIds = null; file.value = ''; document.querySelector('#refresh-tasks')?.click(); }
     } catch (error) {

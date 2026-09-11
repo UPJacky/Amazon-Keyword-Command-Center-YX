@@ -11,6 +11,12 @@
     const category = globalThis.KWCC?.mode === 'live'
       ? await ui.load('category-features.json').catch(() => null)
       : null;
+    const buyerChecklist = globalThis.KWCC?.mode === 'live'
+      ? await ui.load('buyer-checklist.json').catch(() => null)
+      : null;
+    const textEvidence = globalThis.KWCC?.mode === 'live'
+      ? await ui.load('text-evidence.json').catch(() => null)
+      : null;
     if (!data || !Array.isArray(data.competitors) || data.competitors.some(row => !row || typeof row !== 'object' || Array.isArray(row))) {
       throw new Error('竞对档案结构无效：缺少 competitors 行数组。');
     }
@@ -60,6 +66,21 @@
       featurePanel.append(ui.el('p', category.module_status?.status === 'ready' ? '类目特征已完成结构校验；剔除与缺口仍需按确认版本参与正式判断。' : `类目特征状态：${ui.text(category.module_status?.reason, '待复核')}`, 'muted'));
     }
     body.append(featurePanel);
+    if (buyerChecklist) {
+      const panel = ui.el('section', undefined, 'panel');
+      panel.append(ui.el('h2', '买家下单前决策清单'), ui.el('p', `状态：${ui.text(buyerChecklist.status)} · 版本：${ui.text(buyerChecklist.confirmation_version, '未确认')}`, buyerChecklist.status === 'ready' ? 'success-text' : 'notice'));
+      const items = Array.isArray(buyerChecklist.items) ? buyerChecklist.items : [];
+      panel.append(items.length ? ui.table(['要素', '买家关心点', '证据状态', '来源'], items.map(item => [ui.text(item.name), ui.text(item.why_buyer_cares), ui.text(item.evidence_status), ui.text(item.source_refs)])) : ui.el('p', '暂无有证据的清单项。', 'table-empty'));
+      body.append(panel);
+    }
+    if (textEvidence) {
+      const panel = ui.el('section', undefined, 'panel');
+      const cells = Array.isArray(textEvidence.cells) ? textEvidence.cells : [];
+      const mentioned = cells.filter(cell => cell.status === 'mentioned').length;
+      panel.append(ui.el('h2', '标题 / 五点文字证据'), ui.el('p', `状态：${ui.text(textEvidence.status)} · 已提及 ${ui.number(mentioned)} / ${ui.number(cells.length)} 个特征-商品单元`, textEvidence.status === 'ready' ? 'success-text' : 'notice'));
+      panel.append(cells.length ? ui.table(['特征', 'ASIN', '结果', '原文证据'], cells.slice(0, 80).map(cell => [ui.text(cell.feature_id), ui.text(cell.asin), ui.text(cell.status), ui.text((cell.quotes || []).map(quote => quote.quote).join('；'))])) : ui.el('p', '暂无文字证据。', 'table-empty'));
+      body.append(panel);
+    }
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar');
     const label = ui.el('label', '搜索 ASIN / 品牌 / 标题 ');
