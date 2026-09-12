@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "uat",
+    "source": "scripts/run_uat.py",
+    "result": "passed",
+    "summary": "权威本地 UAT 20/20 Gate 通过：Worker 337、前端 8、连续执行 63、编排 25、Supabase 契约 62、Pages 46；network_calls=0、external_calls=0、secret_value_hits=0、local_only=true。"
+  },
+  {
+    "kind": "documentation",
+    "source": "scripts/check_phase8_documentation.py",
+    "result": "passed",
+    "summary": "15 项文档契约通过；明确本地与线上外部 Gate 的边界。"
+  },
+  {
+    "kind": "boundary",
+    "source": "scripts/phase8_audit.py",
+    "result": "passed",
+    "summary": "Phase 8 本地审计 required_files、RLS/private report、session guard、Pages allowlist、无公开报告桶和 Worker loop 均通过；真实 Supabase、线上发布、私有 Storage 和 Provider schema 仍未由本地 UAT 冒充完成。"
+  }
+]

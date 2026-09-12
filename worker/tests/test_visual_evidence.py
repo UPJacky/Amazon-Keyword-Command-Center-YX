@@ -23,6 +23,11 @@ class VisualEvidenceTests(unittest.TestCase):
         self.assertEqual("failed", result["status"])
         self.assertTrue(result["errors"])
 
+    def test_unknown_observation_is_not_judged_ready(self):
+        result = build_visual_evidence(image_ids=["img1"], observations=[observation("img1", "f1", "unknown")], expected_element_ids=["f1"], evidence_version="v1")
+        self.assertEqual("partial", result["status"])
+        self.assertIn("observation_not_judged", result["errors"])
+
 
 if __name__ == "__main__":
     unittest.main()

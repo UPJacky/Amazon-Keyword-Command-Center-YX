@@ -57,7 +57,10 @@ test('upload hashes actual file bytes, posts a private object then registers tas
   const body = JSON.parse(calls[3].body);
   assert.equal(body.p_input_file_hash, require('node:crypto').createHash('sha256').update('keyword,clicks\nexample,1').digest('hex'));
   assert.equal(body.p_run_id, uploadRun);
-  assert.equal(calls[3].url, gatewayConfig.gatewayUrl + '/rest/v1/rpc/kwcc_submit_task');
+  assert.equal(calls[3].url, gatewayConfig.gatewayUrl + '/rest/v1/rpc/kwcc_submit_task_with_business_inputs');
+  assert.deepEqual(body.p_business_inputs, { primary_core_keyword: null, competitor_asins: [],
+    core_keywords: [], competitor_selection_version: null, product_facts_version: null,
+    feature_review_version: null, checklist_version: null, confirmation_version: null });
   assert.ok(calls.every(c => c.credentials === 'omit' && c.redirect === 'error'));
 });
 

@@ -1,8 +1,10 @@
 """Explicit get_keyword_info enrichment using the recorded 2026-09-02 contract.
 
-No environment access, discovery, implicit transport, retries or disk cache.
-The callable fits task_runner.ProviderEnricher. Share one XiyouCallBudget across
-task factories; its lock serializes reservation, transport and cost settlement.
+No environment access, discovery or implicit transport is performed here. An
+explicit ProviderCache may be injected by the production composition root; it
+is keyed by the complete non-secret request identity and only successful
+normalized results are cached. Share one XiyouCallBudget across task
+factories; its lock serializes reservation, transport and cost settlement.
 """
 
 from __future__ import annotations
@@ -12,11 +14,14 @@ import json
 import re
 import threading
 from datetime import date
-from typing import Any, Mapping
+from typing import Any, Iterable, Mapping
 
 from worker.providers.base import ProviderTransport
 from worker.providers.market_merge import MARKET_FIELDS
 from worker.providers.orchestrator import CallBudget, ProviderBatchError
+from worker.providers.cache import ProviderCache
+from worker.competitors.text_evidence import build_text_evidence_matrix
+from worker.diagnostics.buyer_checklist import build_buyer_checklist
 
 
 CONTRACT_VERSION = "xiyou-get-keyword-info-recorded-20260902-v1"
@@ -122,7 +127,14 @@ class XiyouLiveEnricher:
     def __init__(self, *, transport: ProviderTransport, country: str, asin: str,
                  max_keywords: int, budget: XiyouCallBudget,
                  enable_competitors: bool = False, catalog_adapter: Any = None,
-                 primary_core_keyword: str | None = None):
+                 primary_core_keyword: str | None = None,
+                 core_keywords: Iterable[str] = (),
+                 competitor_asins: Iterable[str] = (),
+                 cache: ProviderCache | None = None,
+                 cache_namespace: str = "default",
+                 feature_review_version: str | None = None,
+                 checklist_version: str | None = None,
+                 confirmation_version: str | None = None):
         if not callable(getattr(transport, "call", None)):
             raise ValueError("transport must provide a single-attempt call method")
         if not isinstance(country, str) or not re.fullmatch(r"[A-Z]{2}", country):
@@ -133,16 +145,57 @@ class XiyouLiveEnricher:
             raise ValueError("max_keywords must be an explicit integer from 1 to 10")
         if not isinstance(budget, XiyouCallBudget):
             raise ValueError("budget must be a shared XiyouCallBudget")
+        if cache is not None and not isinstance(cache, ProviderCache):
+            raise ValueError("cache must be a ProviderCache")
+        if not isinstance(cache_namespace, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,96}", cache_namespace):
+            raise ValueError("cache_namespace must be a non-secret identifier")
         self._transport = transport
         self._country = country
         self._asin = asin
         self._max_keywords = max_keywords
         self._budget = budget
+        self._cache = cache
+        self._cache_namespace = cache_namespace
+        self._feature_review_version = feature_review_version.strip() if isinstance(feature_review_version, str) and feature_review_version.strip() else None
+        self._checklist_version = checklist_version.strip() if isinstance(checklist_version, str) and checklist_version.strip() else None
+        self._confirmation_version = confirmation_version.strip() if isinstance(confirmation_version, str) and confirmation_version.strip() else None
         self._enable_competitors = enable_competitors is True
         if catalog_adapter is not None and not callable(getattr(catalog_adapter, "enrich_profile", None)):
             raise ValueError("catalog_adapter must provide enrich_profile")
         self._catalog_adapter = catalog_adapter
         self._primary_core_keyword = primary_core_keyword.strip() if isinstance(primary_core_keyword, str) and primary_core_keyword.strip() else None
+        self._core_keywords = self._normalize_requested_keywords(core_keywords)
+        self._requested_competitor_asins = self._normalize_requested_asins(competitor_asins, asin)
+
+    @staticmethod
+    def _normalize_requested_keywords(values: Iterable[str]) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, (str, bytes)):
+            values = [values]
+        result = []
+        for value in values:
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError("core_keywords must contain nonempty strings")
+            result.append(" ".join(value.split()))
+        if len(result) > 200:
+            raise ValueError("too many core_keywords")
+        return list(dict.fromkeys(result))
+
+    @staticmethod
+    def _normalize_requested_asins(values: Iterable[str], self_asin: str) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, (str, bytes)):
+            values = [values]
+        result = []
+        for value in values:
+            if not isinstance(value, str) or not re.fullmatch(r"[A-Z0-9]{10}", value, re.I):
+                raise ValueError("competitor_asins must contain ten-character ASINs")
+            result.append(value.upper())
+        if len(result) > 5 or len(set(result)) != len(result) or self_asin.upper() in result:
+            raise ValueError("invalid competitor_asins")
+        return result
 
     def __call__(self, parsed: Mapping[str, Any], effective_config: Mapping[str, Any]) -> dict[str, Any]:
         usage = dict(requested_keywords=0, estimated_calls=0, actual_calls=0,
@@ -168,8 +221,44 @@ class XiyouLiveEnricher:
         except (TypeError, ValueError):
             _fail("INVALID_KEYWORD_INPUT", usage)
 
-        selected = dict(list(unique.items())[:self._max_keywords])
+        # User-confirmed intent gets first position in the bounded request.
+        # If the primary term is not present in the ad report, it is still
+        # queried explicitly; the response will remain an unjoined market
+        # observation instead of being fabricated into an ad row.
+        requested = []
+        if self._primary_core_keyword:
+            requested.append(self._primary_core_keyword)
+        requested.extend(self._core_keywords)
+        selected_candidates: dict[str, str] = {}
+        for value in requested:
+            selected_candidates.setdefault(_keyword(value), value)
+        selected_candidates.update({key: value for key, value in unique.items()
+                                    if key not in selected_candidates})
+        selected = dict(list(selected_candidates.items())[:self._max_keywords])
         usage["estimated_calls"] = int(bool(selected))
+        cache_key = self._cache_key(selected)
+        if self._cache is not None:
+            try:
+                cached = self._cache.get(cache_key)
+            except (OSError, ValueError, json.JSONDecodeError):
+                cached = None
+            if isinstance(cached, Mapping) and cached.get("provider") == "xiyou-live-enricher":
+                cached_result = cached.get("data")
+                if isinstance(cached_result, Mapping) and isinstance(cached_result.get("market_rows"), list):
+                    result = json.loads(json.dumps(cached_result, ensure_ascii=False, allow_nan=False))
+                    cached_usage = dict(result.get("usage") or {})
+                    cached_usage.update({
+                        "requested_keywords": usage["requested_keywords"],
+                        "duplicates_suppressed": usage["duplicates_suppressed"],
+                        "estimated_calls": 0,
+                        "actual_calls": 0,
+                        "cache_hits": 1,
+                        "retries": 0,
+                        "rate_limited": 0,
+                        "failures": 0,
+                    })
+                    result["usage"] = cached_usage
+                    return result
         observations: dict[str, dict[str, Any]] = {}
         if selected:
             # Recorded calls cost one credit. Keep one request at <=10 terms;
@@ -229,7 +318,80 @@ class XiyouLiveEnricher:
             category_features = getattr(self._catalog_adapter, "last_category_features", None)
             if isinstance(category_features, Mapping):
                 result["category_features"] = dict(category_features)
+                evidence = self._build_business_evidence(category_features, competitor_profile)
+                if evidence["buyer_checklist"] is not None:
+                    result["buyer_checklist"] = evidence["buyer_checklist"]
+                if evidence["text_evidence"] is not None:
+                    result["text_evidence"] = evidence["text_evidence"]
+        if self._cache is not None:
+            try:
+                self._cache.set(cache_key, provider="xiyou-live-enricher",
+                                snapshot_version=result["provider_snapshot_version"], data=result)
+            except (OSError, ValueError, TypeError):
+                # Cache failure must not convert an already successful remote
+                # response into a failed task. The usage receipt stays true.
+                pass
         return result
+
+    def _build_business_evidence(self, category_features: Mapping[str, Any],
+                                 competitor_profile: Mapping[str, Any]) -> dict[str, Any]:
+        features = category_features.get("features")
+        if not isinstance(features, list) or not features:
+            return {"buyer_checklist": None, "text_evidence": None}
+        candidates = []
+        for index, feature in enumerate(features, start=1):
+            if not isinstance(feature, Mapping):
+                continue
+            feature_id = str(feature.get("feature_id") or "").strip()
+            name = str(feature.get("name") or "").strip()
+            if not feature_id or not name:
+                continue
+            candidates.append({
+                "element_id": feature_id,
+                "name": name,
+                "english_name": feature.get("english_name"),
+                "why_buyer_cares": feature.get("feature_description"),
+                "source_refs": feature.get("source_refs") or category_features.get("source_refs") or [],
+                "priority": index,
+            })
+        version = self._checklist_version or self._confirmation_version
+        checklist = build_buyer_checklist(candidates=candidates, confirmation_version=version)
+        products = []
+        own = competitor_profile.get("self_product")
+        if isinstance(own, Mapping):
+            products.append(dict(own))
+        products.extend(dict(row) for row in competitor_profile.get("competitors", []) if isinstance(row, Mapping))
+        text_evidence = None
+        ids = [item["element_id"] for item in candidates]
+        if products and ids:
+            text_evidence = build_text_evidence_matrix(
+                features, products,
+                confirmed_feature_ids=ids,
+                confirmation_version=self._feature_review_version or self._confirmation_version or "unconfirmed",
+            )
+            if version is None:
+                text_evidence["status"] = "draft"
+                text_evidence["reason"] = "confirmation_required"
+        return {"buyer_checklist": checklist, "text_evidence": text_evidence}
+
+    def _cache_key(self, selected: Mapping[str, str]) -> str:
+        """Hash the complete request identity without storing credentials."""
+        payload = {
+            "namespace": self._cache_namespace,
+            "contract": CONTRACT_VERSION,
+            "country": self._country,
+            "asin": self._asin,
+            "max_keywords": self._max_keywords,
+            "enable_competitors": self._enable_competitors,
+            "catalog_enabled": self._catalog_adapter is not None,
+            "primary_core_keyword": self._primary_core_keyword,
+            "core_keywords": self._core_keywords,
+            "competitor_asins": self._requested_competitor_asins,
+            "selected": list(selected.items()),
+        }
+        return "xiyou-" + hashlib.sha256(json.dumps(
+            payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+            allow_nan=False).encode("utf-8")).hexdigest()
 
     def _fetch_competitor_profile(self, keyword: str, usage: dict[str, int]) -> dict[str, Any] | None:
         """Best-effort keyword-to-ASIN snapshot for the competitor module.
@@ -258,7 +420,11 @@ class XiyouLiveEnricher:
                     return None
                 rows = [self._product_row(entry, role="competitor") for entry in entries]
                 rows = [row for row in rows if row is not None and row["asin"] != self._asin]
-                rows = rows[:3]
+                if self._requested_competitor_asins:
+                    by_asin = {row["asin"]: row for row in rows}
+                    rows = [by_asin[asin] for asin in self._requested_competitor_asins if asin in by_asin]
+                else:
+                    rows = rows[:3]
                 own_entry = next((entry for entry in entries
                                   if isinstance(entry, Mapping) and entry.get("asin") == self._asin), None)
                 own = self._product_row(own_entry, role="self") if own_entry is not None else {
@@ -267,7 +433,7 @@ class XiyouLiveEnricher:
                 }
                 if not rows:
                     return None
-                return {
+                profile = {
                     "self_asin": self._asin, "marketplace": self._country,
                     "core_keywords": [self._primary_core_keyword or keyword],
                     "primary_core_keyword": self._primary_core_keyword or keyword,
@@ -275,6 +441,11 @@ class XiyouLiveEnricher:
                     "self_product": own,
                     "snapshot_version": "snapshot-xiyou-competitors-v1",
                 }
+                if self._requested_competitor_asins:
+                    found = {row["asin"] for row in rows}
+                    profile["requested_competitor_asins"] = list(self._requested_competitor_asins)
+                    profile["missing_competitor_asins"] = [asin for asin in self._requested_competitor_asins if asin not in found]
+                return profile
         except Exception:
             # The market keyword call remains usable even when the optional
             # competitor endpoint has no result or changes schema.
@@ -366,7 +537,24 @@ class XiyouLiveEnricher:
                     if value is not None and (not _integer(value) or (field == "searchFrequencyRank" and value == 0)):
                         raise ValueError("invalid ABA metric")
                     observed_aba[field] = value
+                top_asins = aba.get("topAsins")
+                if top_asins is not None and not isinstance(top_asins, list):
+                    raise ValueError("invalid ABA top ASINs")
+                # The recorded contract guarantees an array but not a stable
+                # per-item schema. Project only an explicit valid `asin`; do
+                # not invent rank/share from opaque provider objects.
+                benchmark_asins = []
+                for item in top_asins or []:
+                    if not isinstance(item, Mapping):
+                        continue
+                    value = item.get("asin")
+                    if isinstance(value, str) and re.fullmatch(r"[A-Z0-9]{10}", value, re.I):
+                        benchmark_asins.append(value.upper())
+                observed_aba["topAsins"] = top_asins
+                observed_aba["benchmark_asins"] = list(dict.fromkeys(benchmark_asins))[:3]
             observations[key] = {"competitiveDifficulty": difficulty, "abaReport": observed_aba}
+            if observed_aba is not None:
+                observations[key]["benchmark_asins"] = observed_aba.get("benchmark_asins", [])
         return observations
 
     def _market_row(self, keyword: str, observation: dict[str, Any] | None, sampled: bool) -> dict[str, Any]:
@@ -382,6 +570,10 @@ class XiyouLiveEnricher:
                     aba_report_from_date=aba["reportFromDate"],
                     aba_report_to_date=aba["reportToDate"],
                 )
+                benchmark_asins = aba.get("benchmark_asins") or []
+                if benchmark_asins:
+                    row["benchmark_asins"] = benchmark_asins
+                    row["top3_asins"] = benchmark_asins
         row.update(keyword=keyword, asin=self._asin, country=self._country,
                    full_report_complete=False,
                    provider_sampled=sampled,

@@ -83,25 +83,44 @@
   "fixture_source": "data/golden/competitor-input-demo.json",
   "local_only": true,
   "marketplace": "US",
+  "missing_competitor_asins": [],
   "missing_fields": [
+    "brand",
     "bsr",
     "bullet_points",
     "category",
+    "main_image_url",
     "monthly_sales",
     "price",
     "rating",
     "review_count",
+    "title",
     "variation_count",
     "variations"
   ],
   "module_status": {
-    "reason": "missing_product_fields",
+    "reason": "self_product_fields_missing",
     "status": "partial"
   },
   "network_calls": 0,
   "provider_calls": 0,
+  "requested_competitor_asins": null,
   "schema_version": "competitors-0.2",
   "self_asin": "B000000001",
+  "self_missing_fields": [
+    "brand",
+    "title",
+    "main_image_url",
+    "price",
+    "rating",
+    "review_count",
+    "monthly_sales",
+    "category",
+    "bsr",
+    "variation_count",
+    "variations",
+    "bullet_points"
+  ],
   "self_product": null,
   "snapshot_version": "fixture-competitor-v1"
 }

@@ -26,8 +26,8 @@ ProviderEnricher = Callable[[Mapping[str, Any], Mapping[str, Any]], Mapping[str,
 _USAGE_FIELDS = {"requested_keywords", "estimated_calls", "cache_hits", "actual_calls", "rate_limited", "failures", "requested_requests", "unique_requests", "duplicates_suppressed", "retries"}
 
 
-def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str, int], Mapping[str, Any] | None, Mapping[str, Any] | None, Mapping[str, Mapping[str, Any]] | None, Mapping[str, Any] | None, list[Mapping[str, Any]] | None, list[Mapping[str, Any]] | None]:
-    allowed = {"market_rows", "provider_snapshot_version", "usage", "competitor_profile", "category_features", "visual_evidence", "checklist_evaluations", "competitor_comparisons", "image_briefs"}
+def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str, int], Mapping[str, Any] | None, Mapping[str, Any] | None, Mapping[str, Mapping[str, Any]] | None, Mapping[str, Any] | None, list[Mapping[str, Any]] | None, list[Mapping[str, Any]] | None, Mapping[str, Any] | None, Mapping[str, Any] | None]:
+    allowed = {"market_rows", "provider_snapshot_version", "usage", "competitor_profile", "category_features", "buyer_checklist", "text_evidence", "visual_evidence", "checklist_evaluations", "competitor_comparisons", "image_briefs"}
     if not isinstance(value, Mapping) or not set(value) <= allowed or not {"market_rows", "provider_snapshot_version", "usage"} <= set(value):
         raise ValueError("invalid provider enrichment shape")
     rows, version, usage = value["market_rows"], value["provider_snapshot_version"], value["usage"]
@@ -77,9 +77,20 @@ def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str
         if not isinstance(image_briefs, list) or any(not isinstance(item, Mapping) for item in image_briefs):
             raise ValueError("invalid provider image briefs")
         json.dumps(image_briefs, allow_nan=False)
+    buyer_checklist = value.get("buyer_checklist")
+    if buyer_checklist is not None:
+        if not isinstance(buyer_checklist, Mapping) or not isinstance(buyer_checklist.get("items"), list):
+            raise ValueError("invalid provider buyer checklist")
+        json.dumps(buyer_checklist, allow_nan=False)
+    text_evidence = value.get("text_evidence")
+    if text_evidence is not None:
+        if not isinstance(text_evidence, Mapping) or not isinstance(text_evidence.get("cells"), list):
+            raise ValueError("invalid provider text evidence")
+        json.dumps(text_evidence, allow_nan=False)
     return (copy.deepcopy(rows), version, dict(usage), copy.deepcopy(competitor_profile),
             copy.deepcopy(visual_evidence), copy.deepcopy(checklist_evaluations), copy.deepcopy(category_features),
-            copy.deepcopy(competitor_comparisons), copy.deepcopy(image_briefs))
+            copy.deepcopy(competitor_comparisons), copy.deepcopy(image_briefs),
+            copy.deepcopy(buyer_checklist), copy.deepcopy(text_evidence))
 
 
 @dataclass(frozen=True)
@@ -144,6 +155,8 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
     provider_category_features = None
     provider_competitor_comparisons = None
     provider_image_briefs = None
+    provider_buyer_checklist = None
+    provider_text_evidence = None
     if competitor_profile is not None:
         try:
             validated_competitor_profile = build_competitor_profile(
@@ -153,6 +166,7 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
                 marketplace=str(competitor_profile.get("marketplace", "US")),
                 snapshot_version=competitor_profile.get("snapshot_version"),
                 self_product=competitor_profile.get("self_product"),
+                requested_competitor_asins=competitor_profile.get("requested_competitor_asins"),
             )
         except (KeyError, TypeError, ValueError) as exc:
             reason = {"code": "COMPETITOR_PROFILE_INVALID", "message": str(exc), "stage": "competitors", "retryable": False}
@@ -168,7 +182,8 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
             (market_rows, provider_snapshot_version, usage, provider_competitor_profile,
              provider_visual_evidence, provider_checklist_evaluations,
              provider_category_features, provider_competitor_comparisons,
-             provider_image_briefs) = _provider_result(enrichment)
+             provider_image_briefs, provider_buyer_checklist,
+             provider_text_evidence) = _provider_result(enrichment)
             if provider_competitor_profile is not None:
                 validated_provider_profile = build_competitor_profile(
                     self_asin=str(provider_competitor_profile["self_asin"]),
@@ -177,6 +192,7 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
                     marketplace=str(provider_competitor_profile.get("marketplace", "US")),
                     snapshot_version=provider_competitor_profile.get("snapshot_version"),
                     self_product=provider_competitor_profile.get("self_product"),
+                    requested_competitor_asins=provider_competitor_profile.get("requested_competitor_asins"),
                 )
                 validated_competitor_profile = validated_provider_profile
             write_json(storage_root, task_id, run_id, "provider-usage.json", {
@@ -258,6 +274,18 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
         category_artifact = dict(provider_category_features)
         category_artifact.setdefault("module_status", category_feature_module_status(category_artifact))
         _write(root / "category-features.json", category_artifact)
+    if provider_buyer_checklist is not None:
+        buyer_artifact = dict(provider_buyer_checklist)
+        status = buyer_artifact.get("status")
+        buyer_artifact["module_status"] = {"status": "ready" if status == "ready" else ("failed" if status == "not_generated" else "partial"),
+                                            "reason": buyer_artifact.get("reason", "buyer_checklist_available")}
+        _write(root / "buyer-checklist.json", buyer_artifact)
+    if provider_text_evidence is not None:
+        text_artifact = dict(provider_text_evidence)
+        status = text_artifact.get("status")
+        text_artifact["module_status"] = {"status": "ready" if status == "ready" else ("failed" if status == "not_generated" else "partial"),
+                                           "reason": text_artifact.get("reason", "text_evidence_available")}
+        _write(root / "text-evidence.json", text_artifact)
     # Keep the run manifest aligned with every report-0.2 artifact.  The
     # operational fields identify the run; the shared fields make a copied
     # run-meta sufficient to verify lineage without opening the report rows.

@@ -48,8 +48,8 @@ def validate_competitor_set(self_asin: str, competitor_asins: Iterable[str], *, 
     return {"self_asin": own, "competitor_asins": competitors}
 
 
-def competitor_cache_key(*, marketplace: str, self_asin: str, competitor_asins: Iterable[str], core_keywords: Iterable[str]) -> str:
-    contract = validate_competitor_set(self_asin, competitor_asins)
+def competitor_cache_key(*, marketplace: str, self_asin: str, competitor_asins: Iterable[str], core_keywords: Iterable[str], max_count: int = 3) -> str:
+    contract = validate_competitor_set(self_asin, competitor_asins, max_count=max_count)
     payload = {"marketplace": marketplace.upper(), "self_asin": contract["self_asin"], "competitor_asins": sorted(contract["competitor_asins"]), "core_keywords": sorted({str(value).strip().casefold() for value in core_keywords if str(value).strip()})}
     return "competitors-" + hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
 
@@ -84,9 +84,11 @@ def _project_product(source: Mapping[str, Any], asin: str, *, role: str, core_ke
     return row
 
 
-def build_competitor_profile(*, self_asin: str, competitors: Iterable[Mapping[str, Any]], core_keywords: Iterable[str] = (), marketplace: str = "US", snapshot_version: str | None = None, self_product: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def build_competitor_profile(*, self_asin: str, competitors: Iterable[Mapping[str, Any]], core_keywords: Iterable[str] = (), marketplace: str = "US", snapshot_version: str | None = None, self_product: Mapping[str, Any] | None = None, requested_competitor_asins: Iterable[str] | None = None) -> dict[str, Any]:
     competitor_rows = list(competitors)
-    contract = validate_competitor_set(self_asin, [row.get("asin") for row in competitor_rows])
+    requested = None if requested_competitor_asins is None else list(requested_competitor_asins)
+    max_count = 3 if requested is None else 5
+    contract = validate_competitor_set(self_asin, [row.get("asin") for row in competitor_rows], max_count=max_count)
     by_asin = {str(row.get("asin")).upper(): row for row in competitor_rows}
     rows: list[dict[str, Any]] = []
     for asin in contract["competitor_asins"]:
@@ -95,10 +97,16 @@ def build_competitor_profile(*, self_asin: str, competitors: Iterable[Mapping[st
     projected_self = None
     if isinstance(self_product, Mapping):
         projected_self = _project_product(self_product, contract["self_asin"], role="self", core_keywords=core_keywords)
-    missing_competitors = len(rows) < 3
-    missing_fields = sorted({field for row in rows for field in row.get("missing_fields", [])})
+    expected = 3 if requested is None else len(requested)
+    missing_requested = [] if requested is None else [asin for asin in requested if str(asin).upper() not in by_asin]
+    missing_competitors = bool(missing_requested) or (requested is None and len(rows) < expected)
+    self_missing_fields = sorted(projected_self.get("missing_fields", [])) if projected_self else list(COMPARISON_FIELDS)
+    missing_fields = sorted({field for row in rows for field in row.get("missing_fields", [])} | set(self_missing_fields))
     status = "partial" if missing_competitors or missing_fields or projected_self is None else "ready"
-    reason = "need_up_to_three_competitors" if missing_competitors else ("missing_product_fields" if missing_fields else "competitor_snapshot_complete")
+    reason = ("requested_competitors_missing" if missing_requested else
+              ("need_up_to_three_competitors" if missing_competitors else
+               ("self_product_fields_missing" if self_missing_fields else
+                ("missing_product_fields" if missing_fields else "competitor_snapshot_complete"))))
     return {
         "schema_version": "competitors-0.2",
         "module_status": {"status": status, "reason": reason},
@@ -107,7 +115,10 @@ def build_competitor_profile(*, self_asin: str, competitors: Iterable[Mapping[st
         "competitors": rows,
         "self_product": projected_self,
         "missing_fields": missing_fields,
+        "self_missing_fields": self_missing_fields,
+        "requested_competitor_asins": requested,
+        "missing_competitor_asins": missing_requested,
         "snapshot_version": snapshot_version,
-        "cache_key": competitor_cache_key(marketplace=marketplace, self_asin=self_asin, competitor_asins=contract["competitor_asins"], core_keywords=core_keywords),
+        "cache_key": competitor_cache_key(marketplace=marketplace, self_asin=self_asin, competitor_asins=contract["competitor_asins"], core_keywords=core_keywords, max_count=max_count),
         "provider_calls": 0,
     }

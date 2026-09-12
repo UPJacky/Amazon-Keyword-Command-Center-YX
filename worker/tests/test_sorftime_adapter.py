@@ -43,6 +43,16 @@ class SorftimeAdapterTests(unittest.TestCase):
         self.assertEqual(1, row["variation_count"])
         self.assertNotIn("bsr", row["missing_fields"])
 
+    def test_error_envelope_is_rejected_even_when_data_exists(self):
+        with self.assertRaises(ValueError):
+            normalize_product_detail({"content": [{"type": "text", "text": json.dumps({"code": 500, "data": {"asin": "B000000001", "title": "bad"}})}]}, asin="B000000001", marketplace="US")
+
+    def test_provider_gallery_replaces_stale_single_image(self):
+        fake = FakeTransport()
+        adapter = SorftimeCatalogAdapter(transport=fake, marketplace="US", budget=SorftimeCallBudget(1), max_calls=1)
+        enriched = adapter.enrich_profile({"self_asin": "B000000001", "competitors": [], "self_product": {"asin": "B000000001", "image_urls": ["https://img.example/old.jpg"]}})
+        self.assertEqual(["https://img.example/a.jpg"], enriched["self_product"]["image_urls"])
+
     def test_percent_strings_are_normalized(self):
         payload = result({"sample_stats": "top 20", "analysis_results": [{"product_feature": "调光", "product_count_share": "64.2% (5/19)", "monthly_sales_share": "28.47%", "feature_description": "x"}]})
         features = normalize_category_feature_response(payload)

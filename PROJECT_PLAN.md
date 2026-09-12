@@ -1246,14 +1246,14 @@ Worker：云服务器后台进程
 
 备案完成后的迁移单独执行“Deployment Migration Gate”，不与业务 V1 Gate 混在一起。
 
-### 当前执行状态（2026-09-10）
+### 当前执行状态（2026-09-11）
 
-- 本地 Phase 8 Gate 已通过：完整 UAT 20/20 Gate、Worker 325 项（12 项环境能力跳过）、前端 8 项（Node 场景由前端门禁调用）、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、live 候选49文件、Pages构建46项、迁移静态合同59项、Smoke、Phase 4～7 CLI、双Worker入口、Phase 8 静态审计、compileall 和文档契约 15 项均通过；network_calls=0、external_calls=0、Secret value 命中为0。
+- 本地 Phase 8 Gate 已通过：完整 UAT 20/20 Gate、Worker 340 项（12 项环境能力跳过）、前端 8 项（Node 场景由前端门禁调用）、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、live 候选49文件、Pages构建46项、迁移静态合同62项、Smoke、Phase 4～7 CLI、双Worker入口、Phase 8 静态审计、compileall 和文档契约 15 项均通过；network_calls=0、external_calls=0、Secret value 命中为0。
 - Pages 生产候选已通过 allowlist 审计并发布到 GitHub Pages；根入口以及独立 `tool/`、`report/` 路由均 HTTPS 200。生产包共 49 个文件，不含演示报告、原始输入或 Secret；本地 demo 构建仍固定生成离线 public-config。
 - 真实任务报告对象名使用 `report-` 加 48 位十六进制随机串，`run-meta.json.report_path` 固化 task/run/对象路径；解析器在 `reconciliation.header_mapping` 留存实际表头与列序号，6a/6b 本地证据见 `docs/acceptance/phase8-delivery-audit.md`。
 - 前端 live Auth、私有上传、任务/run登记与重跑、策略追加版本/回滚、私有报告及六模块 bundle 读取、精确Origin Gateway、租约Worker和live打包均已完成线上复验；真实 B 任务已完成，报告经私有 Storage fetch 后在线渲染。报告仍明确标注广告范围，市场/竞品/图片证据待补。
 - 当前临时 Supabase 项目已完成 001–006；public schema 匿名请求拒绝；双用户 RLS 与私有 reports Storage 读取矩阵已通过，跨店读取为 0、越权任务写入 403、自有报告 200、跨用户拒绝。Gateway 精确 Origin 预检与 Auth/REST 已复验；Provider 只读证据与西柚无测试接口、本地 fake 5xx 边界按既定规则保留。
-- Provider 本地 HTTP transport 与一次性探测入口已通过离线验证；真实 Provider 业务缺失项继续按报告声明，不以广告部分报告宣布完整项目完成。
+- Provider 本地 HTTP transport、持久缓存、Provider-only 市场观察保留、买家清单/文字证据 artifact 接线和一次性探测入口已通过离线验证；真实 Provider 业务缺失项继续按报告声明，不以广告部分报告宣布完整项目完成。
 - 主 Agent 仍须在每个子 Agent 返回后重读状态、复核改动、运行相关 Gate、同步文档并清点下一项安全本地工作；不得因单个测试、UAT 或子 Agent 完成而结束项目。
 
 ### Phase 8 下一步定义

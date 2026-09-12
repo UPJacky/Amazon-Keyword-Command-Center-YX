@@ -35,7 +35,7 @@
     const normalize = value => typeof value === 'string' ? value.trim().normalize('NFC').toLocaleLowerCase() : '';
     // A keyword appearing in a cautious/pending bucket must never enter an export,
     // even if a malformed artifact duplicates it into a candidate bucket.
-    const protectedKeywords = new Set(entries.filter(entry => entry.key === 'cautious' || entry.key === 'pending_confirmation' || entry.row.negative_status !== entry.expected).map(entry => normalize(entry.row.keyword)));
+    const protectedKeywords = new Set(entries.filter(entry => ['cautious', 'pending_confirmation', 'low_cvr_high_spend', 'protected_converted'].includes(entry.key) || entry.row.negative_status !== entry.expected).map(entry => normalize(entry.row.keyword)));
     const eligible = entry => ['exact_negative', 'phrase_negative'].includes(entry.key)
       && entry.row.export_eligible === true
       && entry.row.negative_status === entry.expected

@@ -1,0 +1,25 @@
+{
+  "verified_at": "2026-09-12",
+  "project_ref": "fcowaovsbxxtxljjhllp",
+  "migration_versions": ["007", "008", "009"],
+  "migration_execution": "passed",
+  "checks": {
+    "anonymous_tasks_read": {"status": 401, "expected": 401},
+    "service_role_new_task_columns_read": {"status": 200, "expected": 200},
+    "service_role_task_confirmations_read": {"status": 200, "expected": 200},
+    "business_input_submit_invalid_payload": {"status": 400, "expected": "400_or_422"},
+    "confirmation_save_invalid_payload": {"status": 400, "expected": "400_or_422"},
+    "authenticated_test_users": {
+      "count": 2,
+      "auth_statuses": [200, 200],
+      "store_read_statuses": [200, 200],
+      "authorized_store_counts": [1, 1]
+    },
+    "cross_store_task_reads": {
+      "status": [200, 200],
+      "visible_rows": [0, 0]
+    }
+  },
+  "secret_handling": "No credential, JWT, password, private key, or service secret is stored in this evidence file.",
+  "scope_note": "This evidence verifies migration presence, RPC resolution, anonymous denial, authenticated store isolation, and cross-store read isolation. It does not claim a production deployment or a destructive write test."
+}

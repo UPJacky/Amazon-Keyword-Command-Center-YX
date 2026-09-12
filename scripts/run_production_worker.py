@@ -16,6 +16,7 @@ from worker.providers.mcp_http_transport import McpHttpTransport
 from worker.providers.sorftime_adapter import SorftimeCallBudget, SorftimeCatalogAdapter
 from worker.providers.sorftime_transport import SorftimeTransport
 from worker.providers.xiyou_live_enrichment import XiyouCallBudget, XiyouLiveEnricher
+from worker.providers.cache import ProviderCache
 
 
 def main(argv=None):
@@ -27,6 +28,8 @@ def main(argv=None):
     parser.add_argument("--max-provider-credits", type=int, help="required process-lifetime Xiyou credit ceiling")
     parser.add_argument("--sorftime-catalog", action="store_true", help="enable explicitly budgeted Sorftime product enrichment")
     parser.add_argument("--max-sorftime-calls", type=int, help="required process-lifetime Sorftime call ceiling")
+    parser.add_argument("--provider-cache-dir", help="local persistent Provider cache directory; never contains credentials")
+    parser.add_argument("--provider-cache-ttl", type=int, default=21600, help="Provider cache TTL in seconds")
     parser.add_argument("--worker-id", default="kwcc-worker")
     parser.add_argument("--lease-seconds", type=int, default=300)
     parser.add_argument("--heartbeat-interval", type=float)
@@ -66,6 +69,10 @@ def main(argv=None):
                 return 1
             worker.transport = RestrictedTransport.from_env(confirm_live=True, timeout=args.timeout)
             if provider_enabled:
+                if args.provider_cache_ttl < 0:
+                    raise RuntimeFailure("SETTINGS_INVALID")
+                cache_dir = args.provider_cache_dir or os.environ.get("KWCC_PROVIDER_CACHE_DIR") or ".kwcc-provider-cache"
+                provider_cache = ProviderCache(cache_dir, ttl_seconds=args.provider_cache_ttl)
                 provider_transport = McpHttpTransport(os.environ.get("XYDC_MCP_URL", ""),
                                                       os.environ.get("XYDC_MCP_TOKEN", ""), timeout=args.timeout)
                 budget = XiyouCallBudget(args.max_provider_calls, args.max_provider_credits)
@@ -85,7 +92,14 @@ def main(argv=None):
                                              asin=task.get("self_asin"), max_keywords=args.xiyou_keywords,
                                              budget=budget, enable_competitors=True,
                                              catalog_adapter=catalog,
-                                             primary_core_keyword=task.get("primary_core_keyword"))
+                                             primary_core_keyword=task.get("primary_core_keyword"),
+                                             core_keywords=task.get("core_keywords") or [],
+                                             competitor_asins=task.get("competitor_asins") or [],
+                                             cache=provider_cache,
+                                             cache_namespace=os.environ.get("KWCC_PROVIDER_CACHE_NAMESPACE", "production"),
+                                             feature_review_version=task.get("feature_review_version"),
+                                             checklist_version=task.get("checklist_version"),
+                                             confirmation_version=task.get("confirmation_version"))
                 worker.provider_factory = factory
         full_report_seen = False
 

@@ -13,6 +13,7 @@ from worker.pipeline.task_runner import _provider_result, run_task
 from worker.providers.market_merge import MARKET_FIELDS, merge_market_data
 from worker.providers.mcp_http_transport import McpHttpTransport
 from worker.providers.orchestrator import ProviderBatchError
+from worker.providers.cache import ProviderCache
 from worker.providers.xiyou_live_enrichment import XiyouCallBudget, XiyouLiveEnricher
 
 
@@ -80,6 +81,25 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
         self.assertEqual(1, budget.used_calls)
         self.assertEqual(1, budget.used_credits)
 
+    def test_explicit_cache_reuses_successful_result_across_enricher_instances(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cache = ProviderCache(Path(directory), ttl_seconds=3600)
+            first_transport = Mock()
+            first_transport.call.return_value = response(record())
+            first = XiyouLiveEnricher(transport=first_transport, country="US", asin=ASIN,
+                                      max_keywords=1, budget=XiyouCallBudget(1, 1),
+                                      cache=cache, cache_namespace="test")
+            first_result = first(parsed("led light"), {})
+            second_transport = Mock(side_effect=AssertionError("cache miss would call Provider"))
+            second = XiyouLiveEnricher(transport=second_transport, country="US", asin=ASIN,
+                                       max_keywords=1, budget=XiyouCallBudget(1, 1),
+                                       cache=cache, cache_namespace="test")
+            second_result = second(parsed("led light"), {})
+            self.assertEqual(first_result["provider_snapshot_version"], second_result["provider_snapshot_version"])
+            self.assertEqual(1, second_result["usage"]["cache_hits"])
+            self.assertEqual(0, second_result["usage"]["actual_calls"])
+            second_transport.call.assert_not_called()
+
     def test_optional_competitor_snapshot_projects_asins_and_images(self):
         transport = Mock()
         keyword_payload = response(record())
@@ -114,6 +134,26 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
         self.assertEqual(ASIN, profile["self_product"]["asin"])
         self.assertEqual("https://img.example/one.jpg", profile["competitors"][0]["image_urls"][0])
         self.assertEqual("get_keyword_asin_analysis", transport.call.call_args_list[1].args[0])
+
+    def test_category_features_produce_auditable_checklist_and_text_evidence(self):
+        transport = Mock()
+        transport.call.side_effect = [response(record()), response(
+            {"asin": ASIN, "asinInfo": {"title": "Own LED lights", "picUrl": "https://img/self.jpg"}},
+            {"asin": "B098765432", "asinInfo": {"title": "Competitor dimmable lights", "picUrl": "https://img/one.jpg"},
+             "trafficSummary": {}, "ranks": []})]
+        class Catalog:
+            last_category_features = {"features": [{"feature_id": "f1", "name": "dimmable", "source_refs": ["category:1"]}],
+                                       "source_refs": ["category:1"]}
+            def enrich_profile(self, profile):
+                return profile
+        enrich = XiyouLiveEnricher(transport=transport, country="US", asin=ASIN,
+                                   max_keywords=1, budget=XiyouCallBudget(2, 2),
+                                   enable_competitors=True, catalog_adapter=Catalog())
+        result = enrich(parsed("led light"), {})
+        self.assertEqual("draft", result["buyer_checklist"]["status"])
+        self.assertEqual(1, len(result["buyer_checklist"]["items"]))
+        self.assertEqual("draft", result["text_evidence"]["status"])
+        self.assertEqual(2, len(result["text_evidence"]["cells"]))
 
     def test_unknown_fields_do_not_gain_invented_units_ranks_or_shares(self):
         raw = record(ranks=[{"positionCode": "or", "totalRank": 1}],
@@ -193,6 +233,29 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
         self.assertEqual(10, len(result["market_rows"]))
         self.assertEqual(1, transport.call.call_count)
         self.assertEqual(1, budget.used_credits)
+
+    def test_confirmed_primary_keyword_is_first_query_term_even_if_report_order_differs(self):
+        enrich, transport, _ = self.make(response(record("primary term"), record("ad term")), max_keywords=2)
+        enrich = XiyouLiveEnricher(transport=transport, country="US", asin=ASIN, max_keywords=2,
+                                   budget=XiyouCallBudget(1, 1), primary_core_keyword="primary term",
+                                   core_keywords=["primary term"])
+        enrich(parsed("ad term", "primary term"), {})
+        self.assertEqual(["primary term", "ad term"], transport.call.call_args.args[1]["keywords"])
+
+    def test_requested_competitors_are_selected_and_missing_are_traceable(self):
+        transport = Mock()
+        transport.call.side_effect = [response(record()), response(
+            {"asin": ASIN, "asinInfo": {"title": "Own", "picUrl": "https://img/self.jpg"}},
+            {"asin": "B098765432", "asinInfo": {"title": "Requested", "picUrl": "https://img/requested.jpg"}},
+            {"asin": "B087654321", "asinInfo": {"title": "Other", "picUrl": "https://img/other.jpg"}},
+        )]
+        enrich = XiyouLiveEnricher(transport=transport, country="US", asin=ASIN, max_keywords=1,
+                                   budget=XiyouCallBudget(3, 3), enable_competitors=True,
+                                   competitor_asins=["B087654321", "B076543210"])
+        result = enrich(parsed("led light"), {})
+        profile = result["competitor_profile"]
+        self.assertEqual(["B087654321"], [row["asin"] for row in profile["competitors"]])
+        self.assertEqual(["B076543210"], profile["missing_competitor_asins"])
 
     def test_call_and_credit_preflight_reject_without_transport(self):
         for calls, credits, count in [(0, 2, 1), (2, 0, 1)]:

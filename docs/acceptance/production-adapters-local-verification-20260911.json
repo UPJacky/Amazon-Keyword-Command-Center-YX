@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "unit",
+    "source": "worker.tests.test_production_runtime,worker.tests.test_xiyou_live_enrichment,worker.tests.test_competitor_profile",
+    "result": "passed",
+    "summary": "73 tests passed; production factory receives the bound business-input whitelist; confirmed primary keyword changes query order; explicit competitor selection supports five requested ASINs and records missing selections; fake transport never uses real network."
+  },
+  {
+    "kind": "frontend",
+    "source": "frontend unittest and scripts/check_frontend_syntax.py",
+    "result": "passed",
+    "summary": "8 frontend contract tests passed; 13 frontend scripts passed syntax validation; business-input submission uses the authenticated gateway wrapper."
+  },
+  {
+    "kind": "uat",
+    "source": "scripts/run_uat.py",
+    "result": "passed",
+    "summary": "20/20 local gates passed: Worker 337, frontend 8, Supabase contracts 62, Pages 46; network_calls=0, external_calls=0, secret_value_hits=0, local_only=true."
+  },
+  {
+    "kind": "static_contract",
+    "source": "supabase/migrations/008_business_input_submission.sql",
+    "result": "passed",
+    "summary": "Business-input RPC is additive, task/user/store-bound, validates primary keyword, core keywords, competitor ASINs and immutable version fields, and grants execute only to authenticated."
+  }
+]

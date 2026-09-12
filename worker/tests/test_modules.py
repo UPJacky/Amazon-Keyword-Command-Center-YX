@@ -19,7 +19,9 @@ class ModuleReportTests(unittest.TestCase):
         rows = build_share_board([{
             "keyword": "led lights", "asin": "SELF",
             "keyword_market_share": 0.2, "asin_keyword_dependency": 0.05,
-            "traffic_acquisition_rate": 0.7,
+            "traffic_acquisition_rate": 0.7, "keyword_market_share_denominator": 100,
+            "asin_keyword_dependency_denominator": 100, "traffic_acquisition_rate_denominator": 100,
+            "share_period": "2026-08-01/2026-08-31", "share_scope": "US", "provider_source": "fixture",
         }])
         self.assertEqual(20.0, rows[0]["keyword_market_share"]["display_percent"])
         self.assertEqual(5.0, rows[0]["asin_keyword_dependency"]["display_percent"])
@@ -118,6 +120,24 @@ class ModuleReportTests(unittest.TestCase):
         self.assertEqual([], result["phrase_negative"])
         self.assertEqual("phrase_conflicts_with_protected_keyword", result["pending_confirmation"][0]["reason"])
         self.assertFalse(result["pending_confirmation"][0]["export_eligible"])
+
+    def test_related_low_cvr_term_still_protects_phrase_scope(self):
+        result = build_negative_keywords([
+            {"keyword": "rope lights", "clicks": 12, "spend": 3, "orders": 0, "relevance": "unrelated"},
+            {"keyword": "indoor rope lights", "clicks": 30, "spend": 90, "orders": 0, "relevance": "related"},
+        ], load_default_config())
+        self.assertEqual([], result["phrase_negative"])
+        self.assertIn("indoor rope lights", [row["keyword"] for row in result["low_cvr_high_spend"]])
+        self.assertEqual("phrase_conflicts_with_protected_keyword", result["pending_confirmation"][0]["reason"])
+
+    def test_missing_clicks_and_unknown_relevance_are_counted_once(self):
+        result = build_negative_keywords([{"keyword": "missing", "clicks": None, "spend": 1, "orders": 0, "relevance": "unknown"}], load_default_config())
+        status = __import__("worker.report.modules", fromlist=["negative_module_status"]).negative_module_status(result)
+        self.assertEqual({"classified_rows": 0, "total_rows": 1}, status["coverage"])
+
+    def test_share_requires_identity_and_denominator_evidence(self):
+        rows = build_share_board([{"keyword": "led", "asin": "SELF", "keyword_market_share": .2, "asin_keyword_dependency": .05}])
+        self.assertEqual("partial", share_module_status(rows)["status"])
 
     def test_negative_candidates_are_order_independent(self):
         rows = [

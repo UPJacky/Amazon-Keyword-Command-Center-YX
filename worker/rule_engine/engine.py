@@ -66,11 +66,15 @@ def evaluate_keyword(keyword: Mapping[str, Any], config: Mapping[str, Any] | Non
     organic_rank = keyword.get("organic_rank")
     defense = organic_rank is not None and float(organic_rank) <= cfg["organic_defense"]["core_max_rank"]
     cost_healthy = acos is not None and acos <= cfg["acos"]["tolerance"]
+    defense_cost_healthy = (
+        acos is not None
+        and acos <= float(cfg["organic_defense"].get("max_defense_acos", cfg["acos"]["tolerance"]))
+    )
     hard_stop = orders == 0 and clicks >= cfg["stop_loss"]["zero_order_clicks"] and spend >= cfg["stop_loss"]["zero_order_spend"]
 
     if hard_stop:
         return _result(keyword, cfg, "stop_loss", ["zero_order_hard_stop"], {"clicks": clicks, "spend": spend, "evidence": evidence})
-    if defense and cost_healthy:
+    if defense and defense_cost_healthy:
         return _result(keyword, cfg, "defend_rank", ["organic_rank_in_defense_zone", "cost_within_defense_boundary"], {"organic_rank": organic_rank, "acos": acos, "evidence": evidence})
     if evidence == "insufficient":
         action = "cautious_test" if market_high else "continue_observation"
@@ -80,6 +84,8 @@ def evaluate_keyword(keyword: Mapping[str, Any], config: Mapping[str, Any] | Non
         return _result(keyword, cfg, diagnostic, ["high_opportunity_cost_not_healthy"], {"market_high": True, "acos": acos, "ctr": ctr, "cvr": cvr, "evidence": evidence})
     if market_high and cost_healthy and evidence == "sufficient":
         return _result(keyword, cfg, "scale_up", ["sufficient_evidence_high_opportunity"], {"market_high": True, "acos": acos, "evidence": evidence})
+    if evidence == "sufficient" and acos is not None and not cost_healthy and market_score is None:
+        return _result(keyword, cfg, "data_missing", ["market_opportunity_score_missing_for_high_cost_case"], {"acos": acos, "evidence": evidence, "missing_fields": ["market_opportunity_score"]})
     return _result(keyword, cfg, "hold_steady", ["no_higher_priority_rule_hit"], {"evidence": evidence, "acos": acos})
 
 

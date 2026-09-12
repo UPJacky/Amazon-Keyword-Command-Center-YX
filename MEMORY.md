@@ -1,6 +1,6 @@
 # Amazon-Keyword-Command-Center-YX 项目记忆
 
-## 2026-09-10 当前验证快照
+## 2026-09-11 当前验证快照
 
 ## 2026-09-10 LUNU-04 完成快照（优先于历史记录）
 
@@ -10,6 +10,8 @@
 - 代码存档为 `a19b5ae`；西柚没有测试接口，5xx 用本地模拟验收。所有 Secret 不得写入聊天、日志、回执或 Git。
 
 ### 当前验证快照（统计）
+
+- 完整 UAT 20/20 Gate：Worker 340 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 46 项构建验证、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
 
 - 完整 UAT 20/20 Gate：Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
 
@@ -35,7 +37,9 @@
 
 ## 当前验证快照
 
-- 2026-09-10：完整 UAT 20/20 Gate，Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
+- 2026-09-11：完整 UAT 20/20 Gate，Worker 340 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
+
+## 历史验证快照
 
 - 2026-09-03：阶段 8 前端整改已完成本地验证：新增独立 `tool/` 与 `report/` 地址、工具输入边界/刷新/失败原因交互、报告 fetch 门禁与宽表格；Pages 57 文件包已发布到远端 `main` 提交 `b42009a`，HTTPS 路由复验通过；Supabase 托管 API 的精确 CORS 仍待解决。
 

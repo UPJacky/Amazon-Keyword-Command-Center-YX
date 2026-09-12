@@ -27,7 +27,10 @@ def _finite_number(value: Any) -> float | None:
     return number if number == number and number not in (float("inf"), float("-inf")) else None
 
 
-def normalize_ratio(value: Any, *, denominator: Any = None) -> dict[str, Any]:
+_MISSING = object()
+
+
+def normalize_ratio(value: Any, *, denominator: Any = _MISSING, verified_direct: bool = True) -> dict[str, Any]:
     """Normalize a ratio without guessing units or hiding invalid values.
 
     Provider ratios are decimals (``0.2`` means 20%).  A string with an
@@ -40,13 +43,12 @@ def normalize_ratio(value: Any, *, denominator: Any = None) -> dict[str, Any]:
         "value": None,
         "display_percent": None,
         "status": "unknown",
-        "denominator": denominator,
+        "denominator": None if denominator is _MISSING else denominator,
     }
-    denominator_number = _finite_number(denominator) if denominator is not None else None
-    if denominator is not None and (denominator_number is None or denominator_number <= 0):
-        result["status"] = "unknown_denominator"
-        return result
+    denominator_number = _finite_number(denominator) if denominator is not _MISSING and denominator is not None else None
     if value is None or (isinstance(value, str) and not value.strip()):
+        if denominator is None or (denominator is _MISSING and not verified_direct) or (denominator is not _MISSING and (denominator_number is None or denominator_number <= 0)):
+            result["status"] = "unknown_denominator"
         return result
     explicit_percent = isinstance(value, str) and value.strip().endswith("%")
     candidate_text = value.strip()[:-1] if explicit_percent else value.strip() if isinstance(value, str) else value
@@ -60,12 +62,17 @@ def normalize_ratio(value: Any, *, denominator: Any = None) -> dict[str, Any]:
         result["status"] = "invalid_value"
         result["display_percent"] = number * 100
         return result
+    if denominator is None or (denominator is _MISSING and not verified_direct) or (denominator is not _MISSING and (denominator_number is None or denominator_number <= 0)):
+        result["status"] = "unknown_denominator"
+        result["display_percent"] = number * 100
+        return result
     result.update({"value": number, "display_percent": number * 100, "status": "valid"})
     return result
 
 
 def _share_entry(row: Mapping[str, Any], field: str, denominator_field: str) -> dict[str, Any]:
-    return normalize_ratio(row.get(field), denominator=row.get(denominator_field))
+    verified = row.get("share_ratio_verified") is True or row.get(f"{field}_verified") is True
+    return normalize_ratio(row.get(field), denominator=row.get(denominator_field, _MISSING), verified_direct=verified)
 
 
 def build_share_board(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -95,11 +102,19 @@ def share_module_status(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     records = list(rows)
     valid_market = sum(item.get("keyword_market_share", {}).get("status") == "valid" for item in records)
     valid_dependency = sum(item.get("asin_keyword_dependency", {}).get("status") == "valid" for item in records)
-    complete = bool(records) and valid_market == len(records) and valid_dependency == len(records)
+    identity_complete = bool(records) and all(
+        isinstance(item.get("asin"), str) and item.get("asin").strip()
+        and isinstance(item.get("period"), str) and item.get("period").strip()
+        and item.get("scope") not in (None, "", "unknown")
+        and isinstance(item.get("source"), str) and item.get("source").strip()
+        for item in records
+    )
+    complete = bool(records) and identity_complete and valid_market == len(records) and valid_dependency == len(records)
     return {
         "status": "ready" if complete else "partial",
         "reason": "share_denominators_complete" if complete else "share_denominators_incomplete",
-        "coverage": {"total_rows": len(records), "keyword_market_share": valid_market, "asin_keyword_dependency": valid_dependency},
+        "coverage": {"total_rows": len(records), "keyword_market_share": valid_market, "asin_keyword_dependency": valid_dependency,
+                      "identity_complete": sum(bool(item.get("asin") and item.get("period") and item.get("scope") not in (None, "", "unknown")) for item in records)},
     }
 
 
@@ -250,7 +265,7 @@ def build_negative_keywords(rows: Iterable[Mapping[str, Any]], config: Mapping[s
             pending.append(candidate(base, "pending_confirmation", "no_click_evidence"))
 
     protected_terms = [str(row.get("keyword") or "").strip().casefold()
-                       for row in [*protected_converted, *cautious, *pending]
+                       for row in [*protected_converted, *cautious, *pending, *low_cvr_high_spend]
                        if str(row.get("keyword") or "").strip()]
     safe_phrase: list[dict[str, Any]] = []
     for row in phrase:
@@ -281,8 +296,12 @@ def negative_module_status(groups: Mapping[str, Any]) -> dict[str, Any]:
     unknown = sum(row.get("relevance") == "unknown" for row in records)
     missing = sum(row.get("reason") == "required_ad_fields_missing" for row in records)
     complete = bool(records) and unknown == 0 and missing == 0
+    unclassified = sum(
+        row.get("relevance") == "unknown" or row.get("reason") == "required_ad_fields_missing"
+        for row in records
+    )
     return {
         "status": "ready" if complete else "partial",
         "reason": "negative_classification_complete" if complete else "relevance_or_ad_fields_incomplete",
-        "coverage": {"classified_rows": len(records) - unknown - missing, "total_rows": len(records)},
+        "coverage": {"classified_rows": max(0, len(records) - unclassified), "total_rows": len(records)},
     }

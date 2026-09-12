@@ -29,6 +29,12 @@ class Task:
     competitor_asins: tuple[str, ...] = ()
     core_keywords: tuple[str, ...] = ()
     product_stage: str | None = None
+    primary_core_keyword: str | None = None
+    competitor_selection_version: str | None = None
+    product_facts_version: str | None = None
+    feature_review_version: str | None = None
+    checklist_version: str | None = None
+    confirmation_version: str | None = None
     input_file_path: str | None = None
     input_file_hash: str | None = None
     currency_code: str | None = None
@@ -63,4 +69,3 @@ def to_record(value: Task | Run) -> dict[str, Any]:
         if key in record:
             record[key] = list(record[key])
     return record
-

@@ -37,6 +37,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -68,6 +69,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -81,6 +83,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持防守投放，复核自然位与成本边界",
+      "observation_window": null,
       "rule_hits": [
         "organic_rank_in_defense_zone",
         "cost_within_defense_boundary"
@@ -115,6 +118,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -146,6 +150,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -159,6 +164,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -192,6 +198,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -223,6 +230,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -236,6 +244,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -269,6 +278,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -300,6 +310,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -313,6 +324,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -346,6 +358,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -377,6 +390,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -390,6 +404,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -423,6 +438,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -454,6 +470,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -467,6 +484,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -500,6 +518,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -531,6 +550,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "b0991q94kp",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -544,6 +564,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -577,6 +598,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -608,6 +630,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "luces led para cuarto",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -621,6 +644,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -654,6 +678,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -685,6 +710,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -698,6 +724,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -731,6 +758,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -762,6 +790,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "leds",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -775,6 +804,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -808,6 +838,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -839,6 +870,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -852,6 +884,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -885,6 +918,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -916,6 +950,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led light strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -929,6 +964,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -962,6 +998,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -993,6 +1030,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1006,6 +1044,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1039,6 +1078,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1070,6 +1110,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "room lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1083,6 +1124,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1116,6 +1158,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1147,6 +1190,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1160,6 +1204,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1193,6 +1238,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1224,6 +1270,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights for room",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1237,6 +1284,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1270,6 +1318,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1301,6 +1350,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led strips",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1314,6 +1364,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1347,6 +1398,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1378,6 +1430,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "string lights indoor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1391,6 +1444,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1424,6 +1478,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1455,6 +1510,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "fairy lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1468,6 +1524,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1501,6 +1558,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1532,6 +1590,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "smart home",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1545,6 +1604,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1578,6 +1638,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1609,6 +1670,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "home decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1622,6 +1684,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1655,6 +1718,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1686,6 +1750,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "luces led",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1699,6 +1764,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1732,6 +1798,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1763,6 +1830,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "string lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1776,6 +1844,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1809,6 +1878,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1840,6 +1910,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "light strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1853,6 +1924,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1886,6 +1958,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1917,6 +1990,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led strip lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1930,6 +2004,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -1963,6 +2038,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -1994,6 +2070,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "rgb led strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2007,6 +2084,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2040,6 +2118,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2071,6 +2150,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "bedroom lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2084,6 +2164,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2117,6 +2198,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2148,6 +2230,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led light strips",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2161,6 +2244,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2194,6 +2278,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2225,6 +2310,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led string lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2238,6 +2324,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2271,6 +2358,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2302,6 +2390,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led strip lights for home",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2315,6 +2404,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2348,6 +2438,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2379,6 +2470,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "b08b1f2gxy",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2392,6 +2484,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2425,6 +2518,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2456,6 +2550,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "rgb lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2469,6 +2564,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2502,6 +2598,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2533,6 +2630,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "outdoor led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2546,6 +2644,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2579,6 +2678,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2610,6 +2710,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "luces para cuarto",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2623,6 +2724,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2656,6 +2758,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2687,6 +2790,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "cutecore room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2700,6 +2804,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2733,6 +2838,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2764,6 +2870,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "home decor clearance",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2777,6 +2884,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2810,6 +2918,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2841,6 +2950,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "b07n1cmgqq",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2854,6 +2964,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2887,6 +2998,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2918,6 +3030,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "leds lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2931,6 +3044,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -2964,6 +3078,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -2995,6 +3110,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led room lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3008,6 +3124,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3041,6 +3158,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3072,6 +3190,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "rope led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3085,6 +3204,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3118,6 +3238,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3149,6 +3270,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "rope lights indoor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3162,6 +3284,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3195,6 +3318,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3226,6 +3350,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "room stuff",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3239,6 +3364,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3272,6 +3398,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3303,6 +3430,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "b09kg2p1qq",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3316,6 +3444,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3349,6 +3478,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3380,6 +3510,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led rope light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3393,6 +3524,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3426,6 +3558,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3457,6 +3590,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "room lighting",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3470,6 +3604,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3503,6 +3638,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3534,6 +3670,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3547,6 +3684,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3580,6 +3718,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3611,6 +3750,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights battery operated",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3624,6 +3764,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3657,6 +3798,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3688,6 +3830,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "dorm decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3701,6 +3844,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3734,6 +3878,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3765,6 +3910,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led strip light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3778,6 +3924,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3811,6 +3958,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3842,6 +3990,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "christmas decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3855,6 +4004,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3888,6 +4038,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3919,6 +4070,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led light strips with remote",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3932,6 +4084,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -3965,6 +4118,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -3996,6 +4150,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "tv lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4009,6 +4164,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4042,6 +4198,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4073,6 +4230,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4086,6 +4244,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4119,6 +4278,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4150,6 +4310,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "bedroom lighting",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4163,6 +4324,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4196,6 +4358,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4227,6 +4390,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led rope lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4240,6 +4404,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4273,6 +4438,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4304,6 +4470,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "govee led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4317,6 +4484,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4350,6 +4518,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4381,6 +4550,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led strip lights battery powered",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4394,6 +4564,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4427,6 +4598,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4458,6 +4630,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "luz led",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4471,6 +4644,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4504,6 +4678,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4535,6 +4710,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "bedroom decor aesthetic",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4548,6 +4724,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4581,6 +4758,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4612,6 +4790,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "rope lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4625,6 +4804,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4658,6 +4838,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4689,6 +4870,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "100 ft led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4702,6 +4884,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4735,6 +4918,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4766,6 +4950,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led rope lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4779,6 +4964,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4812,6 +4998,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4843,6 +5030,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "dorm room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4856,6 +5044,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4889,6 +5078,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4920,6 +5110,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights 100 ft",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4933,6 +5124,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -4966,6 +5158,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -4997,6 +5190,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "classroom lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5010,6 +5204,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5043,6 +5238,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5074,6 +5270,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "luz led para cuarto",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5087,6 +5284,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5120,6 +5318,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5151,6 +5350,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "b08m9c4mmm",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5164,6 +5364,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5197,6 +5398,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5228,6 +5430,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "100ft led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5241,6 +5444,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5274,6 +5478,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5305,6 +5510,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "grunge room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5318,6 +5524,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5351,6 +5558,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5382,6 +5590,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights for bathroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5395,6 +5604,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5428,6 +5638,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5459,6 +5670,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "cool things",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5472,6 +5684,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5505,6 +5718,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5536,6 +5750,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "￼led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5549,6 +5764,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5582,6 +5798,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5613,6 +5830,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "lighting & ceiling fans",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5626,6 +5844,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5659,6 +5878,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5690,6 +5910,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "battery powered led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5703,6 +5924,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5736,6 +5958,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5767,6 +5990,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "bedroom decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5780,6 +6004,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5813,6 +6038,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5844,6 +6070,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "ksipze 100ft led strip lights rgb music sync",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5857,6 +6084,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5890,6 +6118,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5921,6 +6150,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "bedroom accessories",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5934,6 +6164,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -5967,6 +6198,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -5998,6 +6230,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "lights for room",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6011,6 +6244,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6044,6 +6278,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6075,6 +6310,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "outdoor led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6088,6 +6324,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6121,6 +6358,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6152,6 +6390,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "outdoor led strip lights waterproof",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6165,6 +6404,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6198,6 +6438,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6229,6 +6470,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "rope light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6242,6 +6484,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6275,6 +6518,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6306,6 +6550,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "luces",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6319,6 +6564,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6352,6 +6598,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6383,6 +6630,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led lights for tv",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6396,6 +6644,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6429,6 +6678,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6460,6 +6710,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "led light rope",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6473,6 +6724,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6506,6 +6758,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6537,6 +6790,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "indoor string lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6550,6 +6804,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6583,6 +6838,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6614,6 +6870,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "room led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6627,6 +6884,7 @@
         "target_id/target"
       ],
       "next_action_text": "保持当前策略，进入下一周期复盘",
+      "observation_window": null,
       "rule_hits": [
         "no_higher_priority_rule_hit"
       ],
@@ -6667,6 +6925,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6698,6 +6957,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "govee led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6711,6 +6971,7 @@
         "target_id/target"
       ],
       "next_action_text": "继续观察，不做强动作",
+      "observation_window": null,
       "rule_hits": [
         "evidence_insufficient"
       ],
@@ -6751,6 +7012,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6782,6 +7044,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "battery led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6795,6 +7058,7 @@
         "target_id/target"
       ],
       "next_action_text": "继续观察，不做强动作",
+      "observation_window": null,
       "rule_hits": [
         "evidence_insufficient"
       ],
@@ -6835,6 +7099,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6866,6 +7131,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "spiderman bedroom decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6879,6 +7145,7 @@
         "target_id/target"
       ],
       "next_action_text": "继续观察，不做强动作",
+      "observation_window": null,
       "rule_hits": [
         "evidence_insufficient"
       ],
@@ -6919,6 +7186,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -6950,6 +7218,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "hello kitty room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6963,6 +7232,7 @@
         "target_id/target"
       ],
       "next_action_text": "继续观察，不做强动作",
+      "observation_window": null,
       "rule_hits": [
         "evidence_insufficient"
       ],
@@ -7005,6 +7275,7 @@
       "entity_diagnoses": [
         {
           "entity_context": {},
+          "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
             "status": "pending",
@@ -7036,6 +7307,7 @@
         }
       ],
       "entity_status": "not_available",
+      "exit_conditions": null,
       "keyword": "room accessories",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -7049,6 +7321,7 @@
         "target_id/target"
       ],
       "next_action_text": "调整竞价并复核 CPC / ACOS",
+      "observation_window": null,
       "rule_hits": [
         "high_opportunity_cost_not_healthy"
       ],

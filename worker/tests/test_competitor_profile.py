@@ -50,6 +50,17 @@ class CompetitorProfileTests(unittest.TestCase):
         second = competitor_cache_key(marketplace="US", self_asin="B000000001", competitor_asins=["B000000004", "B000000002", "B000000003"], core_keywords=["room decor", "led light"])
         self.assertEqual(first, second)
 
+    def test_explicit_selection_allows_five_and_reports_missing_requested_asins(self):
+        requested = [f"B00000000{i}" for i in range(2, 7)]
+        profile = build_competitor_profile(
+            self_asin="B000000001",
+            competitors=[{"asin": requested[0], "title": "Only returned"}],
+            requested_competitor_asins=requested,
+        )
+        self.assertEqual(requested, profile["requested_competitor_asins"])
+        self.assertEqual(requested[1:], profile["missing_competitor_asins"])
+        self.assertEqual("partial", profile["module_status"]["status"])
+
 
 if __name__ == "__main__":
     unittest.main()

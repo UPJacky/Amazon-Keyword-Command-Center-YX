@@ -249,10 +249,18 @@
         uploadedInputs.set(input.task_id, signature);
       }
       if (stamp !== generation) fail('SESSION_CHANGED', '会话已改变，任务登记已取消');
-      const result = await privateRequest('/rest/v1/rpc/kwcc_submit_task', { method: 'POST', body: {
+      const result = await privateRequest('/rest/v1/rpc/kwcc_submit_task_with_business_inputs', { method: 'POST', body: {
         p_task_id: input.task_id, p_run_id: input.run_id, p_store_id: input.store_id,
         p_self_asin: input.self_asin, p_product_stage: input.product_stage,
         p_input_file_path: objectPath, p_input_file_hash: digest, p_input_size: bytes.byteLength,
+        p_business_inputs: { primary_core_keyword: input.primary_core_keyword || null,
+          competitor_asins: Array.isArray(input.competitor_asins) ? input.competitor_asins : [],
+          core_keywords: Array.isArray(input.core_keywords) ? input.core_keywords : [],
+          competitor_selection_version: input.competitor_selection_version || null,
+          product_facts_version: input.product_facts_version || null,
+          feature_review_version: input.feature_review_version || null,
+          checklist_version: input.checklist_version || null,
+          confirmation_version: input.confirmation_version || null },
       } });
       if (result?.task_id !== input.task_id || result?.run_id !== input.run_id || result.status !== 'pending')
         fail('RESPONSE_INVALID', '任务登记结果未确认，请刷新查询；重试将沿用本次任务编号');
@@ -362,7 +370,7 @@
         requireSession();
         const stamp = generation;
         [taskId, runId] = reportIds(taskId, runId);
-        if (!['rank-benchmark.json', 'negative-keywords.json', 'competitors.json', 'listing-diagnostics.json', 'optimization-plan.json'].includes(name))
+        if (!['rank-benchmark.json', 'negative-keywords.json', 'competitors.json', 'category-features.json', 'buyer-checklist.json', 'text-evidence.json', 'listing-diagnostics.json', 'optimization-plan.json'].includes(name))
           fail('INPUT_INVALID', '未知报告模块');
         // 004 authorizes only task_runs.report_path: modules must come from that same bundle.
         const report = await liveReports.read(taskId, runId);

@@ -31,7 +31,7 @@ python scripts/run_uat.py
 
 历史外部 Gate 快照（当前状态以 `phase8-delivery-audit.md` 和 `PROJECT_STATUS.md` 为准）：
 
-本文件仍是本地审计证据，外部复核结果不能伪装为通过；UAT 网络调用为 0。
+本文件仍是本地审计证据，外部复核结果不能伪装为通过；2026-09-11 当前本地 UAT 为 20/20 Gate、Worker 340 项、前端 8 项、编排 25 项、连续 63 项、Pages 构建 46 项、文档 15 项，network_calls=0、external_calls=0。
 
 - 临时 Supabase 项目 001–006 的双用户 RLS 复验已完成；
 - GitHub Pages HTTPS、精确 Origin 和 Auth Redirect 已完成线上复验；

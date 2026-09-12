@@ -33,6 +33,8 @@
         <label id="tool-store-field" hidden>所属店铺 <span class="required">必选</span><select id="tool-store" name="store_id"><option value="">正在读取已授权店铺…</option></select></label>
         <label>ASIN <span class="required">必填</span><input id="tool-asin" name="asin" inputmode="latin" autocomplete="off" placeholder="B0XXXXXXXX" required><small class="field-help">必须是 10 位且以 B0 开头。</small></label>
         <label>产品阶段 <span class="required">必选</span><select id="tool-stage" name="product_stage" required><option value="">请选择阶段</option><option value="new">新品期</option><option value="growth">上升期</option><option value="stable">稳定期</option><option value="clearance">清货期</option><option value="seasonal_restart">季节性老品重启</option></select></label>
+        <label>主要核心关键词 <span class="required">建议填写</span><input id="tool-primary-keyword" name="primary_core_keyword" autocomplete="off" placeholder="例如 led lights"><small class="field-help">用于自然位、类目特征和竞对采样；不会替你猜测关键词。</small></label>
+        <label>指定竞对 ASIN <span class="optional">可选</span><textarea id="tool-competitors" name="competitor_asins" rows="3" placeholder="每行一个，或用逗号分隔"></textarea><small class="field-help">每个必须是 B0 开头的 10 位 ASIN；留空表示由已授权采样策略处理。</small></label>
         <label>广告搜索词报表 <span class="required">必填</span><input id="tool-file" name="report_file" type="file" accept=".xlsx,.csv" required><small class="field-help">仅支持 .xlsx / .csv；最大 10 MB。</small></label>
         <label class="check-row"><input id="tool-confirm" type="checkbox" required>我确认输入文件属于当前分析任务</label>
         <p id="tool-form-status" class="form-status" role="status" aria-live="polite"></p>

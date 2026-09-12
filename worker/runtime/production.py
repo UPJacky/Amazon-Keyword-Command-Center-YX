@@ -35,7 +35,7 @@ _MODULE_ARTIFACTS = (
     "rank-benchmark.json", "negative-keywords.json", "competitors.json",
     "listing-diagnostics.json", "optimization-plan.json",
 )
-_SUPPLEMENTARY_ARTIFACTS = ("category-features.json",)
+_SUPPLEMENTARY_ARTIFACTS = ("category-features.json", "buyer-checklist.json", "text-evidence.json")
 _RPC_NAMES = {"kwcc_claim_run", "kwcc_heartbeat_run", "kwcc_finish_run"}
 _STAGE_TEMPLATES = {
     "new": "new_product_growth", "growth": "balanced_growth",
@@ -430,19 +430,25 @@ class ProductionWorker:
             # Keep the registry identical to _MODULE_ARTIFACTS and the frontend
             # allowlist. Listing diagnostics used to be generated locally but
             # silently omitted from the production bundle.
-            for name in ("rank-benchmark", "negative-keywords", "competitors", "listing-diagnostics", "optimization-plan", "category-features"):
+            for name in ("rank-benchmark", "negative-keywords", "competitors", "listing-diagnostics", "optimization-plan", "category-features", "buyer-checklist", "text-evidence"):
                 artifact = root / f"{name}.json"
                 if artifact.exists():
                     if artifact.is_symlink():
                         raise ValueError()
                     modules[f"{name}.json"] = _decode(artifact.read_bytes(), "REPORT_INVALID")
-                elif name not in {"competitors", "category-features"}:
+                elif name not in {"competitors", "category-features", "buyer-checklist", "text-evidence"}:
                     raise ValueError()
             if (master.get("schema_version") != "report-0.2" or not isinstance(master.get("rows"), list)
                     or any(not isinstance(row, dict) for row in master["rows"])):
                 raise ValueError()
-            metadata = {field: task[field] for field in ("self_asin", "store_id", "product_stage", "marketplace")
+            metadata = {field: task[field] for field in ("self_asin", "store_id", "product_stage", "marketplace",
+                                                         "primary_core_keyword", "competitor_selection_version",
+                                                         "product_facts_version", "feature_review_version",
+                                                         "checklist_version", "confirmation_version")
                         if isinstance(task.get(field), str) and task[field].strip()}
+            for field in ("competitor_asins", "core_keywords"):
+                if isinstance(task.get(field), list):
+                    metadata[field] = task[field]
             report_scope = ("ad_only" if self.provider_enricher is None and self.provider_factory is None
                             else ("live_provider_data" if provider_state.get("real_provider_verified") is True
                                   else "injected_provider_data"))
@@ -525,7 +531,10 @@ class ProductionWorker:
                 # Only metadata is handed to the factory; never operational lease credentials.
                 try:
                     enricher = self.provider_factory({key: task.get(key) for key in
-                        ("task_id", "store_id", "self_asin", "product_stage", "marketplace")})
+                        ("task_id", "store_id", "self_asin", "product_stage", "marketplace",
+                         "primary_core_keyword", "competitor_asins", "core_keywords",
+                         "competitor_selection_version", "product_facts_version",
+                         "feature_review_version", "checklist_version", "confirmation_version")})
                     if not callable(enricher):
                         raise ValueError()
                 except Exception:

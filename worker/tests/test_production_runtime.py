@@ -45,6 +45,11 @@ class FakeTransport:
         self.claim = {"task": {
             "task_id": TASK, "store_id": STORE, "created_by": USER,
             "self_asin": "B012345678", "product_stage": "stable", "strategy_id": None,
+            "primary_core_keyword": "led lights", "competitor_asins": ["B098765432"],
+            "core_keywords": ["led lights", "room decor"],
+            "competitor_selection_version": "competitors-v1", "product_facts_version": "facts-v1",
+            "feature_review_version": "features-v1", "checklist_version": "checklist-v1",
+            "confirmation_version": "confirm-v1",
             "input_file_path": f"{STORE}/{USER}/{TASK}/input{fixture.suffix}",
             "input_file_hash": hashlib.sha256(self.input).hexdigest(), "task_config_override": {},
         }, "run": {"run_id": RUN, "task_id": TASK, "lease_token": TOKEN}, "config": None}
@@ -213,9 +218,18 @@ class ProductionRuntimeTests(unittest.TestCase):
         factory = Mock(return_value=callback)
         result = ProductionWorker(fake, provider_factory=factory).run_once()
         self.assertEqual('completed', result['status'], result)
-        factory.assert_called_once_with({'task_id': TASK, 'store_id': STORE, 'self_asin': 'B012345678', 'product_stage': 'stable', 'marketplace': 'US'})
+        factory.assert_called_once_with({'task_id': TASK, 'store_id': STORE, 'self_asin': 'B012345678', 'product_stage': 'stable', 'marketplace': 'US',
+                                        'primary_core_keyword': 'led lights', 'competitor_asins': ['B098765432'],
+                                        'core_keywords': ['led lights', 'room decor'],
+                                        'competitor_selection_version': 'competitors-v1', 'product_facts_version': 'facts-v1',
+                                        'feature_review_version': 'features-v1', 'checklist_version': 'checklist-v1',
+                                        'confirmation_version': 'confirm-v1'})
         callback.assert_called_once()
-        self.assertEqual('US', json.loads(fake.upload)['marketplace'])
+        bundle = json.loads(fake.upload)
+        self.assertEqual('US', bundle['marketplace'])
+        self.assertEqual('led lights', bundle['primary_core_keyword'])
+        self.assertEqual(['B098765432'], bundle['competitor_asins'])
+        self.assertEqual('confirm-v1', bundle['confirmation_version'])
         self.assertEqual('injected_provider_data', result['report_scope'])
         fake = FakeTransport()
         fake.claim['task']['input_file_hash'] = '0' * 64

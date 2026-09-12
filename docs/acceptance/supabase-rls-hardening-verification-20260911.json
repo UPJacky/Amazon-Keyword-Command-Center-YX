@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "tests",
+    "source": "supabase.test_migration_contract; supabase.test_task_business_inputs; supabase.test_business_inputs",
+    "result": "passed",
+    "summary": "27 个本地迁移、RLS、任务归属和业务输入契约测试通过；未连接真实 Supabase。"
+  },
+  {
+    "kind": "audit",
+    "source": "scripts/phase8_audit.py",
+    "result": "passed",
+    "summary": "Phase 8 本地审计通过，required_files、RLS/private report contract、session guard、Pages allowlist、无公开报告桶和 Worker loop 均通过；network_calls=0、external_calls=0。"
+  },
+  {
+    "kind": "external_boundary",
+    "source": "scripts/phase8_audit.py",
+    "result": "passed",
+    "summary": "真实 Supabase 迁移、两测试用户 RLS、私有 Storage、Pages HTTPS/CORS/Auth redirect 与 Provider schema 仍是外部 Gate，本地验收不冒充线上通过。"
+  }
+]

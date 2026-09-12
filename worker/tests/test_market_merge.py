@@ -18,6 +18,28 @@ class MarketMergeTests(unittest.TestCase):
         rows = merge_market_data([{"keyword": "unknown", "clicks": 0}], [{"keyword": "other", "organic_rank": 1}])
         self.assertNotIn("organic_rank", rows[0])
 
+    def test_provider_only_keyword_is_retained_as_market_observation(self):
+        rows = merge_market_data(
+            [{"keyword": "ad term", "clicks": 1}],
+            [{"keyword": "confirmed core", "organic_rank": 4, "provider_sampled": True}],
+        )
+        self.assertEqual(["ad term", "confirmed core"], [row["keyword"] for row in rows])
+        self.assertTrue(rows[1]["provider_only"])
+        self.assertTrue(rows[1]["ad_fact_missing"])
+        self.assertEqual(4, rows[1]["organic_rank"])
+        self.assertIn("spend", rows[1]["missing_fields"])
+
+    def test_provider_only_keyword_is_retained_as_market_observation(self):
+        rows = merge_market_data(
+            [{"keyword": "ad term", "clicks": 1}],
+            [{"keyword": "confirmed core", "organic_rank": 4, "provider_sampled": True}],
+        )
+        self.assertEqual(["ad term", "confirmed core"], [row["keyword"] for row in rows])
+        self.assertTrue(rows[1]["provider_only"])
+        self.assertTrue(rows[1]["ad_fact_missing"])
+        self.assertEqual(4, rows[1]["organic_rank"])
+        self.assertIn("spend", rows[1]["missing_fields"])
+
     def test_explicit_provider_null_is_listed_as_missing(self):
         rows = merge_market_data(
             [{"keyword": "led light", "missing_fields": []}],

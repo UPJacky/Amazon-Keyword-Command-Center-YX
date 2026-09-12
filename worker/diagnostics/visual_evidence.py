@@ -36,5 +36,8 @@ def build_visual_evidence(*, image_ids: Iterable[str], observations: Iterable[Ma
     if len(keys) != len(rows):
         errors.append("duplicate_image_element")
     missing = sorted(expected_keys - keys)
+    not_judged = [row for row in rows if row["answer_mode"] == "unknown" or row["prominence"] == "unknown" or row["legibility"] == "unreadable" or not row.get("evidence_region") or not isinstance(row.get("source_refs"), list) or not row.get("source_refs")]
+    if not_judged:
+        errors.append("observation_not_judged")
     status = "ready" if not errors and not missing else "partial" if rows else "failed"
     return {"schema_version": "visual-evidence-0.1", "status": status, "reason": "complete_observation" if status == "ready" else "observation_incomplete", "expected_image_ids": expected_images, "expected_element_ids": expected_elements, "observations": rows, "missing_image_element": [[image, element] for image, element in missing], "errors": errors, "provider_calls": 0}

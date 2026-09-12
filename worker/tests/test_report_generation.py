@@ -71,7 +71,7 @@ class ReportGenerationTests(unittest.TestCase):
             )
             row = next(item for item in report["rows"] if item["keyword"] == "led light")
             self.assertEqual(row["missing_fields"], ["organic_rank", "suggested_bid"])
-            self.assertEqual(report["missing_fields"], ["organic_rank", "suggested_bid"])
+            self.assertEqual(report["missing_fields"], ["market_opportunity_score", "organic_rank", "suggested_bid"])
             meta = json.loads((Path(directory) / "report-meta.json").read_text(encoding="utf-8"))
             self.assertEqual(meta["missing_fields"], report["missing_fields"])
 

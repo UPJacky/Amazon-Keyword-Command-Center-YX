@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "frontend_structure",
+    "source": "frontend/report/*.html, frontend/report/*.js, frontend/shared.js, frontend/styles.css",
+    "result": "passed",
+    "summary": "六个报告模块保持独立 HTML 与脚本，共享登录门禁、导航和样式；未合并为单一大 HTML，未使用 iframe 规避边界。"
+  },
+  {
+    "kind": "pages_allowlist",
+    "source": "scripts/build_pages_demo.py and scripts/test_build_pages_demo.py",
+    "result": "passed",
+    "summary": "Pages 本地 allowlist 演示构建及 46 项页面测试通过；演示产物无原始输入、无 Secret、无外部调用。"
+  },
+  {
+    "kind": "rendering_contract",
+    "source": "frontend unittest and scripts/phase8_audit.py",
+    "result": "passed",
+    "summary": "报告渲染、未登录拒绝、任务/运行绑定、缺失值语义、表格横向滚动与本地安全边界通过；业务 Provider 缺失保持 partial/not_generated。"
+  },
+  {
+    "kind": "uat",
+    "source": "scripts/run_uat.py",
+    "result": "passed",
+    "summary": "完整本地 UAT 20/20 Gate 通过，network_calls=0，external_calls=0，local_only=true。"
+  }
+]

@@ -167,11 +167,11 @@ test('private uploads enforce owner, extension, size and non-overwrite before fo
 
 test('only named user task RPCs are exposed; worker lifecycle RPC remains inaccessible', async () => {
   const { handler, calls } = setup();
-  for (const rpc of ['kwcc_submit_task', 'kwcc_rerun_task']) {
+  for (const rpc of ['kwcc_submit_task', 'kwcc_submit_task_with_business_inputs', 'kwcc_rerun_task']) {
     assert.equal((await handler(request(`/rest/v1/rpc/${rpc}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }))).status, 200);
   }
   assert.equal((await handler(request('/rest/v1/rpc/kwcc_claim_run', { method: 'POST' }))).status, 404);
-  assert.equal(calls.length, 2);
+  assert.equal(calls.length, 3);
 });
 
 test('browser client and gateway integrate login, private upload/register, bound report and logout without direct upstream access', async () => {
@@ -187,10 +187,13 @@ test('browser client and gateway integrate login, private upload/register, bound
       assert.equal(options.headers.get('Authorization'), `Bearer ${token}`);
       if (endpoint === '/auth/v1/user') return Response.json({ id: user });
       if (endpoint.startsWith('/storage/v1/object/inputs/')) return Response.json({ Key: 'stored' });
-      if (endpoint === '/rest/v1/rpc/kwcc_submit_task') {
+      if (endpoint === '/rest/v1/rpc/kwcc_submit_task_with_business_inputs') {
         const data = JSON.parse(options.body);
         assert.equal(data.p_task_id, taskId); assert.equal(data.p_run_id, runId);
         assert.match(data.p_input_file_hash, /^[0-9a-f]{64}$/);
+        assert.deepEqual(data.p_business_inputs, { primary_core_keyword: null, competitor_asins: [],
+          core_keywords: [], competitor_selection_version: null, product_facts_version: null,
+          feature_review_version: null, checklist_version: null, confirmation_version: null });
         return Response.json({ task_id: taskId, run_id: runId, status: 'pending' });
       }
       if (endpoint === '/rest/v1/tasks') return Response.json([{ task_id: taskId }]);
@@ -218,7 +221,7 @@ test('browser client and gateway integrate login, private upload/register, bound
   await assert.rejects(client.reports.read(taskId, runId), { code: 'AUTH_REQUIRED' });
   assert.deepEqual(events, [
     '/auth/v1/token', '/auth/v1/user', `/storage/v1/object/inputs/${user}/${user}/${taskId}/input.csv`,
-    '/rest/v1/rpc/kwcc_submit_task', '/rest/v1/tasks', '/rest/v1/task_runs',
+    '/rest/v1/rpc/kwcc_submit_task_with_business_inputs', '/rest/v1/tasks', '/rest/v1/task_runs',
     `/storage/v1/object/authenticated/reports/${reportPath}`, '/auth/v1/logout',
   ]);
 });

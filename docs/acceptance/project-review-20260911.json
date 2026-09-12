@@ -1,0 +1,69 @@
+{
+  "audit_date": "2026-09-11",
+  "baseline_commit": "f1e69e9a0462eac72cdf36a33ea2d32ed1cc424b",
+  "scope": "read-only code review, offline UAT, synthetic counterexamples, public static asset comparison",
+  "business_acceptance": "failed",
+  "implementation_changes": false,
+  "live_provider_calls": 0,
+  "database_mutations": 0,
+  "fresh_private_report_or_browser_acceptance": false,
+  "uat": {
+    "command": "python -B scripts/run_uat.py",
+    "exit_code": 0,
+    "gate_count": 20,
+    "worker_tests": 325,
+    "frontend_python_tests": 8,
+    "uat_orchestration_tests": 25,
+    "supabase_selected_tests": 59,
+    "supabase_selected_skipped": 1,
+    "pages_builder_tests": 46,
+    "pages_builder_skipped": 5,
+    "network_calls": 0,
+    "external_calls": 0,
+    "secret_value_hits": [],
+    "note": "Passing existing tests does not cover the counterexamples below. Counts are suite-reported, not a count of complete business capabilities."
+  },
+  "counterexamples": [
+    {"id": "P01", "case": "entity A spend10 orders10; B spend100 orders0; parent action scale_up", "actual": {"actions": ["scale_up", "scale_up"], "exit_statuses": ["pending", "pending"], "module_status": "ready"}, "expected": "evaluate entity facts separately; missing exit cannot satisfy complete business gate"},
+    {"id": "P02", "case": "existing one-image product enriched with three Sorftime images", "actual": {"retained_image_count": 1, "provider_calls": 1}, "expected": "preserve the complete ordered source gallery and source identity"},
+    {"id": "P03", "case": "synthetic Sorftime content contains code500 and data.title", "actual": {"accepted": true}, "expected": "known failure envelopes fail closed; validate actual provider business envelope before accepting facts", "qualification": "synthetic defensive case, not a claim about the live provider's error schema"},
+    {"id": "P04", "case": "category feature share unit ambiguity", "actual": {"numeric_1_ratio": 0.01, "numeric_0_5_ratio": 0.5, "explicit_1_percent_ratio": 0.01}, "expected": "select unit from versioned field schema, not magnitude"},
+    {"id": "P05", "case": "one expected image-element with unknown/low and no source or region", "actual": {"status": "ready", "source_refs": null, "evidence_region": null}, "expected": "coverage can be recorded; unknown observation cannot be counted as judged evidence"},
+    {"id": "P06", "case": "three complete competitor records; own product has ASIN only", "actual": {"module_status": "ready", "own_missing_field_count": 12}, "expected": "own-product incompleteness must affect comparison readiness"},
+    {"id": "P07", "case": "rope lights unrelated clicks12 spend3 orders0; indoor rope lights related clicks30 spend90 orders0", "actual": {"phrase_export_eligible": true, "related_term_bucket": "low_cvr_high_spend"}, "expected": "related keyword remains protected regardless of diagnostic bucket"},
+    {"id": "P08", "case": "one negative row has clicks null and relevance unknown", "actual": {"classified_rows": -1, "total_rows": 1}, "expected": "count unique qualified rows; coverage is between zero and total"},
+    {"id": "P09", "case": "market share0.2 and dependency0.05 without denominator/ASIN/period", "actual": {"module_status": "ready", "scope": "unknown", "denominator": null}, "expected": "unverified denominator semantics and identity cannot produce complete share evidence"},
+    {"id": "P10", "case": "clicks100 spend100 orders1 sales10; no market opportunity score", "actual": {"acos_ratio": 10, "action": "hold_steady"}, "expected": "uncovered high-cost case is explicitly unjudged/review, not healthy hold"},
+    {"id": "P11", "case": "organic rank1; ACOS0.2; tolerance0.3; defense cap0.1", "actual": {"action": "defend_rank"}, "expected": "honor the separately configured defense cost ceiling"}
+  ],
+  "public_assets": {
+    "base_url": "https://upjacky.github.io/Amazon-Keyword-Command-Center-YX/",
+    "all_http_200": true,
+    "all_exact_bytes_equal_local_frontend": true,
+    "files": [
+      {"path": "index.html", "sha256": "81db46b9dfffb07e6fec3e29c3b43e6784223c61c0e766c4064f5da55bceadd7"},
+      {"path": "tool/index.html", "sha256": "d428e84e6abb0ff20fb988f4a1f6c8918e61066851cd311391bd629106851afc"},
+      {"path": "tool/tool.js", "sha256": "f81542facc7f500f69308336a305d25d78a8456a25793932328e8d17a07ac611"},
+      {"path": "report/rank.js", "sha256": "ea1547d6c5b66ffcb004656876b52e4701b9efb7e54348336cd0a4aedf8edf20"},
+      {"path": "report/listing.js", "sha256": "59fdea8f9d8039b2399c329d11779c6aca0bdaac5d0435b04e97be5bce16e05a"},
+      {"path": "report/competitors.js", "sha256": "64a5b81c3a1b7c825b8a943ea18571ae23967d337abffedfe8e9159a4cf1346c"},
+      {"path": "report/negative.js", "sha256": "670a8f76baad4500819804a706a45f731bdace88aacf8f89f3accd280187eb04"},
+      {"path": "report/optimization.js", "sha256": "76b5462902ec6490236d9ac73bdf1b9367335162386e50b40fb8b3e6221f1d76"},
+      {"path": "styles.css", "sha256": "82a245f7f7c99305faea56986bd1d5ec4f7d08a3501be0a19230d8c7606e958e"}
+    ]
+  },
+  "ledger_observation": {
+    "previous_completion_claim": "46/46 PROJECT_COMPLETE",
+    "lunu04_task_count": 20,
+    "lunu04_tasks_with_supabase_fingerprint_inputs": 0,
+    "missing_declared_input_paths": 0,
+    "final_read_only_supervisor": {
+      "execution_state": "RUNNING",
+      "next_task_id": "production-adapters-local",
+      "next_task_stale": true,
+      "persisted_project_status": "PROJECT_COMPLETE",
+      "note": "This task fingerprints all docs/acceptance, including this new audit evidence. No claim or ledger mutation was performed; audit-only scope does not authorize implementation."
+    },
+    "qualification": "ledger completion is a recorded claim, not successful six-module business acceptance"
+  }
+}

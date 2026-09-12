@@ -170,7 +170,7 @@ def main() -> int:
             run_gate([python, "-m", "unittest", "scripts/test_uat_orchestration.py", "-v"]),
             run_gate([python, "rules/action_mapping_contract_check.py"]),
             run_gate([python, "supabase/migration_contract_check.py"]),
-            run_gate([python, "-m", "unittest", "supabase.test_migration_contract", "supabase.test_production_jobs", "supabase.test_strategy_versions", "-v"]),
+            run_gate([python, "-m", "unittest", "supabase.test_migration_contract", "supabase.test_production_jobs", "supabase.test_strategy_versions", "supabase.test_business_inputs", "-v"]),
             run_gate([python, "scripts/smoke_test.py"]),
             run_gate([python, "scripts/build_phase4_modules.py", "--report", "data/golden/market-demo-report/master-table.json", "--output", str(phase4_output)]),
             run_gate([python, "scripts/build_competitor_profile.py", "--input", "data/golden/competitor-input-demo.json", "--output", str(competitor_output)]),
@@ -185,6 +185,11 @@ def main() -> int:
             migration / "001_initial_schema.sql",
             migration / "002_indexes.sql",
             migration / "003_authenticated_only.sql",
+            migration / "004_private_reports_storage.sql",
+            migration / "005_production_jobs.sql",
+            migration / "006_strategy_versions.sql",
+            migration / "007_task_business_inputs.sql",
+            migration / "008_business_input_submission.sql",
         ]
         migration_passed = all(path.is_file() for path in required_migrations)
         security_hits: list[str] = []

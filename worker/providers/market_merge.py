@@ -50,11 +50,15 @@ MARKET_PASSTHROUGH_FIELDS = {
     "country",
     "provider_sampled",
     "provider_observations",
+    "provider_only",
+    "ad_fact_missing",
 }
 
 
 def merge_market_data(ad_rows: Iterable[Mapping[str, Any]], market_rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    ad_rows = list(ad_rows)
     market_by_keyword = {str(row.get("keyword")): row for row in market_rows if row.get("keyword") is not None}
+    ad_keywords = {str(row.get("keyword")) for row in ad_rows if row.get("keyword") is not None}
     merged: list[dict[str, Any]] = []
     for ad_row in ad_rows:
         row = deepcopy(dict(ad_row))
@@ -72,5 +76,23 @@ def merge_market_data(ad_rows: Iterable[Mapping[str, Any]], market_rows: Iterabl
         # traceable in the row-level missingness contract.
         existing_missing.update(field for field in MARKET_FIELDS if field in market and market[field] is None)
         row["missing_fields"] = sorted(existing_missing)
+        merged.append(row)
+    # Keep a provider observation whose keyword was explicitly requested but
+    # absent from the advertising export.  It is a real market observation,
+    # not an ad fact: the rule engine will therefore classify it as
+    # data_missing until an ad row exists, while the report can still show the
+    # user's confirmed core keyword instead of silently dropping it.
+    for keyword, market in market_by_keyword.items():
+        if keyword in ad_keywords:
+            continue
+        row = {field: deepcopy(market[field]) for field in MARKET_FIELDS | MARKET_PASSTHROUGH_FIELDS
+               if field in market}
+        row.update({
+            "keyword": market.get("keyword"),
+            "provider_only": True,
+            "ad_fact_missing": True,
+            "missing_fields": sorted(set(normalise_missing_fields(market.get("missing_fields"))) |
+                                      {"impressions", "clicks", "spend", "sales", "orders"}),
+        })
         merged.append(row)
     return merged

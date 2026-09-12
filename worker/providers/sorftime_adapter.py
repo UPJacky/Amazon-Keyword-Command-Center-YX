@@ -24,6 +24,8 @@ _FEATURE_TOOL = "similar_product_feature"
 def _content_json(response: Any) -> Mapping[str, Any]:
     if not isinstance(response, Mapping) or not isinstance(response.get("content"), list):
         raise ValueError("Sorftime response content is missing")
+    if response.get("isError") is True:
+        raise ValueError("Sorftime response reports an error")
     texts = [item.get("text") for item in response["content"]
              if isinstance(item, Mapping) and item.get("type") == "text"
              and isinstance(item.get("text"), str)]
@@ -35,6 +37,12 @@ def _content_json(response: Any) -> Mapping[str, Any]:
         raise ValueError("Sorftime response text is not JSON") from exc
     if not isinstance(payload, Mapping) or not isinstance(payload.get("data"), Mapping):
         raise ValueError("Sorftime response data is missing")
+    code = payload.get("code")
+    if isinstance(code, (int, float)) and not isinstance(code, bool) and code >= 400:
+        raise ValueError("Sorftime business response reports an error")
+    status = str(payload.get("status") or "").strip().casefold()
+    if status in {"error", "failed", "failure"}:
+        raise ValueError("Sorftime business response reports an error")
     return payload
 
 
@@ -176,7 +184,11 @@ class SorftimeCatalogAdapter:
             source = products.get(asin)
             if source:
                 for key, value in source.items():
-                    if key not in base or base.get(key) in (None, "", []):
+                    if key == "image_urls" and isinstance(value, list) and value:
+                        base[key] = deepcopy(value)
+                    elif key == "main_image_url" and value:
+                        base[key] = value
+                    elif key not in base or base.get(key) in (None, "", []):
                         base[key] = value
                 base["role"] = role
                 base["source_refs"] = sorted(set((base.get("source_refs") or []) + source["source_refs"]))

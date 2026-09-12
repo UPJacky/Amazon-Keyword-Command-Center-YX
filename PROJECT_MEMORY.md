@@ -3,13 +3,16 @@ project: Amazon-Keyword-Command-Center-YX
 project_cn: 关键词作战总表
 document_type: project_memory
 version: 1.4
-updated_at: 2026-09-10
+updated_at: 2026-09-11
 status: current
 language: zh-CN
 
-## 2026-09-10 当前验证快照
+## 2026-09-11 当前验证快照
 
-## 2026-09-10 LUNU-04 完成快照（以本节和 PROJECT_STATUS.md 为准）
+## 2026-09-11 LUNU-04 修复快照（以本节和 PROJECT_STATUS.md 为准）
+
+- 已修复确认 RPC 的 task/store/ASIN 绑定与 confirmed 版本不可覆盖；新增迁移 `009_confirmation_binding_hardening.sql`。
+- 已将 Xiyou 生产结果接入显式持久 ProviderCache，并保留 Provider-only 市场观察；类目特征存在时生成买家清单与文字证据 artifact，未确认时状态保持 draft/partial。
 
 - 监督器状态为 `PROJECT_COMPLETE`，46/46 任务完成；当前没有安全本地下一项，不要重复领取或重跑已完成任务。
 - 最新真实 task/run：`f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4` / `f01faf00-67d2-4e1b-b1d1-71388496a9ff`；报告读取 HTTP 200、task/run 绑定通过、`scope=live_provider_data`、`provider_status=real_provider_data`、`real_provider_verified=true`。
@@ -22,6 +25,8 @@ language: zh-CN
 
 - 完整 UAT 20/20 Gate：Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
 - 西柚无测试接口；5xx 仅使用本地模拟作为验收证据。真实生产调用只保留已授权、已记录的 bounded run，不重复调用。
+
+## 历史验证快照
 
 ## 最新生产接入纠正（2026-09-03）
 
@@ -91,6 +96,10 @@ language: zh-CN
 - 2026-08-21 UAT/部署边界审计补强：`build_pages_demo.py`、`phase8_audit.py` 返回统一 JSON 摘要；`run_uat.py` 对 Worker loop、Phase 8、Pages 三个结构化 Gate 拒绝缺失摘要，防止仅凭退出码放行。编排契约当前 11 项，未部署、未取凭据、网络/外部调用 0。
 
 ## 当前验证快照
+
+- 2026-09-11：完整 UAT 20/20 Gate，Worker 340 项（12 项环境跳过）、前端 8 项、UAT 编排契约 25 项、连续执行 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
+
+## 历史验证快照
 
 - 2026-09-10：完整 UAT 20/20 Gate，Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
 

@@ -46,7 +46,7 @@ function route(url, method) {
   if (method === 'GET' && REPORT.test(path) && !url.search) return { path };
   const input = path.match(INPUT);
   if (method === 'POST' && input && !url.search) return { path, upload: input };
-  if (method === 'POST' && ['kwcc_submit_task', 'kwcc_rerun_task', 'kwcc_save_strategy', 'kwcc_rollback_strategy'].some(name => path === '/rest/v1/rpc/' + name) && !url.search)
+  if (method === 'POST' && ['kwcc_submit_task', 'kwcc_submit_task_with_business_inputs', 'kwcc_rerun_task', 'kwcc_save_strategy', 'kwcc_rollback_strategy'].some(name => path === '/rest/v1/rpc/' + name) && !url.search)
     return { path, rest: true, rpc: true };
   const table = path.match(/^\/rest\/v1\/([a-z_]+)$/)?.[1];
   if (TABLES.has(table) && method === 'GET') return { path, rest: true };

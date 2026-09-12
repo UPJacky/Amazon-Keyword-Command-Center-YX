@@ -19,7 +19,7 @@ def _number(value: Any) -> float | None:
         return None
     try:
         if isinstance(value, str):
-            match = re.match(r"^\s*(-?(?:\d+(?:\.\d+)?|\.\d+))\s*%?", value)
+            match = re.fullmatch(r"\s*(-?(?:\d+(?:\.\d+)?|\.\d+))\s*%?\s*(?:\(\s*\d+\s*/\s*\d+\s*\))?\s*", value)
             if not match:
                 return None
             value = match.group(1)
@@ -29,7 +29,7 @@ def _number(value: Any) -> float | None:
     return result if result == result and result not in (float("inf"), float("-inf")) else None
 
 
-def _share(value: Any) -> tuple[float | None, float | None]:
+def _share(value: Any, *, unit: str | None = None) -> tuple[float | None, float | None]:
     """Return (percentage-points, decimal ratio) without guessing silently.
 
     Sorftime samples commonly use ``64.2%`` or ``64.2`` for percentage
@@ -40,7 +40,14 @@ def _share(value: Any) -> tuple[float | None, float | None]:
     if number is None or number < 0:
         return None, None
     explicit_percent = isinstance(value, str) and "%" in value
-    if explicit_percent or number >= 1:
+    normalized_unit = str(unit or "").strip().casefold()
+    if not explicit_percent and normalized_unit not in {"percent", "percentage", "percent_points", "percentage_points", "ratio", "decimal"}:
+        return None, None
+    if normalized_unit in {"ratio", "decimal"} and not 0 <= number <= 1:
+        return None, None
+    if normalized_unit in {"percent", "percentage", "percent_points", "percentage_points"} and number > 100:
+        return None, None
+    if explicit_percent or normalized_unit in {"percent", "percentage", "percent_points", "percentage_points"}:
         return number, number / 100.0 if number <= 100 else None
     return number * 100.0, number
 
@@ -78,6 +85,7 @@ def normalize_category_features(payload: Mapping[str, Any]) -> dict[str, Any]:
     features: list[dict[str, Any]] = []
     invalid_rows: list[int] = []
     empty_name_count = 0
+    invalid_share_count = 0
     for index, item in enumerate(raw):
         if not isinstance(item, Mapping):
             invalid_rows.append(index)
@@ -91,8 +99,14 @@ def normalize_category_features(payload: Mapping[str, Any]) -> dict[str, Any]:
         feature_id = str(feature_id).strip() if feature_id is not None and str(feature_id).strip() else f"feature-{index + 1:03d}"
         product_share_raw = _first(item, "product_count_share", "productCountShare", "count_share")
         sales_share_raw = _first(item, "monthly_sales_share", "monthlySalesShare", "sales_share")
-        product_count_share, product_count_share_ratio = _share(product_share_raw)
-        monthly_sales_share, monthly_sales_share_ratio = _share(sales_share_raw)
+        product_unit = _first(item, "product_count_share_unit", "count_share_unit", "share_unit")
+        sales_unit = _first(item, "monthly_sales_share_unit", "sales_share_unit", "share_unit")
+        product_count_share, product_count_share_ratio = _share(product_share_raw, unit=product_unit)
+        monthly_sales_share, monthly_sales_share_ratio = _share(sales_share_raw, unit=sales_unit)
+        if product_share_raw is not None and product_count_share is None:
+            invalid_share_count += 1
+        if sales_share_raw is not None and monthly_sales_share is None:
+            invalid_share_count += 1
         description = _first(item, "feature_description", "description", "desc")
         row = {
             "feature_id": feature_id,
@@ -127,6 +141,7 @@ def normalize_category_features(payload: Mapping[str, Any]) -> dict[str, Any]:
         "features": ordered,
         "feature_count": len(ordered),
         "empty_name_count": empty_name_count,
+        "invalid_share_count": invalid_share_count,
         "invalid_rows": invalid_rows,
         "source": str(payload.get("source") or "provider_snapshot"),
         "snapshot_version": payload.get("snapshot_version"),
@@ -170,6 +185,6 @@ def category_feature_module_status(snapshot: Mapping[str, Any] | None) -> dict[s
     features = snapshot.get("features")
     if not isinstance(features, list) or not features:
         return {"status": "failed", "reason": "category_feature_structure_invalid"}
-    if snapshot.get("invalid_rows") or snapshot.get("empty_name_count"):
+    if snapshot.get("invalid_rows") or snapshot.get("empty_name_count") or snapshot.get("invalid_share_count"):
         return {"status": "partial", "reason": "category_feature_rows_need_review"}
     return {"status": "ready", "reason": "category_feature_snapshot_complete"}

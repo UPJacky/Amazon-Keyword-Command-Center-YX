@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Iterable, Mapping
 
+from worker.rule_engine.engine import evaluate_keyword
+
 
 ACTION_TYPES = {
     "scale_up": "scale_up_candidate",
@@ -81,18 +83,26 @@ def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], act
         entity_status = "ready" if ready else ("partial" if context else "not_available")
         statuses.append(entity_status)
         missing_union.update(missing)
-        if ready and action != "data_missing" and _present(row.get("ui_conclusion")):
+        entity_evaluation = None
+        if ready:
+            entity_input = {"keyword": row.get("keyword")}
+            for field in ("market_opportunity_score", "organic_rank", "keyword_role"):
+                if field in row:
+                    entity_input[field] = row.get(field)
+            entity_input.update({field: context.get(field) for field in ENTITY_METRIC_FIELDS})
+            entity_evaluation = evaluate_keyword(entity_input, row.get("config") if isinstance(row.get("config"), Mapping) else None)
+        if ready and entity_evaluation and entity_evaluation["action_group"] != "data_missing":
             judgement = {
                 "status": "judged",
-                "conclusion": row.get("ui_conclusion"),
-                "action_group": action,
-                "basis": rule_hits,
+                "conclusion": entity_evaluation["ui_conclusion"],
+                "action_group": entity_evaluation["action_group"],
+                "basis": entity_evaluation["rule_hits"],
             }
             recommendation = {
                 "status": "ready",
-                "action_group": action,
-                "action_type": ACTION_TYPES.get(action, "manual_review"),
-                "text": next_action,
+                "action_group": entity_evaluation["action_group"],
+                "action_type": ACTION_TYPES.get(entity_evaluation["action_group"], "manual_review"),
+                "text": entity_evaluation["next_action_text"],
             }
         else:
             judgement = {
@@ -119,8 +129,9 @@ def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], act
             "judgement": judgement,
             "recommended_action": recommendation,
             "exit_condition": exit_condition,
+            "entity_evaluation": entity_evaluation,
         })
-    overall = "ready" if any(status == "ready" for status in statuses) else ("partial" if any(status == "partial" for status in statuses) else "not_available")
+    overall = "ready" if statuses and all(status == "ready" for status in statuses) else ("partial" if any(status == "partial" for status in statuses) else "not_available")
     return diagnoses, overall, sorted(missing_union)
 
 
@@ -158,6 +169,8 @@ def build_optimization_plan(rows: Iterable[Mapping[str, Any]], config: Mapping[s
             "rule_hits": rule_hits,
             "config_refs": _config_refs(action, config),
             "next_action_text": row.get("next_action_text"),
+            "observation_window": row.get("observation_window"),
+            "exit_conditions": row.get("exit_conditions", row.get("exit_condition")),
             "entity_contexts": [diagnosis["entity_context"] for diagnosis in diagnoses if diagnosis["entity_context"]],
             "entity_status": entity_status,
             "missing_entity_fields": missing_entity_fields,
@@ -177,6 +190,7 @@ def optimization_module_status(actions: Iterable[Mapping[str, Any]]) -> dict[str
         and all(isinstance(item, Mapping)
                 and item.get("judgement", {}).get("status") == "judged"
                 and item.get("recommended_action", {}).get("status") == "ready"
+                and item.get("exit_condition", {}).get("status") == "ready"
                 for item in row.get("entity_diagnoses") or [])
         for row in records
     )

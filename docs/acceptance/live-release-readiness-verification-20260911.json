@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "phase8_local",
+    "source": "scripts/phase8_audit.py",
+    "result": "passed",
+    "summary": "本地发布链路检查通过：精确 Origin、私有 Storage 报告绑定、登录门禁、Pages allowlist、无公开报告桶配置、Worker loop 入口均通过；network_calls=0、external_calls=0。"
+  },
+  {
+    "kind": "documentation",
+    "source": "scripts/check_phase8_documentation.py",
+    "result": "passed",
+    "summary": "15 项阶段文档契约通过；外部迁移、云端发布、真实私有对象读取和 Provider schema 已明确列为外部 Gate。"
+  },
+  {
+    "kind": "uat",
+    "source": "scripts/run_uat.py",
+    "result": "passed",
+    "summary": "完整本地 UAT 20/20 Gate 通过；Pages 46 项测试通过，frontend 8 项测试通过，未调用真实网络。"
+  }
+]

@@ -11,9 +11,9 @@ class CategoryFeatureTests(unittest.TestCase):
     def test_normalizes_tutorial_shape_preserving_ratios_and_stable_order(self):
         result = normalize_category_features({
             "analysis_results": [
-                {"product_feature": "调光", "product_count_share": "64.2", "monthly_sales_share": 40},
-                {"product_feature": "易安装", "product_count_share": 60, "monthly_sales_share": 60},
-                {"product_feature": "无效空名", "product_count_share": 1, "monthly_sales_share": 1},
+                {"product_feature": "调光", "product_count_share": "64.2", "product_count_share_unit": "percent", "monthly_sales_share": 40, "monthly_sales_share_unit": "percent"},
+                {"product_feature": "易安装", "product_count_share": 60, "product_count_share_unit": "percent", "monthly_sales_share": 60, "monthly_sales_share_unit": "percent"},
+                {"product_feature": "无效空名", "product_count_share": 1, "product_count_share_unit": "percent", "monthly_sales_share": 1, "monthly_sales_share_unit": "percent"},
             ],
             "snapshot_version": "s1",
         })
@@ -39,6 +39,12 @@ class CategoryFeatureTests(unittest.TestCase):
     def test_invalid_row_is_partial_and_kept_auditable(self):
         result = normalize_category_features({"features": [{"name": "调光"}, "bad-row"]})
         self.assertEqual([1], result["invalid_rows"])
+        self.assertEqual("partial", category_feature_module_status(result)["status"])
+
+    def test_bare_share_number_without_declared_unit_is_unknown(self):
+        result = normalize_category_features({"features": [{"name": "调光", "product_count_share": 64.2, "monthly_sales_share": 0.5}]})
+        self.assertIsNone(result["features"][0]["product_count_share"])
+        self.assertIsNone(result["features"][0]["monthly_sales_share_ratio"])
         self.assertEqual("partial", category_feature_module_status(result)["status"])
 
 

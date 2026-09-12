@@ -2,18 +2,18 @@
 project: Amazon-Keyword-Command-Center-YX
 document_type: project_status
 version: 0.2
-updated_at: 2026-09-10
+updated_at: 2026-09-12
 current_phase: Phase 10 / LUNU-04 six-module business completion
-status: complete
-execution_state: PROJECT_COMPLETE
-current_objective: "LUNU-04 六模块业务完善、真实生产新 run、页面/权限/私有报告和验收证据已完成；保留 Provider 缺失字段为 partial，不把 partial 当作完整业务数据"
-next_safe_action: "none; 等待新的用户目标或 Provider 能力/范围变更"
-stop_reason: "PROJECT_COMPLETE：监督器 46/46 任务完成；本地与外部 Gate 均有回执，当前没有安全下一项"
-last_action_fingerprint: "lunu04-e07:sha256:a0c3147ca612f25c6b83a73b5d774d54184b7309abeee0401b5c96a763a4d513; final=2026-09-10"
-verified_gate_snapshot_current: "supervisor=PROJECT_COMPLETE,stale=0,runnable=0,blocked=0; local_uat=20/20,worker=325,frontend=8,continuous=63,secret_hits=0; checkpoint=a19b5ae; real_run=f14e96ea-84ad-4d1e-99dc-2cf38ccf24c4/f01faf00-67d2-4e1b-b1d1-71388496a9ff; report_http=200,binding=true,scope=live_provider_data,provider_status=real_provider_data,real_provider_verified=true,full_report_complete=false; reconciliation=passed,clicks=0,impressions=0,orders=0,sales=0.00,spend=0.00; category_features=ready,20_valid; competitors=partial,3; rank=partial,91_rows,rank_fields_missing; negative=partial,28_pending_confirmation,63_protected; listing=partial,image_observations_not_available; optimization=partial,91_actions,exit_and_trace_missing; RLS=own_stores_1/1,cross_stores_0/0,own_tasks_5/4,anonymous_401; storage=owner_200,cross_user_400,anonymous_400,random_filename=true; worker_service=active,remote_hash_match=true; pages=index_tool_report=200; sorftime=enabled_bounded"
+status: running
+execution_state: RUNNING
+current_objective: "完成 LUNU-04 六模块业务审核验收；保留真实缺失字段，补齐本地生产接线并按外部 Gate 验收完整业务"
+next_safe_action: "等待用户在 Edge 腾讯云控制台完成登录后，重新领取 production-live-deployment 外部 Gate；登录后先做远端只读复核，再继续 private-storage 与 real-provider"
+stop_reason: "BLOCKED_EXTERNAL: Edge 腾讯云标签仍处于登录页，生产 Worker 远端复核需要用户完成控制台登录；无安全的本地或无凭据替代路径"
+last_action_fingerprint: "supervisor-blocked-external-2026-09-12-production-live-deployment-login-required"
+verified_gate_snapshot_current: "supervisor=BLOCKED_EXTERNAL,local_safe_queue=empty; github_pages=published_commit_028f156_https_smoke_passed; supabase_anonymous=401; supabase_two_user_cross_store_rows=0; migrations_007_009=applied; supabase_rls_gate=passed; local_uat=20/20,worker=340,frontend=8,continuous=63,orchestration=25,pages=57,docs=15,secret_hits=0,network_calls=0,external_calls=0; production_live_verification=blocked_tencent_cloud_login; lunu04_local=e01-e06,e08-e18; full_report_complete=false; reconciliation=passed,differences=zero"
 local_safe_queue: empty
 external_blockers_only: false
-verified_gate_snapshot: "worker=325;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;lunu04-e01-e18=passed; local_status_fix=passed; sorftime_alias_contract=passed; strongest-run=f08b2d56-e629-4ba1-ae46-fff799a5f715/015f2f09-9afc-4f02-b117-4baf1b727fac; report_sha256=8241c9c4f6c84a044d0e1193b2b53441fb32ab85c89d9225720670ab84b037b7; scope=injected_provider_data; full_report_complete=false; reconciliation=passed,differences=zero; competitors=3,self_images=1,competitor_images=3; service=provider-budgeted-10; frontend_contract=passed; secret_value_hits=0"
+verified_gate_snapshot: "worker=340;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts;full_report_complete=false;confirmation_binding=local_hardened;production_cache=local_verified;buyer_text_evidence=local_wired;frontend_contract=passed;secret_value_hits=0;supervisor=BLOCKED_EXTERNAL"
 ---
 
 ## LUNU-04 当前最强生产新 run（2026-09-10）
