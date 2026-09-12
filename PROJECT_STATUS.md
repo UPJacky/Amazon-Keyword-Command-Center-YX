@@ -4,17 +4,24 @@ document_type: project_status
 version: 0.2
 updated_at: 2026-09-12
 current_phase: Phase 10 / LUNU-04 six-module business completion
-status: running
-execution_state: RUNNING
+status: blocked_external
+execution_state: BLOCKED_EXTERNAL
 current_objective: "完成 LUNU-04 六模块业务审核验收；保留真实缺失字段，补齐本地生产接线并按外部 Gate 验收完整业务"
-next_safe_action: "等待用户在 Edge 腾讯云控制台完成登录后，重新领取 production-live-deployment 外部 Gate；登录后先做远端只读复核，再继续 private-storage 与 real-provider"
-stop_reason: "BLOCKED_EXTERNAL: Edge 腾讯云标签仍处于登录页，生产 Worker 远端复核需要用户完成控制台登录；无安全的本地或无凭据替代路径"
-last_action_fingerprint: "supervisor-blocked-external-2026-09-12-production-live-deployment-login-required"
-verified_gate_snapshot_current: "supervisor=BLOCKED_EXTERNAL,local_safe_queue=empty; github_pages=published_commit_028f156_https_smoke_passed; supabase_anonymous=401; supabase_two_user_cross_store_rows=0; migrations_007_009=applied; supabase_rls_gate=passed; local_uat=20/20,worker=340,frontend=8,continuous=63,orchestration=25,pages=57,docs=15,secret_hits=0,network_calls=0,external_calls=0; production_live_verification=blocked_tencent_cloud_login; lunu04_local=e01-e06,e08-e18; full_report_complete=false; reconciliation=passed,differences=zero"
+next_safe_action: "获得腾讯云服务器的管理员重启权限（启用可用的 TAT 管理员连接，或由用户在服务器控制台完成一次 sudo systemctl restart keyword-war-room.service），然后重新领取 production-live-deployment 外部 Gate 做只读服务核验"
+stop_reason: "BLOCKED_EXTERNAL: 两个生产源码文件已复制并通过 SHA-256 校验，但 ubuntu 执行 systemctl restart keyword-war-room.service 返回 interactive authentication required；root 免密 TAT 也不可用。未读取、请求或输出任何密码/Secret"
+last_action_fingerprint: "supervisor-blocked-external-2026-09-12-production-live-deployment-admin-restart-required"
+verified_gate_snapshot_current: "supervisor=BLOCKED_EXTERNAL,local_safe_queue=empty; github_pages=published_commit_dd1558b; supabase_anonymous=401; supabase_two_user_cross_store_rows=0; migrations_007_009=applied; supabase_rls_gate=passed; local_uat=20/20,worker=340,frontend=8,continuous=63,orchestration=25,pages=57,docs=15,secret_hits=0,network_calls=0,external_calls=0; production_files_sync=sha256_passed_for_two_tracked_files; production_restart=blocked_interactive_authentication_required; lunu04_local=e01-e06,e08-e18; full_report_complete=false; reconciliation=passed,differences=zero"
 local_safe_queue: empty
-external_blockers_only: false
+external_blockers_only: true
 verified_gate_snapshot: "worker=340;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts;full_report_complete=false;confirmation_binding=local_hardened;production_cache=local_verified;buyer_text_evidence=local_wired;frontend_contract=passed;secret_value_hits=0;supervisor=BLOCKED_EXTERNAL"
 ---
+
+## 2026-09-12 生产同步复核
+
+- 本地提交 `dd1558b` 已推送到 GitHub。
+- 服务器目标目录中的 `worker/providers/xiyou_live_enrichment.py` 与 `scripts/run_production_worker.py` 均已通过 SHA-256 校验，与本地提交版本一致；传输过程中没有发送 `.env`、JWT、密码、私钥或其他 Secret。
+- `keyword-war-room.service` 之前可读到为 active；执行重启时服务器返回 `interactive authentication required`。当前 `ubuntu` 用户没有足够的无交互管理员权限，root 的免密 TAT 连接也不可用。
+- 该 Gate 只阻塞“重启后的生产进程验证”，不否定本地测试、Supabase RLS、GitHub Pages 或源码同步结果。解除方式见 `next_safe_action`。
 
 ## LUNU-04 当前最强生产新 run（2026-09-10）
 

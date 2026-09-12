@@ -73,7 +73,7 @@
     {
       "id": "production-live-deployment",
       "title": "测试项目生产链迁移、网关与Worker发布及真实端到端验收",
-      "status": "running",
+      "status": "blocked_external",
       "execution": "external",
       "depends_on": [
         "live-release-readiness",
@@ -117,10 +117,10 @@
       ],
       "verification": [
         {
-          "kind": "authorization",
-          "source": "User explicit instruction in current conversation",
+          "kind": "external_block",
+          "source": "Tencent Cloud Lighthouse OrcaTerm",
           "result": "passed",
-          "summary": "User confirmed Tencent Cloud login completed and authorized continuation; no credential value included."
+          "summary": "The two tracked production files were copied to the server and both SHA-256 checks matched commit dd1558b. Restarting keyword-war-room.service returned interactive authentication required; the ubuntu user cannot perform the privileged restart, and passwordless TAT login for root was unavailable. No password or secret was requested, logged, or exposed."
         }
       ]
     },
