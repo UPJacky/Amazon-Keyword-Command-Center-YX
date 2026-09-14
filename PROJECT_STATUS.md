@@ -2,15 +2,15 @@
 project: Amazon-Keyword-Command-Center-YX
 document_type: project_status
 version: 0.2
-updated_at: 2026-09-12
+updated_at: 2026-09-14
 current_phase: Phase 10 / LUNU-04 six-module business completion
 status: blocked_external
 execution_state: BLOCKED_EXTERNAL
 current_objective: "完成 LUNU-04 六模块业务审核验收；保留真实缺失字段，补齐本地生产接线并按外部 Gate 验收完整业务"
-next_safe_action: "获得腾讯云服务器的管理员重启权限（启用可用的 TAT 管理员连接，或由用户在服务器控制台完成一次 sudo systemctl restart keyword-war-room.service），然后重新领取 production-live-deployment 外部 Gate 做只读服务核验"
-stop_reason: "BLOCKED_EXTERNAL: 两个生产源码文件已复制并通过 SHA-256 校验，但 ubuntu 执行 systemctl restart keyword-war-room.service 返回 interactive authentication required；root 免密 TAT 也不可用。未读取、请求或输出任何密码/Secret"
-last_action_fingerprint: "supervisor-blocked-external-2026-09-12-production-live-deployment-admin-restart-required"
-verified_gate_snapshot_current: "supervisor=BLOCKED_EXTERNAL,local_safe_queue=empty; github_pages=published_commit_dd1558b; supabase_anonymous=401; supabase_two_user_cross_store_rows=0; migrations_007_009=applied; supabase_rls_gate=passed; local_uat=20/20,worker=340,frontend=8,continuous=63,orchestration=25,pages=57,docs=15,secret_hits=0,network_calls=0,external_calls=0; production_files_sync=sha256_passed_for_two_tracked_files; production_restart=blocked_interactive_authentication_required; lunu04_local=e01-e06,e08-e18; full_report_complete=false; reconciliation=passed,differences=zero"
+next_safe_action: "等待外部 Gate 条件满足：网关将 CORS 的 Access-Control-Allow-Origin 改为精确的 GitHub Pages Origin，并由 Worker 生成一次包含排名、否定词、竞对、Listing/图片和广告优化上下文的完整生产新 run；条件满足后再领取 production-live-deployment 与 github-pages 做最终只读验收"
+stop_reason: "BLOCKED_EXTERNAL: 本地安全队列已清空；生产完整六模块新 run 的数据来源仍不齐，且 Supabase/Gateway OPTIONS 返回的 Allow-Origin 不是精确站点 Origin。现有报告已诚实标记 partial/not_generated，不能冒充完整。未读取、请求或输出任何密码/Secret"
+last_action_fingerprint: "supervisor-blocked-external-2026-09-14-cors-and-full-six-module-production-run"
+verified_gate_snapshot_current: "supervisor=BLOCKED_EXTERNAL,local_safe_queue=empty; github_pages=published_commit_4507185; live_pages_root_tool_report_client=200; supabase_anonymous=401_or_403; supabase_two_user_cross_store_rows=0; migrations_007_009=applied; supabase_rls_gate=passed; local_uat=20/20,worker=340,frontend=8,continuous=63,orchestration=25,pages=57,docs=15,secret_hits=0,network_calls=0,external_calls=0; production_files_sync=sha256_passed_for_tracked_files; production_restart=verified_active; lunu04=e01-e20; full_report_complete=false; reconciliation=passed,differences=zero; exact_cors=blocked; complete_six_module_run=blocked_external"
 local_safe_queue: empty
 external_blockers_only: true
 verified_gate_snapshot: "worker=340;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts;full_report_complete=false;confirmation_binding=local_hardened;production_cache=local_verified;buyer_text_evidence=local_wired;frontend_contract=passed;secret_value_hits=0;supervisor=BLOCKED_EXTERNAL"
