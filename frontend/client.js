@@ -332,17 +332,29 @@
           requireSession();
         };
         const readBound = async (path, rest = true) => {
-          check();
-          let result;
-          try {
-            result = await request(path, { token: current.access_token, rest });
-          } catch (error) {
+          // Report reads are idempotent. A transient Gateway 502/503/504
+          // must not turn an existing private report into a false
+          // "not generated" result, but writes and uploads are never retried
+          // by this helper. Keep the retry count small and bounded.
+          const retryable = error => [502, 503, 504].includes(error?.status);
+          const delays = [250, 750];
+          for (let attempt = 0; ; attempt += 1) {
             check();
-            if ([401, 403].includes(error.status)) clear(error.status === 403 ? 'forbidden' : 'expired');
-            throw error;
+            let result;
+            try {
+              result = await request(path, { token: current.access_token, rest });
+            } catch (error) {
+              check();
+              if ([401, 403].includes(error.status)) clear(error.status === 403 ? 'forbidden' : 'expired');
+              if (!retryable(error) || attempt >= delays.length) throw error;
+              await new Promise(resolve => setTimeout(resolve, delays[attempt]));
+              continue;
+            }
+            // Keep the post-request session check outside the retry catch so
+            // expiry/change errors retain their original security semantics.
+            check();
+            return result;
           }
-          check();
-          return result;
         };
         const tasks = await readBound(`/rest/v1/tasks?task_id=eq.${taskId}&select=task_id&limit=2`);
         if (!Array.isArray(tasks) || tasks.length !== 1 || tasks[0]?.task_id !== taskId)
