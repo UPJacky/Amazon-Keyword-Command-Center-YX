@@ -297,6 +297,19 @@ test('private reports authorize task, then exact run, then exact bound object us
   assert.equal(calls[4].headers['Accept-Profile'], undefined);
 });
 
+test('private report reads retry bounded transient Gateway failures without retrying writes', async () => {
+  const { client, calls } = setup([
+    ...loginResponses(), response([{ task_id: taskId }]), response({}, 504), response([reportRun()]), response(reportContent()),
+  ]);
+  await signIn(client);
+  const result = await client.reports.read(taskId, runId);
+  assert.equal(result.content.rows[0].keyword, 'private keyword');
+  assert.equal(calls.length, 6);
+  assert.equal(calls[3].url, calls[4].url);
+  assert.equal(calls[3].method, 'GET');
+  assert.equal(calls[5].url, `https://supabase.invalid/storage/v1/object/authenticated/reports/${reportPath}`);
+});
+
 test('private reports require session and strict UUIDs before any lookup', async () => {
   const { client, calls } = setup(loginResponses());
   await assert.rejects(client.reports.read(taskId, runId), { code: 'AUTH_REQUIRED' });

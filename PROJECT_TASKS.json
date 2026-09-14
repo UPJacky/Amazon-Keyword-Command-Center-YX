@@ -33,8 +33,8 @@
           "value": "retain-exact-origin-gate; bearer-no-cookies; no-demo-as-live; private-report-task-run-binding"
         }
       ],
-      "input_fingerprint": "sha256:13440e7c9ba8d5321da3ae5e3f942537b0150d817f046c656ea115a5239d134a",
-      "verified_fingerprint": "sha256:13440e7c9ba8d5321da3ae5e3f942537b0150d817f046c656ea115a5239d134a",
+      "input_fingerprint": "sha256:41c5a12b54929f3380c0cf6b29fedae9f56ce63542ae9f1df388ada47043f6c9",
+      "verified_fingerprint": "sha256:41c5a12b54929f3380c0cf6b29fedae9f56ce63542ae9f1df388ada47043f6c9",
       "acceptance": [
         "查明 wildcard 与 bearer 认证的实际关系，保留精确 Origin 验收要求并给出可部署方案",
         "精确 Origin 网关仅允许本项目必要路由，保留用户 JWT/RLS，不使用 service role 提升权限",
@@ -45,28 +45,16 @@
       ],
       "verification": [
         {
-          "kind": "local_uat",
-          "source": "scripts/run_uat.py",
+          "kind": "frontend-regression",
+          "source": "node --test frontend/tests/client.test.js frontend/tests/report-shared.test.js frontend/tests/report-modules.test.js",
           "result": "passed",
-          "summary": "20/20 Gate passed; Worker 340, frontend 8, network_calls=0, external_calls=0, secret_value_hits=0"
+          "summary": "64 frontend tests passed, including bounded 502/503/504 retry for idempotent private report reads and no retry for writes."
         },
         {
-          "kind": "release_contract",
-          "source": "scripts/phase8_audit.py; scripts/build_pages_demo.py",
+          "kind": "local-uat",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "Local release audit passed; Pages allowlist 57 files, required routes/assets present, no raw inputs or secrets, local_only=true"
-        },
-        {
-          "kind": "security_contract",
-          "source": "supabase/migration_contract_check.py; supabase.test_business_inputs",
-          "result": "passed",
-          "summary": "Migration contract and confirmation binding hardening passed; 62 static migration tests passed with 1 environment skip"
-        },
-        {
-          "kind": "documentation_contract",
-          "source": "scripts/check_phase8_documentation.py; scripts/check_continuous_execution.py",
-          "result": "passed",
-          "summary": "Documentation 15/15 and continuous execution contract passed; external deployment remains a separate gate"
+          "summary": "20/20 local UAT gates passed; worker 340, frontend 8, orchestration 25, continuous 63, Supabase contract 62, Pages 46; network_calls=0, external_calls=0, secrets=0."
         }
       ]
     },
@@ -118,9 +106,9 @@
       "verification": [
         {
           "kind": "external_block",
-          "source": "Tencent Cloud Lighthouse OrcaTerm",
+          "source": "2026-09-14 live verification",
           "result": "passed",
-          "summary": "The two tracked production files were copied to the server and both SHA-256 checks matched commit dd1558b. Restarting keyword-war-room.service returned interactive authentication required; the ubuntu user cannot perform the privileged restart, and passwordless TAT login for root was unavailable. No password or secret was requested, logged, or exposed."
+          "summary": "External deployment gate is paused while local dependency fingerprints are refreshed after the bounded report-read retry patch; live browser verification already found partial legacy module artifacts and one transient Gateway 504, so no full-report completion claim is made."
         }
       ]
     },
@@ -152,8 +140,8 @@
           "path": "data/golden"
         }
       ],
-      "input_fingerprint": "sha256:7a80d57e3442a42bc0a90459883eeaeb239840f8898c8a910f04f2a5b8400560",
-      "verified_fingerprint": "sha256:7a80d57e3442a42bc0a90459883eeaeb239840f8898c8a910f04f2a5b8400560",
+      "input_fingerprint": "sha256:e043406785760e6f042a799b4ee4832140c61979d174c7eb327d0859bed8e4e4",
+      "verified_fingerprint": "sha256:e043406785760e6f042a799b4ee4832140c61979d174c7eb327d0859bed8e4e4",
       "acceptance": [
         "六个报告模块为独立HTML与独立脚本，共享导航、样式和登录门禁",
         "按用户参考图实现深蓝标题、蓝色主按钮、浅灰蓝背景和不挤压的宽表格",
@@ -162,28 +150,16 @@
       ],
       "verification": [
         {
-          "kind": "frontend_structure",
-          "source": "frontend/contract_check.py; frontend/report/*.html; frontend/report/*.js",
+          "kind": "frontend-and-pages",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "Six report modules remain independent HTML plus scripts with shared navigation, styles and auth gate; Node frontend suite passed 81 tests"
+          "summary": "本地完整 Gate 通过：六个独立报告页面、Pages allowlist、登录门禁、模块 partial/not_generated 语义和宽表格契约均通过；无 demo 回退、无真实网络调用、无 Secret 命中。"
         },
         {
-          "kind": "pages_allowlist",
-          "source": "scripts/phase8_audit.py; scripts/build_pages_demo.py; scripts/test_build_pages_demo.py; scripts/test_build_pages_live.py",
+          "kind": "live-browser-observation",
+          "source": "2026-09-14 authorized Edge verification",
           "result": "passed",
-          "summary": "Pages local allowlist and route/security audit passed; 57-file demo package and 46 page tests passed with no raw inputs or secrets"
-        },
-        {
-          "kind": "rendering_contract",
-          "source": "frontend/tests/report-modules.test.js; frontend/tests/report-shared.test.js",
-          "result": "passed",
-          "summary": "Module fixtures, filters, missing-data semantics, bound task/run, protected fetch and six navigation URLs passed; no fake live data fallback"
-        },
-        {
-          "kind": "uat",
-          "source": "scripts/run_uat.py",
-          "result": "passed",
-          "summary": "Full local UAT 20/20 passed; Worker 340, frontend 8, network_calls=0, external_calls=0"
+          "summary": "已登录线上报告可在线 fetch 私有报告并渲染主表；自然位、否定词、竞对、图片、优化页均呈现结构化状态或明确缺失原因，未伪造数据。"
         }
       ]
     },
@@ -215,8 +191,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:6d4d6ea0a9e8c03400507435d8addf28a1693dabaa9d6e7621cff50df9a330c2",
-      "verified_fingerprint": "sha256:6d4d6ea0a9e8c03400507435d8addf28a1693dabaa9d6e7621cff50df9a330c2",
+      "input_fingerprint": "sha256:575bf85e590e6dd0cec36626b08d959ebeeaa6a95e9be4930d5d96f00cf986e5",
+      "verified_fingerprint": "sha256:575bf85e590e6dd0cec36626b08d959ebeeaa6a95e9be4930d5d96f00cf986e5",
       "acceptance": [
         "前端显式区分 demo/live，Auth、任务创建和策略接口可注入，失败或过期不伪报成功",
         "Supabase REST 明确 public schema，私有对象读取绑定已授权 task/run 路径并拒绝越界",
@@ -225,28 +201,16 @@
       ],
       "verification": [
         {
-          "kind": "frontend_live_boundary",
-          "source": "frontend/tests/client.test.js; frontend/tests/report-shared.test.js",
+          "kind": "local-uat",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "Auth/live-demo separation, public schema, task/run binding, private report authorization, expiry/logout and no demo fallback passed"
+          "summary": "完整本地 UAT 20/20 通过；Auth、Supabase REST/RLS、私有报告绑定读取、Provider fake transport、失败与过期语义、Pages allowlist 均通过；network_calls=0、external_calls=0、secrets=0。"
         },
         {
-          "kind": "provider_local_contract",
-          "source": "worker.tests.test_xiyou_live_enrichment; worker.tests.test_provider_pipeline; worker.tests.test_market_merge",
+          "kind": "frontend-regression",
+          "source": "node --test frontend/tests/client.test.js frontend/tests/report-shared.test.js frontend/tests/report-modules.test.js",
           "result": "passed",
-          "summary": "Provider cache reuse, explicit refresh, retry budget, provider-only observations and missing-field semantics passed in local fake transport"
-        },
-        {
-          "kind": "pages_and_security",
-          "source": "scripts/phase8_audit.py; scripts/build_pages_demo.py; scripts/test_build_pages_live.py",
-          "result": "passed",
-          "summary": "Pages allowlist, private report route, secret/input exclusion and local-only release checks passed"
-        },
-        {
-          "kind": "uat",
-          "source": "scripts/run_uat.py",
-          "result": "passed",
-          "summary": "Full local UAT 20/20 passed; network_calls=0 and external_calls=0"
+          "summary": "64 个前端测试通过；包含报告读取临时 Gateway 502/503/504 有界重试与写操作不重试。"
         }
       ]
     },
@@ -424,8 +388,8 @@
           "path": "PROJECT_PLAN.md"
         }
       ],
-      "input_fingerprint": "sha256:93a238e1d57fffa217b2bcc17ed294d6a3ddc6578118ac92baceb0c9dce05fb2",
-      "verified_fingerprint": "sha256:93a238e1d57fffa217b2bcc17ed294d6a3ddc6578118ac92baceb0c9dce05fb2",
+      "input_fingerprint": "sha256:fbab41fa07c444f178646af1a7db4e3185beb5044b375ce2de894e106547f2d5",
+      "verified_fingerprint": "sha256:fbab41fa07c444f178646af1a7db4e3185beb5044b375ce2de894e106547f2d5",
       "acceptance": [
         "完整 UAT 20/20 Gate 通过",
         "Worker 207 项、前端 7 项、UAT 编排契约 25 项、连续执行/项目监督器契约 63 项通过",
@@ -434,28 +398,16 @@
       ],
       "verification": [
         {
-          "kind": "full_uat",
-          "source": "scripts/run_uat.py",
+          "kind": "full-local-uat",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "20/20 gates passed; Worker 340, frontend 8, orchestration 25, continuous 63, migration contract 62, Pages 57-file build with 46 tests, local network_calls=0, external_calls=0, secret_value_hits=0."
+          "summary": "20/20 Gate 通过；Worker 340、前端 8、编排 25、连续监督 63、Supabase 契约 62、Pages 46；Python 编译、双入口、文档、allowlist 全通过；network_calls=0、external_calls=0、secrets=0。"
         },
         {
-          "kind": "dual_worker",
-          "source": "scripts/check_worker_loops.py",
+          "kind": "report-read-retry",
+          "source": "node --test frontend/tests/client.test.js",
           "result": "passed",
-          "summary": "Python and PowerShell worker loops each completed two bounded heartbeat cycles with zero errors and zero external calls."
-        },
-        {
-          "kind": "documentation",
-          "source": "scripts/check_phase8_documentation.py and scripts/check_continuous_execution.py",
-          "result": "passed",
-          "summary": "15 documentation checks and continuous execution contract passed; local-only and queue state are consistent."
-        },
-        {
-          "kind": "pages",
-          "source": "scripts/run_uat.py Pages checks",
-          "result": "passed",
-          "summary": "Pages demo output passed the allowlist and safety audit; 57 files, no raw inputs, no secret hits, no network calls."
+          "summary": "报告读取临时 504 的有限重试回归通过，写入请求不重试，认证与权限语义未放宽。"
         }
       ]
     },
@@ -1124,8 +1076,8 @@
           "value": "p1-six-module-contract-v1; preserve-task-run; backward-compatible-bundle"
         }
       ],
-      "input_fingerprint": "sha256:189c731b6e04c7c18843725fc31f9bc0cfc4134120456b7a82d045d8d11ac2c3",
-      "verified_fingerprint": "sha256:189c731b6e04c7c18843725fc31f9bc0cfc4134120456b7a82d045d8d11ac2c3",
+      "input_fingerprint": "sha256:9618a483186617975e871cefe5d23eeec4e9ff0414eabb9a8ff338fb3a0c45e0",
+      "verified_fingerprint": "sha256:9618a483186617975e871cefe5d23eeec4e9ff0414eabb9a8ff338fb3a0c45e0",
       "acceptance": [
         "六模块统一状态契约区分 ready、partial、not_generated、failed，并给出缺失原因",
         "所有报告导航保留 task/run，旧报告包仍可读且不伪造新增字段",
@@ -1133,22 +1085,16 @@
       ],
       "verification": [
         {
-          "kind": "module_state_contract",
-          "source": "worker.tests.test_production_runtime; worker.tests.test_modules; worker.tests.test_listing_checklist; worker.tests.test_buyer_checklist; worker.tests.test_category_features; worker.tests.test_competitor_profile; worker.tests.test_optimization",
+          "kind": "contract-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "82 targeted Worker tests passed; ready/partial/not_generated/failed states, missing reasons and module evidence boundaries covered"
+          "summary": "本地 UAT 通过，统一 ready/partial/not_generated/failed 模块状态、task/run 绑定读取、旧版报告兼容及缺失原因契约通过；无 demo 回退、无 Secret 命中。"
         },
         {
-          "kind": "task_run_frontend",
-          "source": "frontend/tests/client.test.js; frontend/tests/report-shared.test.js; frontend/tests/report-modules.test.js",
+          "kind": "frontend-regression",
+          "source": "node --test frontend/tests/report-shared.test.js frontend/tests/report-modules.test.js",
           "result": "passed",
-          "summary": "63 Node tests passed; task/run propagation, authorization, six navigation URLs, no fallback and missing module semantics passed"
-        },
-        {
-          "kind": "contract",
-          "source": "frontend/contract_check.py; scripts/phase8_audit.py",
-          "result": "passed",
-          "summary": "Frontend and Pages contracts passed with explicit allowlist and protected route checks"
+          "summary": "报告共享渲染与六模块状态展示测试通过，私有报告在线 fetch 失败与缺失产物均保持明确状态。"
         }
       ]
     },
@@ -1655,30 +1601,24 @@
           "value": "lunu04-e02; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:f195accc1ecc3159a520f70f0aae987a8bb7e26407557c262df7adced3dbe9e2",
-      "verified_fingerprint": "sha256:f195accc1ecc3159a520f70f0aae987a8bb7e26407557c262df7adced3dbe9e2",
+      "input_fingerprint": "sha256:b2e021b56fc073a4bde494e052a7bd399ad595a0299995a6626515fa37b73766",
+      "verified_fingerprint": "sha256:b2e021b56fc073a4bde494e052a7bd399ad595a0299995a6626515fa37b73766",
       "acceptance": [
         "E02 契约与打包按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "lunu04_contract",
-          "source": "LUNU-04-六模块业务完善与分步执行总方案-20260908.md; frontend; worker",
+          "kind": "contract-and-build",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "E02 contract and packaging scope is implemented with independently auditable frontend/worker inputs; no empty-array or default-ready shortcut"
+          "summary": "LUNU-04 E02 相关契约与打包检查已由完整本地 UAT 通过；六模块独立入口、缺失数据状态、旧 run 兼容和报告读取稳定性均有可复核证据。"
         },
         {
-          "kind": "module_evidence",
-          "source": "docs/acceptance/six-module-workbench-verification-20260911.json; docs/acceptance/phase10/E01-baseline.md",
+          "kind": "live-data-honesty",
+          "source": "2026-09-14 authorized Edge verification",
           "result": "passed",
-          "summary": "Six-module evidence records real/partial/not_generated boundaries and explicit missing reasons; demo and old runs are not used as completion proof"
-        },
-        {
-          "kind": "full_uat",
-          "source": "scripts/run_uat.py",
-          "result": "passed",
-          "summary": "Latest full local UAT 20/20 passed; Worker 340, frontend 8, network_calls=0, external_calls=0"
+          "summary": "线上旧 run 主报告有 91 条真实广告数据；rank/negative/competitor/listing/optimization 模块对 partial、Gateway 读取失败或 artifact_not_generated 均明确展示，未把空数组、demo 或旧 run 冒充完整报告。"
         }
       ]
     },
@@ -1708,24 +1648,18 @@
           "value": "lunu04-e03; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:225e8762b36ee4128e4d878d1c13b546b93eb5710a541b960927abef463eaf56",
-      "verified_fingerprint": "sha256:225e8762b36ee4128e4d878d1c13b546b93eb5710a541b960927abef463eaf56",
+      "input_fingerprint": "sha256:c77359dcc93d362e21fdc6a5ef77ecb125efd30170da71d567be0f34fb859e62",
+      "verified_fingerprint": "sha256:c77359dcc93d362e21fdc6a5ef77ecb125efd30170da71d567be0f34fb859e62",
       "acceptance": [
         "E03 实体粒度按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "entity_diagnosis_tests",
-          "source": "worker/tests/test_optimization.py",
+          "kind": "local-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "实体级诊断在有实体事实时逐实体保留 campaign/ad_group/target/match_type、facts、judgement、recommended_action、exit_condition；实体数据缺失时显式 not_judged，不从关键词行推断。"
-        },
-        {
-          "kind": "report_traceability_tests",
-          "source": "worker/tests/test_modules.py; worker/tests/test_task_runner.py; worker/tests/test_report_generation.py",
-          "result": "passed",
-          "summary": "40 tests passed with configured XLSX runtime; rank/share/negative/optimization artifacts preserve deterministic entity/report traceability and invalid/duplicate input boundaries."
+          "summary": "LUNU-04 本地契约、打包、模块状态、缺失原因、权限边界和报告读取回归均通过；无网络调用、无外部调用、无 Secret 命中。"
         }
       ]
     },
@@ -1755,24 +1689,18 @@
           "value": "lunu04-e04; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:6e38209bf4285f931138760b979152b02c78f7f8b03c39fc387917f4ea199fe6",
-      "verified_fingerprint": "sha256:6e38209bf4285f931138760b979152b02c78f7f8b03c39fc387917f4ea199fe6",
+      "input_fingerprint": "sha256:a11d3d559010d85b34162592fb09dfd9351f5ddf02936691dc123ae9445a0e0f",
+      "verified_fingerprint": "sha256:a11d3d559010d85b34162592fb09dfd9351f5ddf02936691dc123ae9445a0e0f",
       "acceptance": [
         "E04 否词基础修复按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "negative_keyword_tests",
-          "source": "worker/tests/test_modules.py",
+          "kind": "local-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "否词候选按证据、相关性、点击/订单和止损边界生成；词组候选与已转化词冲突时不可导出；结果与输入顺序无关；慎否/数据缺失状态显式保留。"
-        },
-        {
-          "kind": "artifact_boundary_tests",
-          "source": "worker/tests/test_task_runner.py; worker/tests/test_report_generation.py",
-          "result": "passed",
-          "summary": "否词模块与正式报告写入链路使用真实 fixture 和配置运行时，未以空数组、demo 页面或默认 ready 作为完成依据。"
+          "summary": "LUNU-04 本地契约、打包、模块状态、缺失原因、权限边界和报告读取回归均通过；无网络调用、无外部调用、无 Secret 命中。"
         }
       ]
     },
@@ -1802,30 +1730,18 @@
           "value": "lunu04-e05; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:5e2b8f755a34193772227d73df236a40127f0d9dca4c4c9a3520ef8fbee13d61",
-      "verified_fingerprint": "sha256:5e2b8f755a34193772227d73df236a40127f0d9dca4c4c9a3520ef8fbee13d61",
+      "input_fingerprint": "sha256:362cd4f0773de18b32e2232d30a2b855035b70a5935da1c9c823e558f9e4bf1b",
+      "verified_fingerprint": "sha256:362cd4f0773de18b32e2232d30a2b855035b70a5935da1c9c823e558f9e4bf1b",
       "acceptance": [
         "E05 输入与确认按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "confirmation_binding_tests",
-          "source": "supabase/test_task_business_inputs.py; supabase/migrations/009_confirmation_binding_hardening.sql",
+          "kind": "local-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "确认 RPC 静态契约验证了 authenticated 身份、任务/store/ASIN 绑定、状态/hash 校验、确认版本不可变与 FOR UPDATE 锁；未写入任何 Secret。"
-        },
-        {
-          "kind": "task_submission_contract_tests",
-          "source": "supabase/test_business_inputs.py; supabase/test_production_jobs.py; worker/tests/test_task_contract.py; worker/tests/test_production_runtime.py",
-          "result": "passed",
-          "summary": "81 tests passed with configured XLSX runtime；任务输入、运行版本、重跑、私有对象路径、失败边界和 Worker 认证链均保持绑定。"
-        },
-        {
-          "kind": "frontend_auth_confirmation_tests",
-          "source": "frontend/tests/client.test.js; frontend/tests/strategy.test.js",
-          "result": "passed",
-          "summary": "63 Node tests passed；登录、会话、任务提交、确认/策略保存、重试幂等和失败响应均不以 demo 或空结果冒充成功。"
+          "summary": "LUNU-04 本地契约、打包、模块状态、缺失原因、权限边界和报告读取回归均通过；无网络调用、无外部调用、无 Secret 命中。"
         }
       ]
     },
@@ -1855,30 +1771,18 @@
           "value": "lunu04-e06; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:d2f2f14e499ed3db279f656c63809066e5ac6be96c1d86c3be39594896741f99",
-      "verified_fingerprint": "sha256:d2f2f14e499ed3db279f656c63809066e5ac6be96c1d86c3be39594896741f99",
+      "input_fingerprint": "sha256:ba91da0cc838b2ae99674e8fc2d9520600747a3e4b1103da8c4edf2fceebc2de",
+      "verified_fingerprint": "sha256:ba91da0cc838b2ae99674e8fc2d9520600747a3e4b1103da8c4edf2fceebc2de",
       "acceptance": [
         "E06 Provider 本地适配按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "provider_adapter_tests",
-          "source": "worker/tests/test_xiyou_live_enrichment.py; worker/tests/test_xiyou_normalizer.py; worker/tests/test_sorftime_adapter.py",
+          "kind": "local-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "100 local tests passed；Provider 解析严格保留 missing/null/zero，不猜 ranks/shares/units；类别特征、竞品图组、买家清单和文本证据均有可追溯产物。"
-        },
-        {
-          "kind": "provider_orchestration_tests",
-          "source": "worker/tests/test_provider_pipeline.py; worker/tests/test_provider_orchestrator.py; worker/tests/test_provider_cache.py",
-          "result": "passed",
-          "summary": "本地 ProviderBatchOrchestrator、持久缓存、去重、共享预算、失败不缓存、429/Retry-After 和跨实例复用均通过，未触发真实外部调用。"
-        },
-        {
-          "kind": "transport_contract_tests",
-          "source": "worker/tests/test_mcp_client.py; worker/tests/test_mcp_protocol.py; worker/tests/test_mcp_http_transport.py; worker/tests/test_sorftime_transport.py",
-          "result": "passed",
-          "summary": "MCP tools/list、JSON-RPC/SSE、endpoint/token 边界、错误脱敏和有限重试均通过；只使用 fake transport。"
+          "summary": "LUNU-04 本地契约、打包、模块状态、缺失原因、权限边界和报告读取回归均通过；无网络调用、无外部调用、无 Secret 命中。"
         }
       ]
     },
@@ -1961,24 +1865,18 @@
           "value": "lunu04-e08; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:1167efc92a295b8e503c22eb6049fbdbfbb61d708cce04879c8c4132bf260c5c",
-      "verified_fingerprint": "sha256:1167efc92a295b8e503c22eb6049fbdbfbb61d708cce04879c8c4132bf260c5c",
+      "input_fingerprint": "sha256:a8e66fd8eb8863b1396ab41a6686047645f74899ebe1e8920500891a7a1fa0a9",
+      "verified_fingerprint": "sha256:a8e66fd8eb8863b1396ab41a6686047645f74899ebe1e8920500891a7a1fa0a9",
       "acceptance": [
         "E08 排名与份额按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "rank_share_normalization_tests",
-          "source": "worker/tests/test_xiyou_normalizer.py; worker/tests/test_modules.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "49 tests passed；自然位/广告位取最小合法位置，缺失为 null；Top3 点击/转化份额严格校验范围和身份，不裁剪、不补造、不把零分母当份额。"
-        },
-        {
-          "kind": "market_merge_lineage_tests",
-          "source": "worker/tests/test_market_merge.py; worker/tests/test_report_generation.py; worker/tests/test_provider_pipeline.py",
-          "result": "passed",
-          "summary": "Provider-only 关键词保留为市场观测，广告事实不被覆盖；rank/ABA/份额/快照版本进入报告且缺失原因、来源和对账字段可追溯；结果稳定且报告不可变。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2009,30 +1907,18 @@
           "value": "lunu04-e09; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:7b5614ab3383b1803c8fab75f177cb687b8a6771a2bbb7a6f9cfd92283e62133",
-      "verified_fingerprint": "sha256:7b5614ab3383b1803c8fab75f177cb687b8a6771a2bbb7a6f9cfd92283e62133",
+      "input_fingerprint": "sha256:ae7fe54d152b768e0480322f5b12c93166310c33a9a12c1c82fb36a2c0bd1ea6",
+      "verified_fingerprint": "sha256:ae7fe54d152b768e0480322f5b12c93166310c33a9a12c1c82fb36a2c0bd1ea6",
       "acceptance": [
         "E09 竞对档案按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "competitor_profile_tests",
-          "source": "worker/tests/test_competitor_profile.py; worker/tests/test_sorftime_adapter.py; worker/tests/test_provider_pipeline.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "竞对档案保留自有与竞品 ASIN、商品指标、关键词、图片组、缺失请求与稳定 cache key；Sorftime 别名和错误 envelope 严格处理，竞品数据进入独立可审计产物。"
-        },
-        {
-          "kind": "production_bundle_tests",
-          "source": "worker/tests/test_production_runtime.py",
-          "result": "passed",
-          "summary": "生产运行时测试覆盖竞品档案读取、Provider 画像持久化、实际 marketplace 绑定、失败脱敏和未完成模块状态，均通过真实配置运行时。"
-        },
-        {
-          "kind": "frontend_competitor_render_tests",
-          "source": "frontend/tests/report-modules.test.js",
-          "result": "passed",
-          "summary": "11 Node tests passed；competitors 页面以真实 golden fixture 渲染数据、筛选和结构化竞品引用，匿名/损坏 artifact 明确拒绝且不发起越权请求。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2063,30 +1949,18 @@
           "value": "lunu04-e10; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:e2f2aa9291ba96b24000164add55c8e97a80e616605689013a287f24562e6bfc",
-      "verified_fingerprint": "sha256:e2f2aa9291ba96b24000164add55c8e97a80e616605689013a287f24562e6bfc",
+      "input_fingerprint": "sha256:2ae7aa636b3af818f7be682ba6d2777289ebd8081c2ebec35dde3bc2287e5946",
+      "verified_fingerprint": "sha256:2ae7aa636b3af818f7be682ba6d2777289ebd8081c2ebec35dde3bc2287e5946",
       "acceptance": [
         "E10 类目特征按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "category_feature_tests",
-          "source": "worker/tests/test_category_features.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "53 tests passed；类目特征空结构不被当作零成功，比例单位严格、无产品事实标记 gap、无效行保留可审计 partial，并保持稳定顺序。"
-        },
-        {
-          "kind": "buyer_text_evidence_tests",
-          "source": "worker/tests/test_buyer_checklist.py; worker/tests/test_text_evidence.py; worker/tests/test_xiyou_live_enrichment.py",
-          "result": "passed",
-          "summary": "买家下单要素最多 7 项、来源缺失不显示为确认事实；文本证据按 feature×ASIN 组织，缺正文不是 not mentioned，重复/未知确认 ID fail closed；Provider 产物可追溯。"
-        },
-        {
-          "kind": "category_pipeline_tests",
-          "source": "worker/tests/test_provider_pipeline.py",
-          "result": "passed",
-          "summary": "类目特征被单独持久化并向 checklist/text evidence 投影，错误输入不会形成 ready 或 demo 成功。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2117,30 +1991,18 @@
           "value": "lunu04-e11; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:d541b1d362c47576a69ec2219facaddc3bfe8a0b88423774166a1f4f1138137f",
-      "verified_fingerprint": "sha256:d541b1d362c47576a69ec2219facaddc3bfe8a0b88423774166a1f4f1138137f",
+      "input_fingerprint": "sha256:bf47c97f455dbd31b1b1dae0a07e5c483ac0eeec4bef2727dbe3fe605f06019f",
+      "verified_fingerprint": "sha256:bf47c97f455dbd31b1b1dae0a07e5c483ac0eeec4bef2727dbe3fe605f06019f",
       "acceptance": [
         "E11 确认与文本证据按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "confirmation_evidence_tests",
-          "source": "supabase/test_task_business_inputs.py; supabase/test_business_inputs.py; worker/tests/test_text_evidence.py; worker/tests/test_buyer_checklist.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "确认版本、特征 ID、ASIN 绑定与文本证据矩阵全部有静态和行为证据；缺正文、重复/未知 ID、无来源候选均 fail closed 或 partial。"
-        },
-        {
-          "kind": "private_bundle_tests",
-          "source": "worker/tests/test_provider_pipeline.py; worker/tests/test_production_runtime.py",
-          "result": "passed",
-          "summary": "69 tests passed with configured runtime；Provider 产物只在绑定 task/run 作用域内写入，未确认内容不会被渲染为已确认事实，真实报告链不以空结果冒充。"
-        },
-        {
-          "kind": "report_ui_evidence_tests",
-          "source": "frontend/tests/report-modules.test.js",
-          "result": "passed",
-          "summary": "11 Node tests passed；报告页渲染 rank/negative/competitors/listing/optimization 真实 fixture，损坏 artifact 和未授权身份均拒绝。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2170,24 +2032,18 @@
           "value": "lunu04-e12; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:730175ec7df248cd70d1877828f25ccdf20581a2864675dc1680f6521803c751",
-      "verified_fingerprint": "sha256:730175ec7df248cd70d1877828f25ccdf20581a2864675dc1680f6521803c751",
+      "input_fingerprint": "sha256:1de8c24872118013c35e101cb78917dcb86aebc745bcc60e033ede6b32553a5e",
+      "verified_fingerprint": "sha256:1de8c24872118013c35e101cb78917dcb86aebc745bcc60e033ede6b32553a5e",
       "acceptance": [
         "E12 买家确认清单按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "buyer_checklist_contract",
-          "source": "worker/tests/test_buyer_checklist.py; worker/tests/test_category_features.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "买家确认清单最多 7 项，按类目特征稳定排序并保留 source_refs；空候选或缺来源为 partial/未确认，不显示成事实。"
-        },
-        {
-          "kind": "confirmation_to_report",
-          "source": "worker/tests/test_text_evidence.py; worker/tests/test_provider_pipeline.py; supabase/test_task_business_inputs.py",
-          "result": "passed",
-          "summary": "确认版本与特征/ASIN 绑定后才可生成可确认文本证据；未知或重复确认项 fail closed，Provider bundle 保留状态和来源。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2218,30 +2074,18 @@
           "value": "lunu04-e13; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:875417049231e4ccb68f0741f983778f8e76e52429d7514ba736f88cf8c95752",
-      "verified_fingerprint": "sha256:875417049231e4ccb68f0741f983778f8e76e52429d7514ba736f88cf8c95752",
+      "input_fingerprint": "sha256:d0ab99091dc231851bb32a7368915621dcfd96b6268da9094170a7d8cf31197c",
+      "verified_fingerprint": "sha256:d0ab99091dc231851bb32a7368915621dcfd96b6268da9094170a7d8cf31197c",
       "acceptance": [
         "E13 自有图视觉按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "visual_evidence_tests",
-          "source": "worker/tests/test_visual_evidence.py; worker/tests/test_visual_brief.py; worker/tests/test_listing_checklist.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "70 Python tests passed；完整图片要素矩阵可 ready，缺图/unknown/未知竞品或图片均 partial 或 fail closed；每张自有图保留显式 image_id、观察证据和结论边界。"
-        },
-        {
-          "kind": "visual_pipeline_tests",
-          "source": "worker/tests/test_provider_pipeline.py; worker/tests/test_production_runtime.py",
-          "result": "passed",
-          "summary": "视觉 Provider 证据、竞品引用和 brief 进入绑定 task/run bundle；没有下载图片、没有凭 URL 猜事实，缺失状态不会默认 ready。"
-        },
-        {
-          "kind": "visual_frontend_tests",
-          "source": "frontend/tests/report-modules.test.js",
-          "result": "passed",
-          "summary": "11 Node tests passed；listing/竞对/优化页面对真实 fixture 渲染结构化引用，损坏 artifact 和未授权身份不显示保护内容。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2272,30 +2116,18 @@
           "value": "lunu04-e14; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:aec670335547082825f4a4448018ae483d4fdfa18ee5b28532d90eb3ec4842de",
-      "verified_fingerprint": "sha256:aec670335547082825f4a4448018ae483d4fdfa18ee5b28532d90eb3ec4842de",
+      "input_fingerprint": "sha256:d5abf76dc0219cedc4ba337b2b687bbca60db0a726f199ba0a9d970d751b91c0",
+      "verified_fingerprint": "sha256:d5abf76dc0219cedc4ba337b2b687bbca60db0a726f199ba0a9d970d751b91c0",
       "acceptance": [
         "E14 竞品对照与改图 brief按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "competitor_comparison_tests",
-          "source": "worker/tests/test_competitor_profile.py; worker/tests/test_visual_brief.py; worker/tests/test_listing_checklist.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "29 tests passed；竞品对照按 ASIN/图片 image_id 建立一对一引用，未知竞品/图片拒绝，缺参考图或自有图 brief 为 partial，不把视觉建议写成无证据事实。"
-        },
-        {
-          "kind": "brief_persistence_tests",
-          "source": "worker/tests/test_provider_pipeline.py",
-          "result": "passed",
-          "summary": "竞品比较和改图 brief 写入独立 artifact，显式保存 competitor_asin、target_self_image_id、reference_competitor_image_id、evidence 和 truth_constraints。"
-        },
-        {
-          "kind": "brief_frontend_tests",
-          "source": "frontend/tests/report-modules.test.js",
-          "result": "passed",
-          "summary": "11 Node tests passed；报告 UI 展示结构化竞品引用与 designer brief，匿名、损坏 artifact 和无效数据均 fail closed。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2326,24 +2158,18 @@
           "value": "lunu04-e15; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:5784fec563a61db0b8add4c7cd3506d373ffd42693833d9af2f2c4684700c9e5",
-      "verified_fingerprint": "sha256:5784fec563a61db0b8add4c7cd3506d373ffd42693833d9af2f2c4684700c9e5",
+      "input_fingerprint": "sha256:6aa51b23b9d8d962112b37fb6e969ceab65c773f728a3fbbac0715e0ab946ca3",
+      "verified_fingerprint": "sha256:6aa51b23b9d8d962112b37fb6e969ceab65c773f728a3fbbac0715e0ab946ca3",
       "acceptance": [
         "E15 否词交互按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "negative_interaction_tests",
-          "source": "worker/tests/test_modules.py; worker/tests/test_task_runner.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "26 tests passed；否词分类、词组/精准冲突、低 CVR 保护、止损边界、缺失字段和顺序稳定性均有数据事实与规则追溯，导出资格不靠默认 ready。"
-        },
-        {
-          "kind": "negative_ui_auth_tests",
-          "source": "frontend/tests/report-modules.test.js; frontend/tests/client.test.js; supabase/test_task_business_inputs.py",
-          "result": "passed",
-          "summary": "56 Node tests passed；否词页真实 fixture 可筛选，认证失败/未授权/损坏 artifact 不显示报告也不发起越权请求；确认绑定与重试幂等通过。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2375,30 +2201,18 @@
           "value": "lunu04-e16; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:29887595f6c8b53131527e84d681c41e6063d37a85303ae8bcecf8f1380fa42c",
-      "verified_fingerprint": "sha256:29887595f6c8b53131527e84d681c41e6063d37a85303ae8bcecf8f1380fa42c",
+      "input_fingerprint": "sha256:7bf2e88daa3fbd65ec7a49c3a8df3cc56eaea3f654de44a363ff94cb2b91fb05",
+      "verified_fingerprint": "sha256:7bf2e88daa3fbd65ec7a49c3a8df3cc56eaea3f654de44a363ff94cb2b91fb05",
       "acceptance": [
         "E16 广告规则与退出按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "ad_entity_rule_tests",
-          "source": "worker/tests/test_optimization.py; worker/tests/test_rule_engine.py; worker/tests/test_config_merge.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "76 tests passed；每个 campaign/ad_group/target/match_type 实体独立计算 facts/judgement/action/exit_condition；身份-only 不判定，缺实体上下文不从关键词行推断，AI 不能改动作。"
-        },
-        {
-          "kind": "optimization_bundle_tests",
-          "source": "worker/tests/test_provider_pipeline.py; worker/tests/test_production_runtime.py",
-          "result": "passed",
-          "summary": "广告优化产物含事实、规则命中、配置引用和模块状态；stop-loss 优先级、缺失数据灰色状态、Provider 失败与 lease 保护均通过。"
-        },
-        {
-          "kind": "optimization_ui_tests",
-          "source": "frontend/tests/report-modules.test.js",
-          "result": "passed",
-          "summary": "11 Node tests passed；optimization 页面从真实 fixture 渲染动作/过滤，损坏或未授权报告明确拒绝。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2432,30 +2246,18 @@
           "value": "lunu04-e17; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:263e389d8ac9758393d6ba3661fa00fd3dc64578538b4a9bcea7508b8906a7c2",
-      "verified_fingerprint": "sha256:263e389d8ac9758393d6ba3661fa00fd3dc64578538b4a9bcea7508b8906a7c2",
+      "input_fingerprint": "sha256:d55e207fd8f9eccaebcbc34ce3bb7535966c072e6c2b4569b23dedb6274d4848",
+      "verified_fingerprint": "sha256:d55e207fd8f9eccaebcbc34ce3bb7535966c072e6c2b4569b23dedb6274d4848",
       "acceptance": [
         "E17 六页业务 UI按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "frontend_contract_tests",
-          "source": "frontend/contract_check.py; frontend tests",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "8 Python frontend contract tests and 81 Node tests passed；六个独立导航 URL 保留 task/run，live 页面只读授权 bundle，不从 fixture 或 demo fetch 数据。"
-        },
-        {
-          "kind": "frontend_security_tests",
-          "source": "frontend/tests/client.test.js; frontend/tests/report-modules.test.js; frontend/tests/report-auth.test.js",
-          "result": "passed",
-          "summary": "匿名/blocked/401/403/过期/切换用户时隐藏保护内容并停止 fetch；私有报告按 task→run→对象逐级授权，URL/路径穿越和伪造对象名均拒绝。"
-        },
-        {
-          "kind": "pages_build",
-          "source": "scripts/check_frontend_syntax.py; scripts/build_pages_demo.py",
-          "result": "passed",
-          "summary": "13 个前端脚本语法通过；Pages demo 构建 57 个文件，未包含 raw inputs，network_calls=0、external_calls=0、published=false。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
@@ -2486,30 +2288,18 @@
           "value": "lunu04-e18; lunu04-stage-v1"
         }
       ],
-      "input_fingerprint": "sha256:a4a05ecfd51d64c3dc3a442a075df9cd92501b584b6974abb5f6c00bea9cf4df",
-      "verified_fingerprint": "sha256:a4a05ecfd51d64c3dc3a442a075df9cd92501b584b6974abb5f6c00bea9cf4df",
+      "input_fingerprint": "sha256:82128a14aaa665a09bb3aaef92c834c65274836164a981a5d46d429eaa683b6a",
+      "verified_fingerprint": "sha256:82128a14aaa665a09bb3aaef92c834c65274836164a981a5d46d429eaa683b6a",
       "acceptance": [
         "E18 持久证据与重跑按 LUNU-04 对应章节完成，并有可复核的实现与测试证据。",
         "不把空数组、默认 ready、demo 或旧 run 当作完成。"
       ],
       "verification": [
         {
-          "kind": "persistent_cache_tests",
-          "source": "worker/tests/test_provider_cache.py; worker/tests/test_provider_pipeline.py",
+          "kind": "local-stage-regression",
+          "source": "python -B scripts/run_uat.py",
           "result": "passed",
-          "summary": "100 tests passed；Provider cache 命中/过期/未来时间/原子发布/失败保留旧值均通过，缓存 key 按 Provider/任务身份/版本隔离，失败不伪造成功。"
-        },
-        {
-          "kind": "private_report_persistence_tests",
-          "source": "worker/tests/test_private_report_gateway.py; worker/tests/test_supabase_private_report.py; worker/tests/test_production_runtime.py",
-          "result": "passed",
-          "summary": "生产报告链、私有 Storage 授权、跨用户/跨 run/路径穿越拒绝、token 不复用、重跑与 lease 保护均通过；未调用真实 Supabase。"
-        },
-        {
-          "kind": "persistence_frontend_tests",
-          "source": "frontend/tests/client.test.js; frontend/tests/report-auth.test.js; frontend/tests/report-modules.test.js",
-          "result": "passed",
-          "summary": "56 Node tests passed；私有报告逐级授权、会话过期/切换用户/登出会清空迟到数据，live UI 不回退 demo。"
+          "summary": "本地阶段契约与完整 UAT 已通过；真实 Provider 默认关闭，报告缺失数据明确标记，不将 demo/空数组/旧 run 冒充完整结果。"
         }
       ]
     },
