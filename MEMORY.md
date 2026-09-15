@@ -2,10 +2,11 @@
 
 ## 2026-09-15 LUNU-05 R12 最新本地快照（当前优先）
 
-- 当前监督器为 `RUNNING`，已重新领取源码变更后的输入指纹 `sha256:97eedef47b8497249f264dde41e70c652a0cb8ec02a94303e3a3a93b641a9163`；LUNU-05 仍不能宣称完成。
+- 当前监督器为 `RUNNING`，已重新领取当前输入指纹 `sha256:f1e6965a653ddbe9e953c8a772c55a5466a97b0e58e7ff358478e5b8312a1373`；LUNU-05 仍不能宣称完成。
 - R12 新增 `011_provider_claim_preview.sql` 只读领取前预览、`012_claim_previewed_run_atomically.sql` 预览身份原子领取、任务级最坏调用上界估算和预算不足整任务 fail-closed；六任务耗尽/恢复 fake Gate 通过，未领取任务保持 pending。
 - 当前本地证据：LUNU-05 行为 Gate 13 项、完整 UAT 21/21（Worker 372、前端 8、编排 25、连续 63、Pages 57/46、Supabase 静态 71、文档 15）通过；network_calls=0、external_calls=0、Secret=0。
 - 未闭合的 R12 是预算耗尽后的持久恢复/选择性重跑和跨 Provider 信用上限；真实六模块新 run、Supabase 新迁移/RLS/Storage、Worker 重启、CORS 和新截图仍未重新验收。
+- Pages 发布源审计已确认公开地址仍服务 `main` 根目录旧版本；本地 live allowlist 构建 49 文件通过，`master` 的新前端尚未进入公开 Pages，不能重复无效推送。
 
 ## 2026-09-14 LUNU-05 纠正（当前优先）
 

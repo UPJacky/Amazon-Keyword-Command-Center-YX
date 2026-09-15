@@ -26,7 +26,7 @@
 
 - artifact registry 回归已单独通过：`python -m unittest scripts.test_lunu05_business_gate worker.tests.test_artifacts -v`，17 项通过（3 项平台不支持 symlink 的测试跳过）。前端 manifest/模块篡改回归：`node --test frontend/tests/client.test.js`，47 项通过。
 - 生产边界、视觉回执、西柚、Sorftime、LUNU-05 Gate 定向回归共 110 项通过；确认 hash、图片输入 hash、原始 payload 拒绝、Sorftime/Xiyou 预算不足整任务不调用和全缓存零调用均有断言；同时修复了 LUNU-05 Gate 对 `ProductionWorker.__new__` 的跨测试污染。
-- 最近一次完整 UAT（已包含前端 manifest、Provider 回执 hash、Sorftime/Xiyou 任务预检和 011 迁移静态合同）通过 21/21：Worker 371（跳过 12 个环境能力项）、前端 8、编排 25、连续 63、Supabase 静态 70、Pages 57 文件/46 构建测试、文档 15；network_calls=0、external_calls=0、Secret 命中=0。
+- 最近一次完整 UAT（已包含前端 manifest、Provider 回执 hash、Sorftime/Xiyou 任务预检、011/012 迁移静态合同和原子预览领取）通过 21/21：Worker 372（跳过 12 个环境能力项）、前端 8、编排 25、连续 63、Supabase 静态 71、Pages 57 文件/46 构建测试、文档 15；network_calls=0、external_calls=0、Secret 命中=0。
 - 本地 fake 工厂结果明确保留 `report_scope=injected_provider_data` 且 `full_report_complete=false`，所以该测试只证明接线和持久化，不冒充真实 Provider 完整数据。
 
 ## 尚未通过的真实 Gate
