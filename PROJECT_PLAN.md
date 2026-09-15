@@ -44,7 +44,7 @@ language: zh-CN
 
 - 公开 Pages 的关键脚本哈希与远端 `main` 根目录一致，而不是本地已审查的 `master` checkpoint `b40afef`；`master` 的新前端文件位于 `frontend/`，其根目录对应文件为 404。
 - 仓库没有 `.github/workflows`；匿名 GitHub API 无法返回 Pages Source，因此先以哈希证据认定当前线上仍为 `main` / 根目录，不通过猜测修改 Pages 设置。
-- 后续只能在 Settings → Pages 只读确认 Source 后选择一条发布路径：保持 `main` 根目录并从 `b40afef` 生成 allowlist 发布提交，或明确把 Pages Source 改为 `master` 的正确构建目录。两者不可同时尝试，也不能重复无效推送。
+- 已按推荐路径保持 `main` 根目录，并从 `master/frontend` 生成 allowlist 发布提交 `48c1b39`；公开路由和关键脚本哈希已复验一致。后续若改变 Pages Source，必须单独评审，不能重复无效推送。
 - 详细执行、哈希对账、回滚和发布后验收见 `docs/acceptance/github-pages-publish-source-audit-20260915.md`。该问题属于线上发布 Gate，不改变本地 UAT 21/21，也不解除真实 Provider/Supabase/Worker/CORS/截图 Gate。
 - 新增 4 项编排回归，当前 UAT 编排契约 18 项；缺少结构化摘要同时写入 `summary_contract_errors` 和诊断字段，且 `_summary_metrics` 对缺失摘要安全跳过；新增统一 120 秒 Gate 超时和 5 组临时目录退出清理验证。最新完整 UAT Worker 144 项（12 项环境跳过）、前端 5 项、Pages 19 文件、双入口 Worker、Phase 8、compileall 和文档契约通过，network_calls=0、external_calls=0、Secret=0。
 ---

@@ -6,7 +6,7 @@
 - R12 新增 `011_provider_claim_preview.sql` 只读领取前预览、`012_claim_previewed_run_atomically.sql` 预览身份原子领取、任务级最坏调用上界估算和预算不足整任务 fail-closed；六任务耗尽/恢复 fake Gate 通过，未领取任务保持 pending。
 - 当前本地证据：LUNU-05 行为 Gate 13 项、完整 UAT 21/21（Worker 372、前端 8、编排 25、连续 63、Pages 57/46、Supabase 静态 71、文档 15）通过；network_calls=0、external_calls=0、Secret=0。
 - 未闭合的 R12 是预算耗尽后的持久恢复/选择性重跑和跨 Provider 信用上限；真实六模块新 run、Supabase 新迁移/RLS/Storage、Worker 重启、CORS 和新截图仍未重新验收。
-- Pages 发布源审计已确认公开地址仍服务 `main` 根目录旧版本；本地 live allowlist 构建 49 文件通过，`master` 的新前端尚未进入公开 Pages，不能重复无效推送。
+- Pages 发布源错位已解决：从 `master/frontend` 生成的 49 文件 live allowlist 已通过 `main` 根目录提交 `48c1b39` 发布；公开路由和关键脚本哈希已复验一致。仍不能把静态上线当作私有报告/真实六模块业务完成。
 
 ## 2026-09-14 LUNU-05 纠正（当前优先）
 

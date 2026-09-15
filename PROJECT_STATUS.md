@@ -10,7 +10,7 @@ current_objective: "完成 LUNU-05 R01-R15 修复及第6节逐项业务验收；
 next_safe_action: "lunu05-business-remediation：审计 R12 剩余持久恢复/选择性重跑与跨 Provider 信用上限，并准备 R07-R15 外部 Gate"
 stop_reason: ""
 last_action_fingerprint: "sha256:f1e6965a653ddbe9e953c8a772c55a5466a97b0e58e7ff358478e5b8312a1373"
-verified_gate_snapshot_current: "supervisor=RUNNING,local_safe_queue=in_progress; lunu05_behavior_gate=13_passed; provider_claim_preview_gate=passed; atomic_previewed_claim_gate=passed; six_task_budget_recovery_gate=passed; full_uat=21/21; worker=372;frontend=8;orchestration=25;continuous=63;pages=57;pages_tests=46;supabase_static=71;docs=15;pages_live_build=49;pages_source=main_root_old;network_calls=0;external_calls=0;secrets=0;sorftime_task_preflight=passed;xiyou_task_preflight=passed;external_six_module_and_cors_gates=not_revalidated"
+verified_gate_snapshot_current: "supervisor=RUNNING,local_safe_queue=in_progress; lunu05_behavior_gate=13_passed; provider_claim_preview_gate=passed; atomic_previewed_claim_gate=passed; six_task_budget_recovery_gate=passed; full_uat=21/21; worker=372;frontend=8;orchestration=25;continuous=63;pages=57;pages_tests=46;supabase_static=71;docs=15;pages_live_build=49;pages_source=main_root_live_48c1b39;network_calls=0;external_calls=0;secrets=0;sorftime_task_preflight=passed;xiyou_task_preflight=passed;external_six_module_and_cors_gates=not_revalidated"
 local_safe_queue: in_progress
 external_blockers_only: false
 verified_gate_snapshot: "worker=372;frontend=8;orchestration=25;continuous=63;uat=21/21;pages=57;pages_tests=46;supabase_static=71;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts,lunu05_behavior_gate,provider_claim_preview,atomic_previewed_claim,migration_011_provider_claim_preview,migration_012_claim_previewed_run_atomically,six_task_budget_recovery,stale_demo_refresh,provider_receipt_hash_validation,confirmation_hash,visual_input_hash,sorftime_task_preflight_cache_aware,xiyou_task_preflight_cache_aware,test_isolation;full_report_complete=false;external_six_module_run=not_revalidated;supervisor=RUNNING"
@@ -21,6 +21,13 @@ verified_gate_snapshot: "worker=372;frontend=8;orchestration=25;continuous=63;ua
 - 使用合成的、非生产公共配置执行 `scripts/build_pages_live.py`，结果为 `passed=true`、`file_count=49`、`contains_raw_inputs=false`、`contains_demo_data=false`、`network_calls=0`、`external_calls=0`；没有读取或写入任何真实 Secret。
 - 生成包的 `client.js`、`report/negative.js`、`report/optimization.js` 哈希分别与当前 `master/frontend` 版本一致，说明本地 allowlist 构建可用；公开 Pages 仍返回 `main` 根目录旧哈希，故线上新版本尚未生效。
 - 详细分支、哈希和两种定向发布路径见 `docs/acceptance/github-pages-publish-source-audit-20260915.md`。当前仍保持 `RUNNING`，不把本地构建或 `master` 推送写成线上完成。
+
+## 2026-09-15 Pages 定向发布复验
+
+- 已从本地审查的 `master/frontend` 生成 49 文件 live allowlist，并保留 `main` 的现有公共配置；发布提交为 `48c1b39`，只改动 5 个前端文件，已推送到 `origin/main`。
+- 发布后公开根入口、`tool/`、`report/`、`report/index.html`、`rank`、`negative`、`competitors`、`listing`、`optimization` 共 9 条地址均 HTTP 200。
+- 线上关键脚本哈希已与当前发布包一致：`client.js` 31050 bytes、`report/negative.js` 13014 bytes、`report/optimization.js` 15692 bytes、`report/rank.js` 7791 bytes、`tool/tool.js` 5011 bytes；说明 Pages 发布源错位已解除。
+- 该复验只证明静态包已上线，不证明登录后的私有报告数据、无痕门禁、精确 CORS、Worker 重启或真实六模块 Provider 数据已完成。
 
 ## 2026-09-15 GitHub Pages 发布源审计
 
