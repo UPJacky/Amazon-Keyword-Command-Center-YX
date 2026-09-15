@@ -9,6 +9,7 @@
 | Supabase 配置文件 | 仅确认 `SUPABASE_URL`、`SUPABASE_ANON_KEY`、`SUPABASE_SERVICE_ROLE_KEY` 标签存在 | Secret 未输出；不证明线上迁移已执行 |
 | Supabase HTTPS 只读探针 | 本机 HTTPS 连接返回 `URLError` | 未取得 HTTP/业务结果；不把它记为通过或失败 |
 | 浏览器自动化 | 浏览器服务返回 `nodeRepl.fetch request failed` | 本轮不能操作已登录控制台或无痕窗口 |
+| 浏览器技能层 | 仅发现一个 Chrome 实例，未发现 Edge；公开报告地址可读到登录页 | 只能完成未登录门禁的只读验证，不能代替登录后的报告业务验收 |
 | Worker 主机 TCP 22 | `43.139.80.199:22` `TcpTestSucceeded=true` | 仅证明 SSH 端口可达 |
 | `ubuntu` 非交互 SSH | `BatchMode=yes`，退出码 255，分类为 `permission_denied` | 未取得默认 SSH 代理/密钥的登录授权；未执行远程命令 |
 | Supabase CLI | 本机未找到 | 不能从本机直接执行迁移/函数部署 |
@@ -19,6 +20,12 @@
 - 没有读取或打印任何 Secret，也没有将 Secret 写入仓库。
 - 没有运行 `kwcc_claim_run`、`kwcc_finish_run`、重跑 RPC、迁移或部署命令。
 - 没有把 TCP 可达、HTTP 200、旧截图或旧 run 当作 R07–R15 线上业务证据。
+
+## 公开报告门禁只读证据
+
+使用浏览器技能层打开现有报告地址后，页面标题为登录入口，正文提示需要使用 Supabase Auth 登录；页面只加载了 Pages 的 HTML、CSS、公共配置和报告脚本，没有发起报告/网关业务请求。该结果证明“未登录不能看到报告”的门禁路径仍在工作，但不能证明登录后的六模块数据存在，也不能证明 Supabase 010/011/012 已在线执行。
+
+本次只读探针没有输入账号密码、没有借用用户登录标签页、没有读取 Cookie/localStorage/Authorization，也没有点击登录或触发任何 Provider 调用。
 
 ## 恢复后唯一入口
 
