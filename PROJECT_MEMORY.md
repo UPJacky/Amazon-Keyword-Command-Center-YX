@@ -112,7 +112,7 @@ language: zh-CN
 
 ## 当前验证快照
 
-- 2026-09-15：完整 UAT 21/21 Gate，Worker 371 项（12 项环境跳过）、前端 8 项、UAT 编排契约 25 项、连续执行 63 项、Pages 57 文件、文档契约 15 项；定向生产/Provider/视觉/西柚回归 110 项通过；network_calls=0、external_calls=0、Secret value 命中为0；新增 Supabase 确认绑定静态契约、Sorftime/Xiyou 任务预检和 LUNU-05 六模块行为 Gate，均为本地验证。
+  - 2026-09-15：完整 UAT 21/21 Gate，Worker 372 项（12 项环境跳过）、前端 8 项、UAT 编排契约 25 项、连续执行 63 项、Pages 57 文件、文档契约 15 项；定向生产/Provider/视觉/西柚回归 110 项通过；network_calls=0、external_calls=0、Secret value 命中为0；新增 Supabase 确认绑定静态契约、Sorftime/Xiyou 任务预检、012 原子预览领取和 LUNU-05 六模块行为 Gate，均为本地验证。
 
 ## 历史验证快照
 

@@ -16,6 +16,13 @@ external_blockers_only: false
 verified_gate_snapshot: "worker=372;frontend=8;orchestration=25;continuous=63;uat=21/21;pages=57;pages_tests=46;supabase_static=71;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts,lunu05_behavior_gate,provider_claim_preview,atomic_previewed_claim,migration_011_provider_claim_preview,migration_012_claim_previewed_run_atomically,six_task_budget_recovery,stale_demo_refresh,provider_receipt_hash_validation,confirmation_hash,visual_input_hash,sorftime_task_preflight_cache_aware,xiyou_task_preflight_cache_aware,test_isolation;full_report_complete=false;external_six_module_run=not_revalidated;supervisor=RUNNING"
 ---
 
+## 2026-09-15 GitHub Pages 发布源审计
+
+- 本地 checkpoint `b40afef` 已推送到 `origin/master`，但公开 Pages 的 `client.js`、`report/negative.js`、`report/optimization.js` 哈希仍分别与 `main` 根目录旧文件完全一致；`master` 当前提交没有对应的根目录文件（新版本位于 `frontend/` 目录）。
+- 仓库没有 `.github/workflows` 发布配置；GitHub API 的 Pages 配置端点匿名返回 404，不能凭 API 猜测 Source。结合公开文件哈希和历史配置，当前 Pages 实际仍为 `main` / 根目录发布。
+- 这解释了“master 已推送但线上仍旧”的发布源错位问题；不得重复推送 `master`，也不得把 HTTP 200 当成新版本已生效。详细证据和给 Lunu 的两种定向发布路径见 `docs/acceptance/github-pages-publish-source-audit-20260915.md`。
+- 当前状态保持 `RUNNING`；本地 R12/完整 UAT 证据不变，线上 Pages 版本、Supabase 线上迁移/RLS/Storage、Worker 重启、精确 CORS、真实六模块新 run 和无痕截图仍未重新验收。
+
 ## 2026-09-15 LUNU-05 R12 本地预算门禁补强（当前优先）
 
 - 监督器已按当前源码重新领取 `lunu05-business-remediation`，当前指纹为 `sha256:97eedef47b8497249f264dde41e70c652a0cb8ec02a94303e3a3a93b641a9163`；状态仍为 `RUNNING`，不能关闭阶段。

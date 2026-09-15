@@ -31,6 +31,8 @@
 
 ## 尚未通过的真实 Gate
 
+- Pages 发布源已查明：公开关键脚本与远端 `main` 根目录旧版本一致；新 checkpoint `b40afef` 已在 `master`，但没有进入线上。不要重复推送 `master`；先按 `docs/acceptance/github-pages-publish-source-audit-20260915.md` 在 Pages 设置中确认 Source，再走唯一一条定向发布路径。
+
 - 没有新一轮真实六模块 Provider 生产任务的完整数据证据；视觉图片观察、市场/类目特征、买家清单、文字证据和优化退出条件仍需真实新 run 验证。
 - 没有重新执行真实 Supabase 010 确认 RPC/迁移、双用户 RLS、私有 Storage 读取和未登录拒绝的线上矩阵。
 - 没有重新验证部署后的 Worker 重启、GitHub Pages 精确 Origin/CORS 和带地址栏的新报告截图。
