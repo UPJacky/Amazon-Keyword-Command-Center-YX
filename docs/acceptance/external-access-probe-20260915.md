@@ -12,7 +12,7 @@
 | 浏览器技能层 | 本轮重新连接 Edge 并进入目标 Supabase 项目 Users 页，确认 2 个测试用户；随后在 SQL Editor 完成只读查询 | 已确认控制台登录态和项目归属；仍不能代替 010/011/012、Worker/Gateway 和登录后报告验收 |
 | Supabase SQL Editor 核对 | 业务表/RLS/Storage 可读；010/011/012 已按仓库 SQL 执行并完成 RPC 复核 | 线上结构阻塞已解除；仍需 Worker/Gateway、新六模块 run 和 CORS/报告业务验收 |
 | Worker 主机 TCP 22 | `43.139.80.199:22` `TcpTestSucceeded=true` | 仅证明 SSH 端口可达 |
-| `ubuntu` 非交互 SSH | `BatchMode=yes`，退出码 255，分类为 `permission_denied` | 未取得默认 SSH 代理/密钥的登录授权；未执行远程命令 |
+| `ubuntu` 非交互 SSH | 最新探针先返回 `ssh-add -l: Error connecting to agent: No such file or directory`，随后 `BatchMode=yes` 仍为 `Permission denied (publickey,password)`、退出码 255 | 本机没有可用 SSH agent；未取得默认 SSH 代理/密钥的登录授权；未执行远程命令 |
 | Supabase CLI | 本机未找到 | 不能从本机直接执行迁移/函数部署 |
 
 ## 未执行事项
