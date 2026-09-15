@@ -9,12 +9,20 @@ execution_state: RUNNING
 current_objective: "完成 LUNU-05 R01-R15 修复及第6节逐项业务验收；撤销以旧E20回执替代业务完成的结论"
 next_safe_action: "lunu05-business-remediation：审计 R12 剩余持久恢复/选择性重跑与跨 Provider 信用上限，并准备 R07-R15 外部 Gate"
 stop_reason: ""
-last_action_fingerprint: "sha256:f1e6965a653ddbe9e953c8a772c55a5466a97b0e58e7ff358478e5b8312a1373"
-verified_gate_snapshot_current: "supervisor=RUNNING,local_safe_queue=in_progress; lunu05_behavior_gate=13_passed; provider_claim_preview_gate=passed; atomic_previewed_claim_gate=passed; six_task_budget_recovery_gate=passed; full_uat=21/21; worker=372;frontend=8;orchestration=25;continuous=63;pages=57;pages_tests=46;supabase_static=71;docs=15;pages_live_build=49;pages_source=main_root_live_48c1b39;network_calls=0;external_calls=0;secrets=0;sorftime_task_preflight=passed;xiyou_task_preflight=passed;external_six_module_and_cors_gates=not_revalidated"
+last_action_fingerprint: "sha256:f669b6cd59294a925ea307ea75c79c7825d400b726cf842beccb5dda6172feda"
+verified_gate_snapshot_current: "supervisor=RUNNING,local_safe_queue=in_progress; lunu05_behavior_gate=13_passed; provider_claim_preview_gate=passed; atomic_previewed_claim_gate=passed; six_task_budget_recovery_gate=passed; total_provider_attempt_budget_gate=passed; full_uat=21/21; worker=375;frontend=8;orchestration=25;continuous=63;pages=57;pages_tests=46;supabase_static=71;docs=15;pages_live_build=49;pages_source=main_root_live_48c1b39;network_calls=0;external_calls=0;secrets=0;sorftime_task_preflight=passed;xiyou_task_preflight=passed;external_six_module_and_cors_gates=not_revalidated"
 local_safe_queue: in_progress
 external_blockers_only: false
-verified_gate_snapshot: "worker=372;frontend=8;orchestration=25;continuous=63;uat=21/21;pages=57;pages_tests=46;supabase_static=71;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts,lunu05_behavior_gate,provider_claim_preview,atomic_previewed_claim,migration_011_provider_claim_preview,migration_012_claim_previewed_run_atomically,six_task_budget_recovery,stale_demo_refresh,provider_receipt_hash_validation,confirmation_hash,visual_input_hash,sorftime_task_preflight_cache_aware,xiyou_task_preflight_cache_aware,test_isolation;full_report_complete=false;external_six_module_run=not_revalidated;supervisor=RUNNING"
+verified_gate_snapshot: "worker=375;frontend=8;orchestration=25;continuous=63;uat=21/21;pages=57;pages_tests=46;supabase_static=71;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts,lunu05_behavior_gate,provider_claim_preview,atomic_previewed_claim,migration_011_provider_claim_preview,migration_012_claim_previewed_run_atomically,six_task_budget_recovery,total_provider_attempt_budget,stale_demo_refresh,provider_receipt_hash_validation,confirmation_hash,visual_input_hash,sorftime_task_preflight_cache_aware,xiyou_task_preflight_cache_aware,test_isolation;full_report_complete=false;external_six_module_run=not_revalidated;supervisor=RUNNING"
 ---
+
+## 2026-09-15 LUNU-05 R12 跨 Provider 请求次数上限补强
+
+- `lunu05-business-remediation` 已按最新源码重新领取，当前输入指纹为 `sha256:f669b6cd59294a925ea307ea75c79c7825d400b726cf842beccb5dda6172feda`；状态仍为 `RUNNING`，不能关闭阶段。
+- 新增 `ProviderAttemptBudget` 作为 Xiyou、Sorftime、Doubao 共同的进程级 `total_provider_attempts` 上限；每一次实际传输尝试（包括 429/5xx 后的重试）只计一次，缓存命中不计数；达到上限时在下一次 Provider 请求发出前 fail-closed，并保留 `TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED`。
+- 生产 CLI 在 Provider 模式必须显式提供 `--max-total-provider-attempts`；claim 前按任务最坏未缓存调用量乘以 `RetryPolicy` 上界做总次数预检，claim 后三个适配器共享同一计数器，回执记录 `actual_calls`/`max_attempts`。该字段表示请求次数，不表示统一 credit。
+- 本轮完整 UAT 21/21 通过：Worker 375（跳过 12 个环境能力项）、前端 8、编排 25、连续 63、Pages 57 文件/46 构建测试、Supabase 静态 71、文档 15；LUNU-05 行为 Gate 13/13；network_calls=0、external_calls=0、Secret value 命中为 0。
+- R12 仍未闭合的边界是跨进程/跨周期的持久预算账本、选择性重跑契约，以及真实 Provider/Supabase/Worker/CORS/报告截图 Gate；本地次数上限不替代这些外部证据。
 
 ## 2026-09-15 Pages 本地 live 构建核验
 

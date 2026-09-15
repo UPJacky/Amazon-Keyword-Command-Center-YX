@@ -14,7 +14,7 @@ from worker.pipeline.task_runner import _provider_result, run_task
 from worker.providers.market_merge import MARKET_FIELDS, merge_market_data
 from worker.providers.mcp_http_transport import McpHttpTransport
 from worker.providers.orchestrator import ProviderBatchError
-from worker.providers.base import RetryPolicy
+from worker.providers.base import ProviderAttemptBudget, RetryPolicy
 from worker.providers.cache import ProviderCache
 from worker.providers.xiyou_live_enrichment import XiyouCallBudget, XiyouLiveEnricher
 
@@ -88,6 +88,35 @@ class XiyouLiveEnrichmentTests(unittest.TestCase):
         self.assertRegex(receipt["request_sha256"], r"^[a-f0-9]{64}$")
         self.assertRegex(receipt["response_sha256"], r"^[a-f0-9]{64}$")
         self.assertNotIn("led light", json.dumps(receipt))
+
+    def test_shared_total_attempt_budget_counts_retries_and_is_persisted(self):
+        total = ProviderAttemptBudget(2)
+        transport = Mock()
+        transport.call.side_effect = [
+            {"status": 503},
+            response(record()),
+        ]
+        enricher = XiyouLiveEnricher(
+            transport=transport, country="US", asin=ASIN, max_keywords=1,
+            budget=XiyouCallBudget(2, 2), attempt_budget=total,
+            retry_policy=RetryPolicy(max_retries=1, backoff_seconds=()),
+        )
+        result = enricher(parsed("led light"), {})
+        self.assertEqual(2, total.used_attempts)
+        self.assertEqual({"provider": "aggregate", "actual_calls": 2,
+                          "max_attempts": 2, "outcome": "bounded"},
+                         result["provider_usage"]["total_provider_attempts"])
+        self.assertEqual(2, len(transport.call.call_args_list))
+
+        blocked_transport = Mock()
+        blocked = XiyouLiveEnricher(
+            transport=blocked_transport, country="US", asin=ASIN, max_keywords=1,
+            budget=XiyouCallBudget(1, 1), attempt_budget=total,
+        )
+        with self.assertRaises(ProviderBatchError) as caught:
+            blocked(parsed("another term"), {})
+        self.assertEqual("TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED", caught.exception.code)
+        blocked_transport.call.assert_not_called()
 
     def test_live_provenance_is_explicit_instance_metadata(self):
         enrich, transport, _ = self.make()

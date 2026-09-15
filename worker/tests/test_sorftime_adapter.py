@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 from worker.competitors.category_features import normalize_category_features
-from worker.providers.base import RetryPolicy
+from worker.providers.base import ProviderAttemptBudget, RetryPolicy
 from worker.providers.cache import ProviderCache
 from worker.providers.sorftime_adapter import SorftimeCallBudget, SorftimeCatalogAdapter, normalize_category_feature_response, normalize_product_detail
 
@@ -27,6 +27,23 @@ class FakeTransport:
 
 
 class SorftimeAdapterTests(unittest.TestCase):
+    def test_shared_total_attempt_budget_blocks_before_second_provider_request(self):
+        total = ProviderAttemptBudget(1)
+        first_transport = FakeTransport()
+        first = SorftimeCatalogAdapter(
+            transport=first_transport, marketplace="US", max_calls=1,
+            budget=SorftimeCallBudget(1), attempt_budget=total)
+        first.fetch_product("B000000001")
+        self.assertEqual(1, total.used_attempts)
+
+        second_transport = FakeTransport()
+        second = SorftimeCatalogAdapter(
+            transport=second_transport, marketplace="US", max_calls=1,
+            budget=SorftimeCallBudget(1), attempt_budget=total)
+        with self.assertRaisesRegex(RuntimeError, "TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED"):
+            second.fetch_product("B000000002")
+        self.assertEqual([], second_transport.calls)
+
     def test_gallery_provenance_missing_fields_and_call_delta(self):
         adapter = SorftimeCatalogAdapter(transport=FakeTransport(), marketplace="US", max_calls=3)
         profile = {"self_asin": "B000000001", "competitors": [], "self_product": {

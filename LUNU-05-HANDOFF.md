@@ -1,6 +1,6 @@
 # LUNU-05 当前短交接（2026-09-15，R12 本地补强后）
 
-> 当前最新完整 UAT 已更新为 Worker 372、LUNU-05 行为 Gate 13、Supabase 静态 71；下方若仍出现 110/115 项，仅是较早回执的历史描述，不作为当前统计。
+> 当前最新完整 UAT 已更新为 Worker 375、LUNU-05 行为 Gate 13、Supabase 静态 71；下方若仍出现 110/115 项，仅是较早回执的历史描述，不作为当前统计。
 
 - 总目标：完成 LUNU-05 R01-R15 与第 6 节逐项业务验收。当前仍未完成，不能用旧 E20 回执或通用 UAT 代替业务验收。
 - 监督器：`lunu05-business-remediation` 为 `RUNNING`。本轮继续做本地证据链和安全边界回归；真实 Provider、Supabase、部署和线上截图仍是独立 Gate。
@@ -19,8 +19,8 @@
 - 生产 Xiyou 组合已启用任务级预检：市场关键词与可选竞品快照按整任务估算调用量；预算不足时在任何 Xiyou 传输前 fail-closed，全缓存时估算为 0 并允许零调用复用缓存。
 - 新增 `supabase/migrations/011_provider_claim_preview.sql` 与生产 `kwcc_preview_next_run`：claim 前只读返回最小任务投影；`worker/runtime/provider_preflight.py` 统一估算 Xiyou/Sorftime/视觉最坏未缓存调用上界，预算不足不 claim，空队列不调用 claim。
 - 新增 `supabase/migrations/012_claim_previewed_run_atomically.sql` 与生产 `kwcc_claim_previewed_run`：预览成功后按 task/run 身份原子领取，队列变化时回滚嵌套 claim 并返回空，防止预算估算错配任务。
-- 新增六任务预算耗尽/恢复 fake Gate：预算耗尽后剩余 pending 任务不丢失，显式刷新预算后可继续领取；`scripts/test_lunu05_business_gate.py` 现为 13 项行为 Gate 全部通过，完整 UAT 为 21/21（Worker 372、Supabase 静态 71）。
-- R12 两个尚未闭合边界已经单独形成决策记录：`docs/acceptance/r12-budget-decision-20260915.md`。其中明确了持久预算/选择性重跑必须先确定周期、预留、结算和崩溃恢复契约；Xiyou、Sorftime、Doubao 不得在没有 Provider 计费映射时硬加成统一 credit。
+- 新增六任务预算耗尽/恢复 fake Gate：预算耗尽后剩余 pending 任务不丢失，显式刷新预算后可继续领取；新增 `ProviderAttemptBudget` 共享 Xiyou/Sorftime/Doubao 请求尝试上限，重试计数且达到总上限后不发下一次请求；`scripts/test_lunu05_business_gate.py` 现为 13 项行为 Gate 全部通过，完整 UAT 为 21/21（Worker 375、Supabase 静态 71）。
+- R12 两个尚未闭合边界已经单独形成决策记录：`docs/acceptance/r12-budget-decision-20260915.md`。其中明确了持久预算/选择性重跑必须先确定周期、预留、结算和崩溃恢复契约；Xiyou、Sorftime、Doubao 不得在没有 Provider 计费映射时硬加成统一 credit。当前已补共同的 `total_provider_attempts` 请求次数上限，但它不是统一费用账本。
 
 ## 最近验证结果
 

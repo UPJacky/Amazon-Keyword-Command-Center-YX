@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import threading
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Mapping, Protocol
@@ -59,6 +60,42 @@ class UsageLog:
 
     def to_dict(self) -> dict[str, int]:
         return self.__dict__.copy()
+
+
+class ProviderAttemptBudget:
+    """One explicit request-attempt ceiling shared by all live providers.
+
+    This is deliberately a count, not a cross-provider credit conversion.
+    Adapters reserve one slot immediately before each transport attempt, so
+    retries are counted while cache hits remain free.  The budget has no
+    reset operation; its lifetime and refresh policy belong to the process
+    composition root until a durable account ledger is specified.
+    """
+
+    def __init__(self, max_attempts: int):
+        if type(max_attempts) is not int or max_attempts < 1:
+            raise ValueError("max_attempts must be a positive integer")
+        self.max_attempts = max_attempts
+        self.used_attempts = 0
+        self._lock = threading.Lock()
+
+    def reserve(self) -> bool:
+        with self._lock:
+            if self.used_attempts >= self.max_attempts:
+                return False
+            self.used_attempts += 1
+            return True
+
+    def can_accept_request(self, *, attempts: int = 1) -> bool:
+        if type(attempts) is not int or attempts < 0:
+            return False
+        with self._lock:
+            return self.used_attempts + attempts <= self.max_attempts
+
+    def snapshot(self) -> dict[str, int]:
+        with self._lock:
+            return {"max_attempts": self.max_attempts,
+                    "used_attempts": self.used_attempts}
 
 
 @dataclass(frozen=True)

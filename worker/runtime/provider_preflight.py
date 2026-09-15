@@ -23,6 +23,7 @@ def estimate_claim_requirements(
     xiyou_enabled: bool,
     sorftime_enabled: bool,
     visual_enabled: bool,
+    retry_attempts: int = 1,
 ) -> dict[str, int]:
     """Return a fail-closed, pre-claim upper bound for one task.
 
@@ -36,6 +37,8 @@ def estimate_claim_requirements(
     """
     if not isinstance(task, Mapping):
         raise ValueError("preview task must be an object")
+    if type(retry_attempts) is not int or retry_attempts < 1:
+        raise ValueError("retry_attempts must be a positive integer")
 
     self_asin = task.get("self_asin")
     if not isinstance(self_asin, str) or not _ASIN.fullmatch(self_asin.upper()):
@@ -70,4 +73,8 @@ def estimate_claim_requirements(
         "sorftime_calls": sorftime_calls,
         "visual_calls": visual_calls,
         "total_calls": xiyou_calls + sorftime_calls + visual_calls,
+        "xiyou_attempts": xiyou_calls * retry_attempts,
+        "sorftime_attempts": sorftime_calls * retry_attempts,
+        "visual_attempts": visual_calls * retry_attempts,
+        "total_provider_attempts": (xiyou_calls + sorftime_calls + visual_calls) * retry_attempts,
     }

@@ -13,6 +13,7 @@
 5. `supabase/migrations/012_claim_previewed_run_atomically.sql` 将预览得到的 `task_id/run_id` 与实际 claim 绑定；队列头变化时嵌套 claim 回滚并返回空。
 6. 预算不足时 Worker 不领取任务，空队列不执行普通 claim；六任务 fake 场景证明额度耗尽后剩余任务仍为 pending，显式刷新额度后可继续处理。
 7. 当前完整本地 UAT 为 21/21；LUNU-05 行为 Gate 为 13/13；本轮 `network_calls=0`、`external_calls=0`、Secret 命中为 0。
+8. `ProviderAttemptBudget` 已作为三个 Provider 的共同进程级请求尝试上限；生产 CLI 必须显式提供 `--max-total-provider-attempts`。每个真实传输尝试（包括 5xx/429 后的重试）只预留一个 slot，缓存命中不消耗 slot；回执记录 `actual_calls` 与 `max_attempts`，但不把次数伪装成统一 credit。
 
 ## 2. 未闭合边界 A：持久预算状态与选择性重跑
 
@@ -66,6 +67,8 @@
 2. 一个名称明确为 `total_provider_attempts` 的跨 Provider 请求尝试上限。它只表示请求次数，不表示统一费用；每一次请求尝试（含可计费失败和重试）只计一次。
 
 只有当 Provider 文档或账户回执明确给出单位、周期、失败计费和重试计费规则后，才能另行设计 `total_provider_credits`，并在报告中区分 `estimated`、`reserved`、`actual`、`reported`。
+
+当前本地代码已经落实上述“次数上限”这一安全层：claim 前按任务最坏调用数和 `RetryPolicy` 计算 `total_provider_attempts`，claim 后由同一个 `ProviderAttemptBudget` 约束 Xiyou、Sorftime、Doubao；达到上限时在发起下一次 Provider 请求前失败并保留可诊断错误码 `TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED`。该层仍是单 Worker 进程边界，不解决跨进程、跨周期或账户级账本问题。
 
 ## 4. 线上 Gate 不能被本地记录替代
 

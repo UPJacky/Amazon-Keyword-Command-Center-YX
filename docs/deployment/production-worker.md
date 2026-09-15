@@ -1,6 +1,6 @@
 # Production Worker（本地实现，未发布）
 
-本入口通过 Supabase RPC 领取租约，从私有 inputs 下载广告报表，在临时目录内调用已有 `run_task`，将单一 JSON bundle 上传私有 reports，读回验证 SHA-256 后才调用 finish。默认不读取凭据、不请求网络。可选的西柚关键词指标模式见 `xiyou-live-enrichment.md`；它仍不是完整六模块报告。
+本入口通过 Supabase RPC 领取租约，从私有 inputs 下载广告报表，在临时目录内调用已有 `run_task`，将单一 JSON bundle 上传私有 reports，读回验证 SHA-256 后才调用 finish。默认不读取凭据、不请求网络。可选的西柚关键词指标模式见 `xiyou-live-enrichment.md`；它仍不是完整六模块报告。启用任一真实 Provider 时，必须同时给出 Xiyou/Sorftime/视觉各自的局部预算（如适用）以及 `--max-total-provider-attempts`；后者是请求次数上限，不是统一 credit。
 
 ## 启动与权限
 
@@ -18,7 +18,7 @@ python -B scripts/run_production_worker.py --max-cycles 2 --poll-interval 0.01
 python -B scripts/run_production_worker.py --confirm-live --ad-only --worker-id server-worker-1
 ```
 
-本轮未执行此 live 命令。CLI 要求明确选择 `--ad-only`，或按 `xiyou-live-enrichment.md` 同时提供 `--xiyou-keywords` 与调用/credit硬上限；两者互斥，两种模式均不能声称全报告完成。缺少确认时在读取环境变量前拒绝。服务端也可显式构建 `ProductionWorker(transport=..., provider_enricher=...)` 或按任务注入 `provider_factory`。回调只在输入/配置及 pipeline 对账门禁后执行；由注入方负责 Provider 授权、超时、预算和字段来源，不会自动发现工具。
+本轮未执行此 live 命令。CLI 要求明确选择 `--ad-only`，或按 `xiyou-live-enrichment.md` 同时提供 `--xiyou-keywords`、调用/credit 硬上限和跨 Provider 总尝试硬上限；两者互斥，两种模式均不能声称全报告完成。缺少确认时在读取环境变量前拒绝。服务端也可显式构建 `ProductionWorker(transport=..., provider_enricher=...)` 或按任务注入 `provider_factory`。回调只在输入/配置及 pipeline 对账门禁后执行；由注入方负责 Provider 授权、超时、预算和字段来源，不会自动发现工具。
 
 ## RPC 与对象合同
 

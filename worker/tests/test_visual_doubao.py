@@ -3,6 +3,7 @@ import re
 import tempfile
 import unittest
 
+from worker.providers.base import ProviderAttemptBudget
 from worker.providers.cache import ProviderCache
 from worker.providers.visual_doubao import DoubaoVisualEvidenceAdapter, VisualCallBudget
 
@@ -39,6 +40,26 @@ class VisualDoubaoTests(unittest.TestCase):
         return {"asin": "B000000001", "image_urls": ["https://img.example/self.jpg"]}, [
             {"asin": "B000000002", "image_urls": ["https://img.example/competitor.jpg"]}
         ]
+
+    def test_shared_total_attempt_budget_blocks_visual_request(self):
+        total = ProviderAttemptBudget(1)
+        first_transport = FakeTransport()
+        first = DoubaoVisualEvidenceAdapter(
+            transport=first_transport, model="vision-model",
+            budget=VisualCallBudget(1, 20), attempt_budget=total)
+        own, competitors = self.rows()
+        first.enrich(self_product=own, competitors=competitors,
+                     expected_elements=[{"element_id": "feature-1", "name": "dimmable"}])
+        self.assertEqual(1, total.used_attempts)
+
+        second_transport = FakeTransport()
+        second = DoubaoVisualEvidenceAdapter(
+            transport=second_transport, model="vision-model",
+            budget=VisualCallBudget(1, 20), attempt_budget=total)
+        with self.assertRaisesRegex(RuntimeError, "TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED"):
+            second.enrich(self_product=own, competitors=competitors,
+                         expected_elements=[{"element_id": "feature-1", "name": "dimmable"}])
+        self.assertEqual([], second_transport.calls)
 
     def test_structured_visual_call_is_budgeted_and_cached(self):
         with tempfile.TemporaryDirectory() as directory:

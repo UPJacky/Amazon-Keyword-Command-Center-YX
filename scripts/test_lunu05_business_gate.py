@@ -31,6 +31,7 @@ from worker.report.modules import (
     negative_module_status,
     share_module_status,
 )
+from worker.providers.base import ProviderAttemptBudget
 from worker.providers.sorftime_adapter import SorftimeCallBudget, normalize_product_detail
 from worker.rule_engine.engine import evaluate_keyword, load_default_config
 from worker.runtime.production import ProductionWorker
@@ -178,6 +179,7 @@ class Lunu05BusinessGateTests(unittest.TestCase):
             self.assertEqual(0, run_production_worker.main([
                 "--confirm-live", "--xiyou-keywords", "1", "--max-provider-calls", "1",
                 "--max-provider-credits", "1", "--sorftime-catalog", "--max-sorftime-calls", "1",
+                "--max-total-provider-attempts", "3",
                 "--provider-cache-dir", directory, "--max-cycles", "1",
             ]))
         self.assertFalse(worker.provider_claim_guard())
@@ -223,6 +225,23 @@ class Lunu05BusinessGateTests(unittest.TestCase):
             visual_budget=None, xiyou_enabled=True,
             sorftime_enabled=False, visual_enabled=False,
         ))
+        self.assertEqual([PREVIEW_RPC], [path for _, path, *_ in fake.calls])
+
+    def test_provider_claim_preview_counts_retry_attempts_in_total_cap(self):
+        """R12: aggregate admission includes bounded retry attempts."""
+        from scripts.run_production_worker import _provider_claim_admission
+        from worker.providers.xiyou_live_enrichment import XiyouCallBudget
+
+        fake = FakeTransport()
+        worker = ProductionWorker(fake)
+        total = ProviderAttemptBudget(14)
+        self.assertFalse(_provider_claim_admission(
+            worker, xiyou_budget=XiyouCallBudget(20, 20),
+            sorftime_budget=SorftimeCallBudget(20), visual_budget=None,
+            xiyou_enabled=True, sorftime_enabled=True, visual_enabled=False,
+            total_attempt_budget=total, retry_attempts=3,
+        ))
+        self.assertEqual(0, total.used_attempts)
         self.assertEqual([PREVIEW_RPC], [path for _, path, *_ in fake.calls])
 
     def test_six_task_budget_exhaustion_preserves_pending_and_recovers(self):

@@ -18,7 +18,7 @@ from datetime import date
 from copy import deepcopy
 from typing import Any, Iterable, Mapping
 
-from worker.providers.base import ProviderTransport, RetryPolicy, retry_delay
+from worker.providers.base import ProviderAttemptBudget, ProviderTransport, RetryPolicy, retry_delay
 from worker.providers.market_merge import MARKET_FIELDS
 from worker.providers.orchestrator import CallBudget, ProviderBatchError
 from worker.providers.cache import ProviderCache
@@ -106,13 +106,18 @@ class XiyouCallBudget:
                     "max_credits": self._max_credits, "used_credits": self._used_credits,
                     "reported_credits": self._reported_credits, "blocked": self._blocked}
 
-    def _reserve(self, credits: int, usage: dict[str, int]) -> None:
+    def _reserve(self, credits: int, usage: dict[str, int],
+                 attempt_budget: ProviderAttemptBudget | None = None) -> None:
         # Caller holds _lock through settlement; a failed credit check cannot
         # consume the CallBudget, and no other task can race this reservation.
         if self._blocked:
             _fail("CREDIT_ACCOUNTING_BLOCKED", usage)
         if self._used_credits + credits > self._max_credits:
             _fail("CREDIT_BUDGET_EXHAUSTED", usage)
+        if self._calls.used >= self._calls.max_calls:
+            _fail("CALL_BUDGET_EXHAUSTED", usage)
+        if attempt_budget is not None and not attempt_budget.reserve():
+            _fail("TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED", usage)
         if not self._calls.reserve():
             _fail("CALL_BUDGET_EXHAUSTED", usage)
         self._used_credits += credits
@@ -153,6 +158,7 @@ class XiyouLiveEnricher:
                  confirmation_version: str | None = None,
                  confirmation: Mapping[str, Any] | None = None,
                  visual_adapter: Any = None,
+                 attempt_budget: ProviderAttemptBudget | None = None,
                  real_provider_verified: bool = False,
                  preflight_whole_task: bool = False,
                  retry_policy: RetryPolicy | None = None,
@@ -167,6 +173,8 @@ class XiyouLiveEnricher:
             raise ValueError("max_keywords must be an explicit integer from 1 to 10")
         if not isinstance(budget, XiyouCallBudget):
             raise ValueError("budget must be a shared XiyouCallBudget")
+        if attempt_budget is not None and not isinstance(attempt_budget, ProviderAttemptBudget):
+            raise ValueError("attempt_budget must be a ProviderAttemptBudget")
         if retry_policy is not None and not isinstance(retry_policy, RetryPolicy):
             raise ValueError("retry_policy must be a RetryPolicy")
         if type(preflight_whole_task) is not bool:
@@ -187,6 +195,7 @@ class XiyouLiveEnricher:
         self._asin = asin
         self._max_keywords = max_keywords
         self._budget = budget
+        self._attempt_budget = attempt_budget
         # The recorded Xiyou contract remains one attempt by default.  The
         # production composition root opts into a finite retry policy so unit
         # callers cannot accidentally turn a fixture into a retrying client.
@@ -307,6 +316,13 @@ class XiyouLiveEnricher:
                     })
                     result["usage"] = cached_usage
                     result["provider_usage"] = {"xiyou": dict(cached_usage)}
+                    if self._attempt_budget is not None:
+                        result["provider_usage"]["total_provider_attempts"] = {
+                            "provider": "aggregate",
+                            "actual_calls": self._attempt_budget.used_attempts,
+                            "max_attempts": self._attempt_budget.max_attempts,
+                            "outcome": "bounded",
+                        }
                     return result
         if self._preflight_whole_task:
             # This check is deliberately after the complete-result cache lookup:
@@ -321,7 +337,7 @@ class XiyouLiveEnricher:
             reserved = 1
             with self._budget._lock:
                 for attempt in range(self._retry_policy.max_retries + 1):
-                    self._budget._reserve(reserved, usage)
+                    self._budget._reserve(reserved, usage, self._attempt_budget)
                     usage["actual_calls"] += 1
                     usage["retries"] += int(attempt > 0)
                     arguments = {"keywords": list(selected.values()), "country": self._country}
@@ -454,6 +470,13 @@ class XiyouLiveEnricher:
                                 "output_tokens": int(snapshot.get("output_tokens") or 0),
                                 "failures": int(getattr(self._visual_adapter, "failures", 0) or 0),
                             }
+        if self._attempt_budget is not None:
+            provider_usage["total_provider_attempts"] = {
+                "provider": "aggregate",
+                "actual_calls": self._attempt_budget.used_attempts,
+                "max_attempts": self._attempt_budget.max_attempts,
+                "outcome": "bounded",
+            }
         result["provider_usage"] = provider_usage
         if self._cache is not None:
             try:
@@ -538,7 +561,7 @@ class XiyouLiveEnricher:
         try:
             with self._budget._lock:
                 for attempt in range(self._retry_policy.max_retries + 1):
-                    self._budget._reserve(reserved, usage)
+                    self._budget._reserve(reserved, usage, self._attempt_budget)
                     usage["actual_calls"] += 1
                     usage["retries"] += int(attempt > 0)
                     arguments = {"keyword": keyword, "country": self._country, "page": 1,

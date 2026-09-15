@@ -714,7 +714,8 @@ class ProductionRuntimeTests(unittest.TestCase):
                 patch.dict(os.environ, {"XYDC_MCP_URL": "https://provider.invalid/mcp", "XYDC_MCP_TOKEN": "private-test-token"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as output:
             self.assertEqual(0, main(["--confirm-live", "--xiyou-keywords", "2",
-                "--max-provider-calls", "3", "--max-provider-credits", "3", "--max-cycles", "1"]))
+                "--max-provider-calls", "3", "--max-provider-credits", "3",
+                "--max-total-provider-attempts", "6", "--max-cycles", "1"]))
             transport.assert_called_once_with("https://provider.invalid/mcp", "private-test-token", timeout=20)
             emitted = output.getvalue()
         self.assertNotIn("private-test-token", emitted)

@@ -20,6 +20,7 @@ from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from worker.providers.cache import ProviderCache
+from worker.providers.base import ProviderAttemptBudget
 from worker.diagnostics.visual_evidence import build_visual_evidence
 
 
@@ -42,9 +43,11 @@ class VisualCallBudget:
         self.used_output_tokens = 0
         self._lock = threading.Lock()
 
-    def reserve(self) -> bool:
+    def reserve(self, attempt_budget: ProviderAttemptBudget | None = None) -> bool:
         with self._lock:
             if self.used_calls >= self.max_calls:
+                return False
+            if attempt_budget is not None and not attempt_budget.reserve():
                 return False
             self.used_calls += 1
             return True
@@ -159,13 +162,16 @@ def _image_rows(self_product: Mapping[str, Any], competitors: Sequence[Mapping[s
 class DoubaoVisualEvidenceAdapter:
     def __init__(self, *, transport: Any, model: str, budget: VisualCallBudget,
                  cache: ProviderCache | None = None, cache_namespace: str = "default",
-                 prompt_version: str = "visual-prompt-v1", checklist_version: str = "listing-checklist-v1"):
+                 prompt_version: str = "visual-prompt-v1", checklist_version: str = "listing-checklist-v1",
+                 attempt_budget: ProviderAttemptBudget | None = None):
         if not callable(getattr(transport, "call", None)):
             raise ValueError("visual transport must provide call")
         if not isinstance(model, str) or not model.strip():
             raise ValueError("visual model is required")
         if not isinstance(budget, VisualCallBudget):
             raise ValueError("visual budget is required")
+        if attempt_budget is not None and not isinstance(attempt_budget, ProviderAttemptBudget):
+            raise ValueError("attempt_budget must be a ProviderAttemptBudget")
         if cache is not None and not isinstance(cache, ProviderCache):
             raise ValueError("cache must be a ProviderCache")
         if not isinstance(cache_namespace, str) or not _SAFE_ID.fullmatch(cache_namespace):
@@ -176,6 +182,7 @@ class DoubaoVisualEvidenceAdapter:
         self.transport = transport
         self.model = model.strip()
         self.budget = budget
+        self.attempt_budget = attempt_budget
         self.cache = cache
         self.cache_namespace = cache_namespace
         self.prompt_version = prompt_version
@@ -263,9 +270,13 @@ class DoubaoVisualEvidenceAdapter:
                                          "response_sha256": None, "input_images_sha256": image_input_sha256,
                                          "outcome": "cache_hit"}
             return cached
-        if not self.budget.reserve():
+        if not self.budget.reserve(self.attempt_budget):
             self.failures += 1
-            raise RuntimeError("VISUAL_CALL_BUDGET_EXHAUSTED")
+            code = "TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED" if (
+                self.attempt_budget is not None
+                and not self.attempt_budget.can_accept_request()
+            ) else "VISUAL_CALL_BUDGET_EXHAUSTED"
+            raise RuntimeError(code)
         prompt = {
             "contract": "Return JSON only. Visual observations are evidence, not operational actions.",
             "prompt_version": self.prompt_version, "checklist_version": self.checklist_version,

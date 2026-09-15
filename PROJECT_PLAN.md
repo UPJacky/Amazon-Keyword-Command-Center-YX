@@ -9,10 +9,10 @@ language: zh-CN
 
 ## 2026-09-15 LUNU-05 R12 本地补强快照（当前优先）
 
-- `lunu05-business-remediation` 仍为 `RUNNING`，当前输入指纹为 `sha256:97eedef47b8497249f264dde41e70c652a0cb8ec02a94303e3a3a93b641a9163`；本节只记录本地证据，不代表 R01-R15 或线上第 6.2 节完成。
+- `lunu05-business-remediation` 仍为 `RUNNING`，当前输入指纹为 `sha256:f669b6cd59294a925ea307ea75c79c7825d400b726cf842beccb5dda6172feda`；本节只记录本地证据，不代表 R01-R15 或线上第 6.2 节完成。
 - 新增 `011_provider_claim_preview.sql` 只读 RPC 和 `provider_preflight.py` 任务级调用上界估算。生产 Worker 在 claim 前先读取最小任务投影并做 Xiyou/Sorftime/视觉预算 admission；预算不足不 claim，空队列不调用 claim，任务内仍保留缓存感知的二次预检。
-- 六任务耗尽/恢复 fake Gate、LUNU-05 行为 Gate 13 项和完整 UAT 21/21 通过：Worker 372、前端 8、编排 25、连续 63、Pages 57 文件/46 构建测试、Supabase 静态 71、文档 15；network_calls=0、external_calls=0、Secret value 命中为 0。
-- 新增 012 原子领取 RPC，把成功预览的 task/run 身份绑定到实际 claim；队列头变化时嵌套 claim 回滚并返回空，不会把预算估算用于另一任务。仍需处理的本地 R12 边界是预算耗尽后的持久恢复/选择性重跑和跨 Provider 信用上限；真实 Provider 六模块新 run、Supabase 010/011/012 线上迁移/RLS/Storage、Worker 重启、精确 CORS 和新报告截图继续作为独立外部 Gate。
+- 六任务耗尽/恢复 fake Gate、LUNU-05 行为 Gate 13 项、跨 Provider 请求次数上限 Gate 和完整 UAT 21/21 通过：Worker 375、前端 8、编排 25、连续 63、Pages 57 文件/46 构建测试、Supabase 静态 71、文档 15；network_calls=0、external_calls=0、Secret value 命中为 0。
+- 新增 012 原子领取 RPC，把成功预览的 task/run 身份绑定到实际 claim；队列头变化时嵌套 claim 回滚并返回空，不会把预算估算用于另一任务。新增共同的 `ProviderAttemptBudget` 和 `--max-total-provider-attempts`，把重试纳入请求次数上限并在回执中留痕。仍需处理的本地 R12 边界是预算耗尽后的持久恢复/选择性重跑；真实 Provider 六模块新 run、Supabase 010/011/012 线上迁移/RLS/Storage、Worker 重启、精确 CORS 和新报告截图继续作为独立外部 Gate。
 
 ## 当前阶段 8 交付审计（2026-09-03）
 
@@ -1262,7 +1262,7 @@ Worker：云服务器后台进程
 
 ### 当前执行状态（2026-09-15）
 
-- 本地 Phase 8 基础 Gate 与 LUNU-05 专项 Gate 已通过：完整 UAT 21/21 Gate、Worker 372 项（12 项环境能力跳过）、前端 8 项（Node 场景由前端门禁调用）、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、live 候选49文件、Pages构建46项、迁移静态合同71项、LUNU-05 行为 Gate 13 项、Smoke、Phase 4～7 CLI、双Worker入口、Phase 8 静态审计、compileall 和文档契约 15 项均通过；R12 新增领取前预览、六任务耗尽恢复模拟和预览身份原子领取；network_calls=0、external_calls=0、Secret value 命中为0。上述均为本地证据，不替代 R07-R15 的生产工厂贯通和线上 Gate。
+- 本地 Phase 8 基础 Gate 与 LUNU-05 专项 Gate 已通过：完整 UAT 21/21 Gate、Worker 375 项（12 项环境能力跳过）、前端 8 项（Node 场景由前端门禁调用）、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、live 候选49文件、Pages构建46项、迁移静态合同71项、LUNU-05 行为 Gate 13 项、跨 Provider 请求次数上限 Gate、Smoke、Phase 4～7 CLI、双Worker入口、Phase 8 静态审计、compileall 和文档契约 15 项均通过；R12 新增领取前预览、六任务耗尽恢复模拟、预览身份原子领取和共同 `total_provider_attempts` 次数上限；network_calls=0、external_calls=0、Secret value 命中为0。上述均为本地证据，不替代 R07-R15 的生产工厂贯通和线上 Gate。
 - Pages 生产候选已通过 allowlist 审计并发布到 GitHub Pages；根入口以及独立 `tool/`、`report/` 路由均 HTTPS 200。生产包共 49 个文件，不含演示报告、原始输入或 Secret；本地 demo 构建仍固定生成离线 public-config。
 - 真实任务报告对象名使用 `report-` 加 48 位十六进制随机串，`run-meta.json.report_path` 固化 task/run/对象路径；解析器在 `reconciliation.header_mapping` 留存实际表头与列序号，6a/6b 本地证据见 `docs/acceptance/phase8-delivery-audit.md`。
 - 前端 live Auth、私有上传、任务/run登记与重跑、策略追加版本/回滚、私有报告及六模块 bundle 读取、精确Origin Gateway、租约Worker和live打包均已完成线上复验；真实 B 任务已完成，报告经私有 Storage fetch 后在线渲染。报告仍明确标注广告范围，市场/竞品/图片证据待补。

@@ -33,7 +33,7 @@
           "path": "rules"
         }
       ],
-      "input_fingerprint": "sha256:f1e6965a653ddbe9e953c8a772c55a5466a97b0e58e7ff358478e5b8312a1373",
+      "input_fingerprint": "sha256:f669b6cd59294a925ea307ea75c79c7825d400b726cf842beccb5dda6172feda",
       "verified_fingerprint": "",
       "acceptance": [
         "R01-R15 每项具有当前实现路径、行为断言、产物证据和未验证范围；通用 UAT 不能替代专项证据。",

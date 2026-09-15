@@ -19,7 +19,7 @@ from typing import Any, Mapping
 
 from worker.competitors.category_features import normalize_category_features
 from worker.competitors.profile import COMPARISON_FIELDS
-from worker.providers.base import RetryPolicy, retry_delay
+from worker.providers.base import ProviderAttemptBudget, RetryPolicy, retry_delay
 from worker.providers.cache import ProviderCache
 
 
@@ -156,7 +156,8 @@ class SorftimeCatalogAdapter:
     def __init__(self, *, transport: Any, marketplace: str, max_calls: int = 5, budget: Any = None,
                  cache: ProviderCache | None = None, cache_namespace: str = "default",
                  retry_policy: RetryPolicy | None = None,
-                 sleep_fn: Any = time.sleep, preflight_whole_task: bool = False):
+                 sleep_fn: Any = time.sleep, preflight_whole_task: bool = False,
+                 attempt_budget: ProviderAttemptBudget | None = None):
         if not callable(getattr(transport, "call", None)):
             raise ValueError("transport must provide call")
         if not isinstance(marketplace, str) or not re.fullmatch(r"[A-Z]{2}", marketplace):
@@ -171,6 +172,8 @@ class SorftimeCatalogAdapter:
             raise ValueError("sleep_fn must be callable")
         if type(preflight_whole_task) is not bool:
             raise ValueError("preflight_whole_task must be a boolean")
+        if attempt_budget is not None and not isinstance(attempt_budget, ProviderAttemptBudget):
+            raise ValueError("attempt_budget must be a ProviderAttemptBudget")
         self.transport = transport
         self.marketplace = marketplace
         self.max_calls = max_calls
@@ -180,6 +183,7 @@ class SorftimeCatalogAdapter:
         self.retry_policy = retry_policy or RetryPolicy()
         self.sleep_fn = sleep_fn
         self.preflight_whole_task = preflight_whole_task
+        self.attempt_budget = attempt_budget
         self.actual_calls = 0
         self.cache_hits = 0
         self.retries = 0
@@ -191,7 +195,10 @@ class SorftimeCatalogAdapter:
     def _call(self, tool: str, arguments: dict[str, Any]) -> Mapping[str, Any]:
         attempts = self.retry_policy.max_retries + 1
         for attempt in range(attempts):
-            if not self.budget.reserve():
+            if not self.budget.reserve(self.attempt_budget):
+                if (self.attempt_budget is not None
+                        and not self.attempt_budget.can_accept_request()):
+                    raise RuntimeError("TOTAL_PROVIDER_ATTEMPTS_EXHAUSTED")
                 raise RuntimeError("Sorftime call budget exhausted")
             self.actual_calls += 1
             request_sha256 = _digest(arguments)
@@ -452,9 +459,11 @@ class _LocalBudget:
         self.used = 0
         self._lock = threading.Lock()
 
-    def reserve(self) -> bool:
+    def reserve(self, attempt_budget: ProviderAttemptBudget | None = None) -> bool:
         with self._lock:
             if self.used >= self.max_calls:
+                return False
+            if attempt_budget is not None and not attempt_budget.reserve():
                 return False
             self.used += 1
             return True

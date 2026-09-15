@@ -2,10 +2,10 @@
 
 ## 2026-09-15 LUNU-05 R12 最新本地快照（当前优先）
 
-- 当前监督器为 `RUNNING`，已重新领取当前输入指纹 `sha256:f1e6965a653ddbe9e953c8a772c55a5466a97b0e58e7ff358478e5b8312a1373`；LUNU-05 仍不能宣称完成。
+- 当前监督器为 `RUNNING`，已重新领取当前输入指纹 `sha256:f669b6cd59294a925ea307ea75c79c7825d400b726cf842beccb5dda6172feda`；LUNU-05 仍不能宣称完成。
 - R12 新增 `011_provider_claim_preview.sql` 只读领取前预览、`012_claim_previewed_run_atomically.sql` 预览身份原子领取、任务级最坏调用上界估算和预算不足整任务 fail-closed；六任务耗尽/恢复 fake Gate 通过，未领取任务保持 pending。
-- 当前本地证据：LUNU-05 行为 Gate 13 项、完整 UAT 21/21（Worker 372、前端 8、编排 25、连续 63、Pages 57/46、Supabase 静态 71、文档 15）通过；network_calls=0、external_calls=0、Secret=0。
-- 未闭合的 R12 是预算耗尽后的持久恢复/选择性重跑和跨 Provider 信用上限；真实六模块新 run、Supabase 新迁移/RLS/Storage、Worker 重启、CORS 和新截图仍未重新验收。
+- 当前本地证据：LUNU-05 行为 Gate 13 项、跨 Provider `total_provider_attempts` 请求次数上限 Gate、完整 UAT 21/21（Worker 375、前端 8、编排 25、连续 63、Pages 57/46、Supabase 静态 71、文档 15）通过；network_calls=0、external_calls=0、Secret=0。
+- 未闭合的 R12 是预算耗尽后的持久恢复/选择性重跑和跨 Provider 统一 credit 账本；当前次数上限不代表统一费用。真实六模块新 run、Supabase 新迁移/RLS/Storage、Worker 重启、CORS 和新截图仍未重新验收。
 - Pages 发布源错位已解决：从 `master/frontend` 生成的 49 文件 live allowlist 已通过 `main` 根目录提交 `48c1b39` 发布；公开路由和关键脚本哈希已复验一致。仍不能把静态上线当作私有报告/真实六模块业务完成。
 
 ## 2026-09-14 LUNU-05 纠正（当前优先）
@@ -56,7 +56,7 @@
 
 ## 当前验证快照
 
-  - 2026-09-15：完整 UAT 21/21 Gate，Worker 372 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行 63 项、Pages 57 文件、文档契约 15 项；定向生产/Provider/视觉/西柚回归 110 项通过；network_calls=0、external_calls=0、Secret value 命中为0；新增 Supabase 确认绑定静态契约、Sorftime/Xiyou 任务预检、012 原子预览领取和 LUNU-05 六模块行为 Gate，均为本地验证。
+  - 2026-09-15：完整 UAT 21/21 Gate，Worker 375 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行 63 项、Pages 57 文件、文档契约 15 项；跨 Provider total_provider_attempts 请求次数上限 Gate 和定向生产/Provider/视觉/西柚回归通过；network_calls=0、external_calls=0、Secret value 命中为0；新增 Supabase 确认绑定静态契约、Sorftime/Xiyou 任务预检、012 原子预览领取和 LUNU-05 六模块行为 Gate，均为本地验证。
 
 ## 历史验证快照
 

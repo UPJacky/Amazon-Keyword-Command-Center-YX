@@ -17,14 +17,15 @@ from worker.providers.mcp_http_transport import McpHttpTransport
 from worker.providers.sorftime_adapter import SorftimeCallBudget, SorftimeCatalogAdapter
 from worker.providers.sorftime_transport import SorftimeTransport
 from worker.providers.visual_doubao import DoubaoResponsesTransport, DoubaoVisualEvidenceAdapter, VisualCallBudget
-from worker.providers.base import RetryPolicy
+from worker.providers.base import ProviderAttemptBudget, RetryPolicy
 from worker.providers.xiyou_live_enrichment import XiyouCallBudget, XiyouLiveEnricher
 from worker.providers.cache import ProviderCache
 
 
 def _provider_claim_admission(worker, *, xiyou_budget, sorftime_budget,
                               visual_budget, xiyou_enabled, sorftime_enabled,
-                              visual_enabled):
+                              visual_enabled, total_attempt_budget=None,
+                              retry_attempts=1):
     """Check the next task before claim, then let adapters re-check after input.
 
     The cheap process-budget checks avoid a preview request when the process is
@@ -38,6 +39,9 @@ def _provider_claim_admission(worker, *, xiyou_budget, sorftime_budget,
     if sorftime_enabled and not sorftime_budget.can_accept_request(calls=1):
         return False
     if visual_enabled and not visual_budget.can_accept_request():
+        return False
+    if (total_attempt_budget is not None
+            and not total_attempt_budget.can_accept_request()):
         return False
 
     preview = worker._rpc("kwcc_preview_next_run", {})
@@ -55,15 +59,18 @@ def _provider_claim_admission(worker, *, xiyou_budget, sorftime_budget,
         required = estimate_claim_requirements(
             task, xiyou_enabled=xiyou_enabled,
             sorftime_enabled=sorftime_enabled, visual_enabled=visual_enabled,
+            retry_attempts=retry_attempts,
         )
     except (TypeError, ValueError):
         return False
     allowed = (
         (not xiyou_enabled or xiyou_budget.can_accept_request(
-            calls=required["xiyou_calls"], credits=required["xiyou_credits"]))
+            calls=required["xiyou_attempts"], credits=required["xiyou_attempts"]))
         and (not sorftime_enabled or sorftime_budget.can_accept_request(
-            calls=required["sorftime_calls"]))
+            calls=required["sorftime_attempts"]))
         and (not visual_enabled or visual_budget.can_accept_request())
+        and (total_attempt_budget is None or total_attempt_budget.can_accept_request(
+            attempts=required["total_provider_attempts"]))
     )
     if allowed:
         worker.provider_claim_preview = {"task_id": task["task_id"], "run_id": run["run_id"]}
@@ -77,6 +84,8 @@ def main(argv=None):
     parser.add_argument("--xiyou-keywords", type=int, help="explicitly enable get_keyword_info for at most 1-10 terms per task")
     parser.add_argument("--max-provider-calls", type=int, help="required process-lifetime Xiyou call ceiling")
     parser.add_argument("--max-provider-credits", type=int, help="required process-lifetime Xiyou credit ceiling")
+    parser.add_argument("--max-total-provider-attempts", type=int,
+                        help="required process-lifetime cross-provider request-attempt ceiling")
     parser.add_argument("--sorftime-catalog", action="store_true", help="enable explicitly budgeted Sorftime product enrichment")
     parser.add_argument("--max-sorftime-calls", type=int, help="required process-lifetime Sorftime call ceiling")
     parser.add_argument("--visual-model", help="explicitly enable the configured Doubao visual evidence adapter")
@@ -104,9 +113,12 @@ def main(argv=None):
         provider_enabled = args.xiyou_keywords is not None
         limits = (args.max_provider_calls, args.max_provider_credits)
         if provider_enabled:
-            if args.ad_only or not 1 <= args.xiyou_keywords <= 10 or any(type(value) is not int or value < 1 for value in limits):
+            if (args.ad_only or not 1 <= args.xiyou_keywords <= 10
+                    or any(type(value) is not int or value < 1 for value in limits)
+                    or type(args.max_total_provider_attempts) is not int
+                    or args.max_total_provider_attempts < 1):
                 raise RuntimeFailure("SETTINGS_INVALID")
-        elif any(value is not None for value in limits):
+        elif any(value is not None for value in limits) or args.max_total_provider_attempts is not None:
             raise RuntimeFailure("SETTINGS_INVALID")
         if args.sorftime_catalog and not provider_enabled:
             raise RuntimeFailure("SETTINGS_INVALID")
@@ -135,6 +147,7 @@ def main(argv=None):
                 provider_transport = McpHttpTransport(os.environ.get("XYDC_MCP_URL", ""),
                                                       os.environ.get("XYDC_MCP_TOKEN", ""), timeout=args.timeout)
                 budget = XiyouCallBudget(args.max_provider_calls, args.max_provider_credits)
+                total_attempt_budget = ProviderAttemptBudget(args.max_total_provider_attempts)
                 visual_adapter = None
                 visual_budget = None
                 if args.visual_model is not None:
@@ -143,7 +156,8 @@ def main(argv=None):
                         transport=DoubaoResponsesTransport(
                             base_url=os.environ.get("DOUBAO_BASE_URL", "https://ark.cn-beijing.volces.com/api/v3"),
                             api_key=os.environ.get("DOUBAO_API_KEY", ""), timeout=args.timeout),
-                        model=args.visual_model, budget=visual_budget, cache=provider_cache,
+                        model=args.visual_model, budget=visual_budget, attempt_budget=total_attempt_budget,
+                        cache=provider_cache,
                         cache_namespace=os.environ.get("KWCC_PROVIDER_CACHE_NAMESPACE", "production"))
                 sorftime_budget = None
                 sorftime_transport = None
@@ -154,7 +168,9 @@ def main(argv=None):
                     worker, xiyou_budget=budget, sorftime_budget=sorftime_budget,
                     visual_budget=visual_budget, xiyou_enabled=True,
                     sorftime_enabled=sorftime_budget is not None,
-                    visual_enabled=visual_budget is not None)
+                    visual_enabled=visual_budget is not None,
+                    total_attempt_budget=total_attempt_budget,
+                    retry_attempts=RetryPolicy().max_retries + 1)
                 def factory(task):
                     catalog = None
                     if sorftime_transport is not None:
@@ -164,7 +180,8 @@ def main(argv=None):
                                                          max_calls=args.max_sorftime_calls,
                                                          cache=provider_cache,
                                                          cache_namespace=os.environ.get("KWCC_PROVIDER_CACHE_NAMESPACE", "production"),
-                                                         preflight_whole_task=True)
+                                                         preflight_whole_task=True,
+                                                         attempt_budget=total_attempt_budget)
                     return XiyouLiveEnricher(transport=provider_transport, country=task.get("marketplace"),
                                              asin=task.get("self_asin"), max_keywords=args.xiyou_keywords,
                                              budget=budget, enable_competitors=True,
@@ -179,6 +196,7 @@ def main(argv=None):
                                              confirmation_version=task.get("confirmation_version"),
                                              confirmation=task.get("business_confirmation"),
                                              visual_adapter=visual_adapter,
+                                             attempt_budget=total_attempt_budget,
                                              retry_policy=RetryPolicy(),
                                              preflight_whole_task=True,
                                              real_provider_verified=True)

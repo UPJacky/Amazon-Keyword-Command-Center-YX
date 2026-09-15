@@ -23,7 +23,7 @@ from worker.storage.artifacts import run_root, write_json
 
 
 ProviderEnricher = Callable[[Mapping[str, Any], Mapping[str, Any]], Mapping[str, Any]]
-_USAGE_FIELDS = {"requested_keywords", "estimated_calls", "cache_hits", "actual_calls", "rate_limited", "failures", "requested_requests", "unique_requests", "duplicates_suppressed", "retries", "output_tokens", "max_output_tokens"}
+_USAGE_FIELDS = {"requested_keywords", "estimated_calls", "cache_hits", "actual_calls", "rate_limited", "failures", "requested_requests", "unique_requests", "duplicates_suppressed", "retries", "output_tokens", "max_output_tokens", "max_attempts"}
 _USAGE_METADATA_FIELDS = {"provider", "adapter_version", "tool", "request_sha256", "response_sha256", "input_images_sha256", "outcome", "call_receipts"}
 _RECEIPT_FIELDS = {"provider", "adapter_version", "tool", "attempt", "request_sha256", "response_sha256", "status", "outcome"}
 _SHA256_RE = re.compile(r"[a-f0-9]{64}")
