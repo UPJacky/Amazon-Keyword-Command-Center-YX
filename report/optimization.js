@@ -45,7 +45,15 @@
     const hasConfigValues = row => Object.entries(object(row.config_refs)).some(([key, value]) => key !== 'config_version' && hasValue(value));
     const completeTrace = row => Object.values(object(row.data_facts)).some(value => typeof value === 'number' && Number.isFinite(value)) && strings(row.rule_hits).length > 0 && hasConfigValues(row) && hasValue(row.next_action_text);
     const entityDiagnoses = row => Array.isArray(row.entity_diagnoses) ? row.entity_diagnoses.filter(item => item && typeof item === 'object' && !Array.isArray(item)) : [];
-    const entityTraceComplete = row => entityDiagnoses(row).some(item => item.entity_status === 'ready' && item.judgement?.status === 'judged' && item.recommended_action?.status === 'ready');
+    const monitoringContract = row => object(row.monitoring || row.exit_conditions);
+    const monitoringReady = row => monitoringContract(row).status === 'ready';
+    const entityTraceComplete = row => {
+      const diagnoses = entityDiagnoses(row);
+      return diagnoses.length > 0 && diagnoses.every(item => item.entity_status === 'ready'
+        && item.judgement?.status === 'judged'
+        && item.recommended_action?.status === 'ready'
+        && item.exit_condition?.status === 'ready');
+    };
     const reviewFields = ['clicks', 'spend', 'orders', 'sales', 'ctr', 'cpc', 'cvr', 'acos', 'roas', 'organic_rank', 'ad_rank'];
     function factValue(key, value) {
       if (['ctr', 'cvr', 'acos'].includes(key)) return ui.percent(value);
@@ -86,7 +94,8 @@
           const fields = Object.entries(context).map(([key, value]) => `${entityLabels[key] || key}：${valueText(value)}`);
           item.append(ui.el('p', fields.length ? fields.join(' · ') : '源数据未提供广告实体明细。'));
           const missing = strings(diagnosis.missing_fields);
-          item.append(ui.el('p', `判断：${valueText(diagnosis.judgement?.conclusion)} · 动作：${valueText(diagnosis.recommended_action?.text)} · 退出：${valueText(diagnosis.exit_condition?.value)}`, 'muted'));
+          const exit = object(diagnosis.exit_condition);
+          item.append(ui.el('p', `判断：${valueText(diagnosis.judgement?.conclusion)} · 动作：${valueText(diagnosis.recommended_action?.text)} · 监控：${exit.status === 'ready' ? `${valueText(exit.metric)} ${valueText(exit.operator)} ${valueText(exit.threshold)}` : '待补完整契约'}`, 'muted'));
           if (missing.length) item.append(ui.el('small', `待补字段：${missing.join('、')}`));
           details.append(item);
         });
@@ -106,9 +115,16 @@
     }
     function monitoring(row) {
       const block = ui.el('div');
-      block.append(ui.el('strong', '观察窗口'), ui.el('p', hasValue(row.observation_window) ? valueText(row.observation_window) : '—（当前产物未提供，待确认周期）'));
-      block.append(ui.el('strong', '退出条件'), ui.el('p', hasValue(row.exit_conditions) ? valueText(row.exit_conditions) : '—（当前产物未提供，待补配置化条件）'));
-      block.append(ui.el('small', '落实前核对样本量、订单变化及对应配置边界；页面不会推算新的执行阈值。'));
+      const contract = monitoringContract(row);
+      if (contract.status === 'ready') {
+        block.append(ui.el('strong', '观察与退出契约'), ui.el('p', `${valueText(contract.window)} · ${valueText(contract.metric)} ${valueText(contract.operator)} ${valueText(contract.threshold)}`));
+        block.append(ui.el('p', `回滚动作：${valueText(contract.rollback_action)} · 适用范围：${valueText(contract.scope)}`, 'muted'));
+        block.append(ui.el('small', `规则 ${valueText(contract.rule_version)} · 配置 ${valueText(contract.config_version)}；页面不会推算新的执行阈值。`));
+      } else {
+        const missing = strings(contract.missing_fields);
+        block.append(ui.el('strong', '观察与退出契约：待补'), ui.el('p', '当前产物没有可执行的完整监控契约，不能把动作标记为 ready。'));
+        block.append(ui.el('small', `缺少：${missing.join('、') || 'window / metric / operator / threshold / rollback_action / rule_version / scope'}`));
+      }
       return block;
     }
     function review(row) {
@@ -122,7 +138,7 @@
     ui.setMetrics([
       ['动作', ui.number(actions.length)], ['止损 / 暂停复核', ui.number(actions.filter(row => ['stop_loss', 'reduce_or_pause'].includes(row.action_group)).length)],
       ['追溯字段待补', ui.number(actions.filter(row => !completeTrace(row)).length)],
-      ['观察退出待补', ui.number(actions.filter(row => !hasValue(row.exit_conditions) || !hasValue(row.observation_window)).length)],
+      ['观察退出待补', ui.number(actions.filter(row => !monitoringReady(row)).length)],
       ['广告实体可判断', ui.number(actions.filter(entityTraceComplete).length)],
     ]);
     body.replaceChildren();

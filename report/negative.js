@@ -6,6 +6,7 @@
   try {
     if (!ui || (await ui.ready) !== true) return;
     const data = await ui.load('negative-keywords.json');
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('否词报告结构无效');
     const groups = [
       ['exact_negative', '精准否定候选', 'exact_negative_candidate', 'badge red'],
       ['phrase_negative', '词组否定候选', 'phrase_negative_candidate', 'badge orange'],
@@ -17,7 +18,7 @@
     // module03-0.1 artifacts predate the two diagnostic buckets; treat their
     // absence as an empty legacy bucket so old reports remain readable.
     for (const key of ['low_cvr_high_spend', 'protected_converted']) {
-      if (!Array.isArray(data?.[key])) data[key] = [];
+      if (data[key] === undefined) data[key] = [];
     }
     if (!data || groups.some(([key]) => !Array.isArray(data[key]) || data[key].some(row => !row || typeof row !== 'object' || Array.isArray(row)))) {
       throw new Error('否词报告结构无效：四类候选必须为行数组。');
@@ -36,15 +37,38 @@
     // A keyword appearing in a cautious/pending bucket must never enter an export,
     // even if a malformed artifact duplicates it into a candidate bucket.
     const protectedKeywords = new Set(entries.filter(entry => ['cautious', 'pending_confirmation', 'low_cvr_high_spend', 'protected_converted'].includes(entry.key) || entry.row.negative_status !== entry.expected).map(entry => normalize(entry.row.keyword)));
+    const counts = new Map();
+    entries.forEach(({ row }) => { const key = normalize(row.keyword); counts.set(key, (counts.get(key) || 0) + 1); });
     const eligible = entry => ['exact_negative', 'phrase_negative'].includes(entry.key)
       && entry.row.export_eligible === true
       && entry.row.negative_status === entry.expected
       && normalize(entry.row.keyword) && !protectedKeywords.has(normalize(entry.row.keyword))
+      && counts.get(normalize(entry.row.keyword)) === 1
+      && !/[\r\n\u0000-\u001f\u007f\u2028\u2029]/.test(entry.row.keyword)
+      && (entry.row.phrase_conflict_keywords === undefined || (Array.isArray(entry.row.phrase_conflict_keywords) && entry.row.phrase_conflict_keywords.length === 0))
       && entry.row.relevance === 'unrelated' && !String(entry.row.reason || '').includes('conflict')
       && entry.row.orders === 0 && finite(entry.row.clicks) && entry.row.clicks > 0 && finite(entry.row.spend);
     ui.setMetrics(groups.map(([key, label]) => [label, ui.number(data[key].length)]));
     body.replaceChildren();
     body.append(ui.el('p', '候选仅供人工复核，不会写入 Amazon。相关/未知、慎否、待确认、词组冲突及已有订单保护的关键词不进入导出。低 CVR 高花费是独立复核组，不等于否定词。', 'notice'));
+    body.append(ui.el('p', '确认状态：本页仅读取报告中的服务器导出资格，不提供业务确认。R03 的真实确认提交、版本绑定与刷新恢复仍需接入；待确认项不能在此解锁。旧报告缺少 export_eligible 时只可查看。', 'notice'));
+    const roots = new Map();
+    entries.filter(entry => ['exact_negative', 'phrase_negative'].includes(entry.key)).forEach(({ row }) => {
+      const keyword = normalize(row.keyword);
+      if (!/^[a-z\s'-]+$/.test(keyword)) return;
+      new Set(keyword.match(/[a-z]+/g) || []).forEach(word => {
+        if (!roots.has(word)) roots.set(word, new Set());
+        roots.get(word).add(keyword);
+      });
+    });
+    const rootRows = [...roots].filter(([, words]) => words.size >= 2).sort(([a], [b]) => a.localeCompare(b)).map(([word, words]) => {
+      const conflicts = [...protectedKeywords].filter(keyword => (keyword.match(/[a-z]+/g) || []).includes(word));
+      return [word, words.size, [...words].join('、'), conflicts.join('、') || '未见分组保护冲突；仍需业务确认'];
+    });
+    const rootPanel = ui.el('details', undefined, 'panel');
+    rootPanel.append(ui.el('summary', '英文单词统计（只供复核，不直接复制）'), ui.el('p', '按不同候选关键词计数，至少命中两条；仅统计英文单词，不做词干推断。其他语言待专用分词策略。保护冲突来自完整报告分组，统计不赋予导出资格。', 'muted'));
+    rootPanel.append(rootRows.length ? ui.table(['单词', '不同候选数', '候选关键词', '保护冲突'], rootRows) : ui.el('p', '没有命中至少两条不同候选的英文单词。'));
+    body.append(rootPanel);
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar');
     const label = ui.el('label', '搜索关键词 ');
@@ -63,6 +87,26 @@
     exportButton.id = 'export-negative'; exportButton.type = 'button';
     const exportStatus = ui.el('p', undefined, 'muted'); exportStatus.setAttribute('role', 'status');
     const result = ui.el('div');
+    const textPanel = ui.el('section', undefined, 'panel');
+    textPanel.append(ui.el('h2', '当前筛选范围 · 纯文本候选'));
+    const textOutputs = ['exact_negative', 'phrase_negative'].map((key, index) => {
+      const title = index === 0 ? '精准否定' : '词组否定';
+      const section = ui.el('div');
+      const heading = ui.el('h3');
+      const area = ui.el('textarea'); area.id = `negative-text-${key}`; area.readOnly = true; area.rows = 6;
+      area.setAttribute('aria-label', `${title}纯文本，一行一词`);
+      area.style = 'width:100%;max-width:100%;box-sizing:border-box';
+      const copy = ui.el('button', `复制${title}`, 'button secondary'); copy.type = 'button'; copy.id = `copy-${key}`;
+      copy.addEventListener('click', async () => {
+        const text = exportEntries().filter(entry => entry.key === key).map(({ row }) => row.keyword.trim()).join('\n');
+        if (!text) return;
+        try { await navigator.clipboard.writeText(text); exportStatus.textContent = `已复制${title} ${text.split('\n').length} 条；未提交业务确认。`; }
+        catch (_) { exportStatus.textContent = '无法访问剪贴板，请在对应文本框中手动选择复制。'; }
+      });
+      section.append(heading, area, copy); textPanel.append(section);
+      return { key, title, heading, area, copy };
+    });
+    function exportEntries() { return visibleEntries().filter(eligible); }
     function visibleEntries() {
       const query = search.value.trim().toLocaleLowerCase();
       return entries.filter(entry => (selected === 'all' || entry.key === selected) && (!query || ui.text(entry.row.keyword).toLocaleLowerCase().includes(query)));
@@ -75,11 +119,18 @@
       block.append(ui.el('small', `CVR：${ui.percent(row.cvr_observed)} · 高花费线：${ui.number(row.high_spend_threshold, 2)} · 证据：${ui.text(row.evidence_level)}`));
       block.append(ui.el('small', `原动作：${ui.text(row.action_group)} · ${ui.text(row.next_action_text)}`));
       block.append(ui.el('small', `缺失字段：${strings(row.missing_fields).join('、') || '—'}`));
+      block.append(ui.el('small', `词组保护冲突：${strings(row.phrase_conflict_keywords).join('、') || '—'}`));
       return block;
     }
     function render() {
       const visible = visibleEntries();
-      const exportable = visible.filter(eligible);
+      const exportable = exportEntries();
+      textOutputs.forEach(({ key, title, heading, area, copy }) => {
+        const rows = exportable.filter(entry => entry.key === key);
+        heading.textContent = `${title} · ${rows.length} 条`;
+        area.value = rows.map(({ row }) => row.keyword.trim()).join('\n');
+        copy.disabled = rows.length === 0;
+      });
       buttons.forEach(([key, button]) => { button.className = key === selected ? 'filter active' : 'filter'; button.setAttribute('aria-pressed', String(key === selected)); });
       exportButton.disabled = exportable.length === 0;
       exportStatus.textContent = `当前可导出 ${ui.number(exportable.length)} 条候选；导出保留原始数字与规则 / 配置版本，需要人工复核。`;
@@ -93,7 +144,7 @@
       let url;
       let link;
       try {
-        const candidates = visibleEntries().filter(eligible).map(({ key, row }) => ({ ...row, candidate_group: key }));
+        const candidates = exportEntries().map(({ key, row }) => ({ ...row, candidate_group: key }));
         if (!candidates.length) return;
         const payload = { schema_version: data.schema_version, source: 'negative-keywords.json', write_back: false, review_required: true, currency_code: data.currency_code || null, candidates };
         url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' }));
@@ -105,7 +156,7 @@
     });
     search.addEventListener('input', render);
     toolbar.append(label, filters, exportButton);
-    panel.append(toolbar, exportStatus, result); body.append(panel);
+    panel.append(toolbar, exportStatus, textPanel, result); body.append(panel);
     render();
   } catch (error) {
     if (ui) ui.showError(error);
