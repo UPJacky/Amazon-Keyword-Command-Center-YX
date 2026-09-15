@@ -7,6 +7,12 @@ updated_at: 2026-09-15
 status: current
 language: zh-CN
 
+## 2026-09-15 外部访问探针快照
+
+- `43.139.80.199:22` TCP 可达，但 `ubuntu` 的非交互 SSH 认证被拒；本轮没有执行远程命令，也没有写入服务器。
+- 本机 Supabase HTTPS 探针与浏览器自动化均不可用；未取得线上 HTTP/业务结果，不能把迁移、Worker、CORS 或新六模块报告写成通过。
+- 脱敏记录见 `docs/acceptance/external-access-probe-20260915.md`；恢复后先做 Supabase 010/011/012、Worker/Gateway 只读核对，再创建全新六模块 run。
+
 ## 2026-09-15 LUNU-05 R12 本地补强快照（当前优先）
 
 - `lunu05-business-remediation` 仍为 `RUNNING`，当前输入指纹为 `sha256:f669b6cd59294a925ea307ea75c79c7825d400b726cf842beccb5dda6172feda`；本节只记录本地证据，不代表 R01-R15 或线上第 6.2 节完成。

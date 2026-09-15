@@ -7,6 +7,11 @@ updated_at: 2026-09-15
 status: current
 language: zh-CN
 
+## 2026-09-15 外部访问探针快照
+
+- Worker 主机 22 端口可达，但 `ubuntu` 非交互认证拒绝；Supabase HTTPS 和浏览器自动化探针不可用。未执行远程命令、迁移、部署或 Provider 请求。
+- 线上 Gate 仍保持未验证；恢复访问后按 `docs/acceptance/external-access-probe-20260915.md` 和 R12 决策记录继续。
+
 ## 2026-09-15 LUNU-05 R12 最新本地快照（优先于本文件旧段落）
 
 - 监督器 `lunu05-business-remediation` 仍为 `RUNNING`，当前指纹已刷新为 `sha256:f669b6cd59294a925ea307ea75c79c7825d400b726cf842beccb5dda6172feda`；LUNU-05 仍未完成，不能以旧 E20 或通用 UAT 代替真实业务验收。
