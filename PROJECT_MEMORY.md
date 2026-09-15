@@ -21,7 +21,7 @@ language: zh-CN
 - 监督器 `lunu05-business-remediation` 仍为 `RUNNING`，当前业务验收未完成；旧 E20/46/46 和通用 UAT 不能替代 R01-R15 与第6节真实业务证据。
 - 当前完整本地 UAT 21/21；Worker 375（12 项环境能力跳过）、前端 8、编排 25、连续 63、Supabase 静态 71、Pages 57 文件/46 构建测试、文档 15；最近一轮 Sorftime/Xiyou/视觉共享总次数上限、任务预检、hash 留底、011/012 原子预览领取与测试隔离改动后的完整回归已通过；network_calls=0、external_calls=0、Secret value 命中为0。
 - R13 本地留底已补齐：后端 bundle/storage/前端报告模块使用统一 registry；前端校验 evidence manifest 自哈希与模块哈希；Provider 回执只留摘要哈希、状态、尝试次数；确认对象只留 `confirmation_sha256`；视觉只留 `input_images_sha256`。原始请求/响应/图片 URL 不进入用量证据。
-- R12 本地已接入 Sorftime 与 Xiyou 任务级未缓存调用估算、队列 claim 前统一最小预览、预算不足整任务不发请求、全缓存零调用放行和六任务耗尽后显式刷新恢复模拟；预览/claim 并发竞态已由 012 原子 RPC 闭合，仍未通过的边界是持久恢复/选择性重跑和跨 Provider 信用上限。真实六模块新 run、Supabase 新迁移/RLS/私有 Storage、Worker 重启、Pages 精确 CORS/新截图仍需独立外部 Gate。
+- R12 本地已接入 Sorftime 与 Xiyou 任务级未缓存调用估算、队列 claim 前统一最小预览、预算不足整任务不发请求、全缓存零调用放行、六任务耗尽后显式刷新恢复模拟和 Xiyou/Sorftime/Doubao 共享 `total_provider_attempts` 上限；预览/claim 并发竞态已由 012 原子 RPC 闭合，仍未通过的边界是持久恢复/选择性重跑和统一 credit 账本。真实六模块新 run、Supabase 新迁移/RLS/私有 Storage、Worker 重启、Pages 精确 CORS/新截图仍需独立外部 Gate。
 
 ## 2026-09-11 当前验证快照
 

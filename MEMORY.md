@@ -14,8 +14,8 @@
 
 ## 2026-09-15 LUNU-05 当前本地快照（优先）
 
-- 完整本地 UAT 21/21；Worker 371（跳过 12 项环境能力测试）、前端 8、编排 25、连续 63、Supabase 静态 70、Pages 57 文件/46 测试、文档 15；新增 R12 行为与迁移契约通过，network_calls=0、external_calls=0、Secret=0。
-- Sorftime 与 Xiyou 生产组合已补任务级未缓存调用估算、领取前只读预览、预算不足整任务不发请求、全缓存零调用放行和六任务耗尽后显式刷新恢复模拟；预览/claim 并发竞态、持久恢复/选择性重跑和跨 Provider 信用上限仍未闭合。真实六模块新 run、Supabase 新迁移/RLS/私有 Storage、Worker 重启、Pages 精确 CORS/新截图仍是独立 Gate。
+- 完整本地 UAT 21/21；Worker 375（跳过 12 项环境能力测试）、前端 8、编排 25、连续 63、Supabase 静态 71、Pages 57 文件/46 测试、文档 15；新增 R12 行为、迁移契约和跨 Provider 请求次数上限通过，network_calls=0、external_calls=0、Secret=0。
+- Sorftime、Xiyou 与视觉生产组合已补任务级未缓存调用估算、领取前只读预览、预算不足整任务不发请求、全缓存零调用放行、六任务耗尽后显式刷新恢复模拟和共享 `total_provider_attempts` 上限；预览/claim 并发竞态、持久恢复/选择性重跑和统一 credit 账本仍未闭合。真实六模块新 run、Supabase 新迁移/RLS/私有 Storage、Worker 重启、Pages 精确 CORS/新截图仍是独立 Gate。
 
 ## 2026-09-11 当前验证快照
 

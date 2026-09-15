@@ -25,8 +25,8 @@
 ## 最近验证结果
 
 - artifact registry 回归已单独通过：`python -m unittest scripts.test_lunu05_business_gate worker.tests.test_artifacts -v`，17 项通过（3 项平台不支持 symlink 的测试跳过）。前端 manifest/模块篡改回归：`node --test frontend/tests/client.test.js`，47 项通过。
-- 生产边界、视觉回执、西柚、Sorftime、LUNU-05 Gate 定向回归共 110 项通过；确认 hash、图片输入 hash、原始 payload 拒绝、Sorftime/Xiyou 预算不足整任务不调用和全缓存零调用均有断言；同时修复了 LUNU-05 Gate 对 `ProductionWorker.__new__` 的跨测试污染。
-- 最近一次完整 UAT（已包含前端 manifest、Provider 回执 hash、Sorftime/Xiyou 任务预检、011/012 迁移静态合同和原子预览领取）通过 21/21：Worker 372（跳过 12 个环境能力项）、前端 8、编排 25、连续 63、Supabase 静态 71、Pages 57 文件/46 构建测试、文档 15；network_calls=0、external_calls=0、Secret 命中=0。
+- 生产边界、视觉回执、西柚、Sorftime、LUNU-05 Gate 定向回归已通过；确认 hash、图片输入 hash、原始 payload 拒绝、Provider 预算不足整任务不调用、全缓存零调用和共享总次数上限均有断言；同时修复了 LUNU-05 Gate 对 `ProductionWorker.__new__` 的跨测试污染。
+- 最近一次完整 UAT（已包含前端 manifest、Provider 回执 hash、Sorftime/Xiyou/视觉任务预检、011/012 迁移静态合同、原子预览领取和共享总次数上限）通过 21/21：Worker 375（跳过 12 个环境能力项）、前端 8、编排 25、连续 63、Supabase 静态 71、Pages 57 文件/46 构建测试、文档 15；network_calls=0、external_calls=0、Secret 命中=0。
 - 本地 fake 工厂结果明确保留 `report_scope=injected_provider_data` 且 `full_report_complete=false`，所以该测试只证明接线和持久化，不冒充真实 Provider 完整数据。
 
 ## 尚未通过的真实 Gate
@@ -36,7 +36,7 @@
 - 没有新一轮真实六模块 Provider 生产任务的完整数据证据；视觉图片观察、市场/类目特征、买家清单、文字证据和优化退出条件仍需真实新 run 验证。
 - 没有重新执行真实 Supabase 010 确认 RPC/迁移、双用户 RLS、私有 Storage 读取和未登录拒绝的线上矩阵。
 - 没有重新验证部署后的 Worker 重启、GitHub Pages 精确 Origin/CORS 和带地址栏的新报告截图。
-- R12 已完成 Sorftime/Xiyou 任务级未缓存调用估算、领取前最小预览、预算不足整任务 fail-closed、缓存命中后的零调用放行、六任务耗尽后的显式刷新恢复模拟和预览身份原子领取；仍未接入预算耗尽后的持久化恢复/选择性重跑和跨 Provider 信用总上限。
+- R12 已完成 Sorftime/Xiyou/视觉任务级未缓存调用估算、领取前最小预览、预算不足整任务 fail-closed、缓存命中后的零调用放行、六任务耗尽后的显式刷新恢复模拟、预览身份原子领取和共享 `total_provider_attempts` 请求次数上限；仍未接入预算耗尽后的持久化恢复/选择性重跑和跨 Provider 统一 credit 账本。
 - fake transport、旧报告、旧截图和本地 demo 均不能作为上述真实 Gate 的替代。
 
 ## 后续顺序
