@@ -13,15 +13,18 @@ import hashlib
 import json
 import re
 import threading
+import time
 from datetime import date
+from copy import deepcopy
 from typing import Any, Iterable, Mapping
 
-from worker.providers.base import ProviderTransport
+from worker.providers.base import ProviderTransport, RetryPolicy, retry_delay
 from worker.providers.market_merge import MARKET_FIELDS
 from worker.providers.orchestrator import CallBudget, ProviderBatchError
 from worker.providers.cache import ProviderCache
 from worker.competitors.text_evidence import build_text_evidence_matrix
 from worker.diagnostics.buyer_checklist import build_buyer_checklist
+from worker.providers.xiyou_normalizer import normalize_ranks
 
 
 CONTRACT_VERSION = "xiyou-get-keyword-info-recorded-20260902-v1"
@@ -31,6 +34,15 @@ COMPETITOR_TOOL_NAME = "get_keyword_asin_analysis"
 
 def _integer(value: Any) -> bool:
     return type(value) is int and value >= 0
+
+
+def _digest(value: Any) -> str | None:
+    try:
+        encoded = json.dumps(value, ensure_ascii=False, sort_keys=True,
+                             separators=(",", ":"), allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError):
+        return None
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def _keyword(value: Any) -> str:
@@ -78,6 +90,15 @@ class XiyouCallBudget:
         with self._lock:
             return self._blocked
 
+    def can_accept_request(self, *, calls: int = 1, credits: int = 1) -> bool:
+        """Return whether a minimally priced next request can be reserved."""
+        if type(calls) is not int or calls < 0 or type(credits) is not int or credits < 0:
+            return False
+        with self._lock:
+            return (not self._blocked
+                    and self.used_calls + calls <= self._calls.max_calls
+                    and self._used_credits + credits <= self._max_credits)
+
     def snapshot(self) -> dict[str, Any]:
         """Non-sensitive budget receipt; deliberately outside pipeline usage."""
         with self._lock:
@@ -117,11 +138,6 @@ class XiyouLiveEnricher:
     it is NOT sent to this keyword-only tool or used to invent rank data.
     """
 
-    # This class is constructed only around an explicitly supplied live MCP
-    # transport by the production worker.  The production runtime uses this
-    # marker to distinguish verified live-provider provenance from injected
-    # fixtures; the marker is deliberately not inferred from returned data.
-    real_provider_verified = True
     full_report_complete = False
 
     def __init__(self, *, transport: ProviderTransport, country: str, asin: str,
@@ -134,7 +150,13 @@ class XiyouLiveEnricher:
                  cache_namespace: str = "default",
                  feature_review_version: str | None = None,
                  checklist_version: str | None = None,
-                 confirmation_version: str | None = None):
+                 confirmation_version: str | None = None,
+                 confirmation: Mapping[str, Any] | None = None,
+                 visual_adapter: Any = None,
+                 real_provider_verified: bool = False,
+                 preflight_whole_task: bool = False,
+                 retry_policy: RetryPolicy | None = None,
+                 sleep_fn: Any = time.sleep):
         if not callable(getattr(transport, "call", None)):
             raise ValueError("transport must provide a single-attempt call method")
         if not isinstance(country, str) or not re.fullmatch(r"[A-Z]{2}", country):
@@ -145,21 +167,42 @@ class XiyouLiveEnricher:
             raise ValueError("max_keywords must be an explicit integer from 1 to 10")
         if not isinstance(budget, XiyouCallBudget):
             raise ValueError("budget must be a shared XiyouCallBudget")
+        if retry_policy is not None and not isinstance(retry_policy, RetryPolicy):
+            raise ValueError("retry_policy must be a RetryPolicy")
+        if type(preflight_whole_task) is not bool:
+            raise ValueError("preflight_whole_task must be a boolean")
+        if not callable(sleep_fn):
+            raise ValueError("sleep_fn must be callable")
         if cache is not None and not isinstance(cache, ProviderCache):
             raise ValueError("cache must be a ProviderCache")
         if not isinstance(cache_namespace, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,96}", cache_namespace):
             raise ValueError("cache_namespace must be a non-secret identifier")
         self._transport = transport
+        # Provenance is an instance-level fact supplied only by the trusted
+        # production composition root.  It must never be inherited from the
+        # class, inferred from the transport class name, or inferred from
+        # returned data; injected Mock/fixture enrichers therefore stay false.
+        self.real_provider_verified = real_provider_verified is True
         self._country = country
         self._asin = asin
         self._max_keywords = max_keywords
         self._budget = budget
+        # The recorded Xiyou contract remains one attempt by default.  The
+        # production composition root opts into a finite retry policy so unit
+        # callers cannot accidentally turn a fixture into a retrying client.
+        self._retry_policy = retry_policy or RetryPolicy(max_retries=0, backoff_seconds=())
+        self._sleep_fn = sleep_fn
         self._cache = cache
         self._cache_namespace = cache_namespace
         self._feature_review_version = feature_review_version.strip() if isinstance(feature_review_version, str) and feature_review_version.strip() else None
         self._checklist_version = checklist_version.strip() if isinstance(checklist_version, str) and checklist_version.strip() else None
         self._confirmation_version = confirmation_version.strip() if isinstance(confirmation_version, str) and confirmation_version.strip() else None
+        self._confirmation = dict(confirmation) if isinstance(confirmation, Mapping) else None
+        if visual_adapter is not None and not callable(getattr(visual_adapter, "enrich", None)):
+            raise ValueError("visual_adapter must provide enrich")
+        self._visual_adapter = visual_adapter
         self._enable_competitors = enable_competitors is True
+        self._preflight_whole_task = preflight_whole_task
         if catalog_adapter is not None and not callable(getattr(catalog_adapter, "enrich_profile", None)):
             raise ValueError("catalog_adapter must provide enrich_profile")
         self._catalog_adapter = catalog_adapter
@@ -200,7 +243,7 @@ class XiyouLiveEnricher:
     def __call__(self, parsed: Mapping[str, Any], effective_config: Mapping[str, Any]) -> dict[str, Any]:
         usage = dict(requested_keywords=0, estimated_calls=0, actual_calls=0,
                      cache_hits=0, retries=0, rate_limited=0, failures=0,
-                     duplicates_suppressed=0)
+                     duplicates_suppressed=0, call_receipts=[])
         try:
             if not isinstance(parsed, Mapping) or not isinstance(effective_config, Mapping):
                 raise ValueError("invalid input")
@@ -235,7 +278,11 @@ class XiyouLiveEnricher:
         selected_candidates.update({key: value for key, value in unique.items()
                                     if key not in selected_candidates})
         selected = dict(list(selected_candidates.items())[:self._max_keywords])
-        usage["estimated_calls"] = int(bool(selected))
+        # The default recorded-contract path estimates the market request only.
+        # Production opts into a whole-task estimate so the optional competitor
+        # snapshot cannot consume a second credit after a partial reservation.
+        estimated_calls = int(bool(selected)) + int(bool(selected and self._enable_competitors))
+        usage["estimated_calls"] = estimated_calls
         cache_key = self._cache_key(selected)
         if self._cache is not None:
             try:
@@ -256,26 +303,56 @@ class XiyouLiveEnricher:
                         "retries": 0,
                         "rate_limited": 0,
                         "failures": 0,
+                        "call_receipts": [],
                     })
                     result["usage"] = cached_usage
+                    result["provider_usage"] = {"xiyou": dict(cached_usage)}
                     return result
+        if self._preflight_whole_task:
+            # This check is deliberately after the complete-result cache lookup:
+            # a fully cached task is a valid zero-call execution.  It is still a
+            # per-task provider guard, not a queue-level claim preview.
+            if not self._budget.can_accept_request(calls=estimated_calls, credits=estimated_calls):
+                _fail("CALL_BUDGET_EXHAUSTED", usage)
         observations: dict[str, dict[str, Any]] = {}
         if selected:
             # Recorded calls cost one credit. Keep one request at <=10 terms;
             # do not infer bulk pricing or silently split into extra calls.
             reserved = 1
             with self._budget._lock:
-                self._budget._reserve(reserved, usage)
-                usage["actual_calls"] += 1
-                try:
-                    response = self._transport.call(TOOL_NAME, {
-                        "keywords": list(selected.values()), "country": self._country,
-                    })
-                except Exception as exc:
-                    if getattr(exc, "status_code", None) == 429:
+                for attempt in range(self._retry_policy.max_retries + 1):
+                    self._budget._reserve(reserved, usage)
+                    usage["actual_calls"] += 1
+                    usage["retries"] += int(attempt > 0)
+                    arguments = {"keywords": list(selected.values()), "country": self._country}
+                    request_sha256 = _digest(arguments)
+                    try:
+                        response = self._transport.call(TOOL_NAME, arguments)
+                    except Exception as exc:
+                        status = getattr(exc, "status_code", None)
+                        usage["call_receipts"].append({"provider": "xiyou", "tool": TOOL_NAME,
+                            "attempt": attempt + 1, "request_sha256": request_sha256,
+                            "response_sha256": None, "status": status, "outcome": "transport_error"})
+                        if status == 429:
+                            usage["rate_limited"] += 1
+                        if status in self._retry_policy.retryable_statuses and attempt < self._retry_policy.max_retries:
+                            fallback = self._retry_policy.backoff_seconds[min(attempt, len(self._retry_policy.backoff_seconds) - 1)] if self._retry_policy.backoff_seconds else 0
+                            self._sleep_fn(retry_delay(self._transport, fallback))
+                            continue
+                        self._budget._blocked = True
+                        _fail("TRANSPORT_FAILED", usage)
+                    status = self._response_status(response)
+                    usage["call_receipts"].append({"provider": "xiyou", "tool": TOOL_NAME,
+                        "attempt": attempt + 1, "request_sha256": request_sha256,
+                        "response_sha256": _digest(response), "status": status,
+                        "outcome": "response" if status not in self._retry_policy.retryable_statuses else "retryable_response"})
+                    if status == 429:
                         usage["rate_limited"] += 1
-                    self._budget._blocked = True
-                    _fail("TRANSPORT_FAILED", usage)
+                    if status in self._retry_policy.retryable_statuses and attempt < self._retry_policy.max_retries:
+                        fallback = self._retry_policy.backoff_seconds[min(attempt, len(self._retry_policy.backoff_seconds) - 1)] if self._retry_policy.backoff_seconds else 0
+                        self._sleep_fn(retry_delay(self._transport, fallback))
+                        continue
+                    break
                 try:
                     structured = self._envelope(response, usage)
                 except ProviderBatchError:
@@ -284,7 +361,6 @@ class XiyouLiveEnricher:
                 self._budget._settle(structured.get("cost_credits"), reserved, usage)
                 status = structured.get("status")
                 if type(status) is not int or status != 200:
-                    usage["rate_limited"] += int(type(status) is int and status == 429)
                     _fail("BUSINESS_STATUS_FAILED", usage)
                 try:
                     observations = self._observations(structured.get("data"), selected)
@@ -304,6 +380,32 @@ class XiyouLiveEnricher:
 
         market_rows = [self._market_row(original, observations.get(key), key in selected)
                        for original, key in originals.items()]
+        # Explicitly requested terms may not exist in the advertising export.
+        # Retain their sampled facts so market_merge can expose market-only
+        # rows without assigning advertising quantities to them.
+        ad_keys = set(originals.values())
+        market_rows.extend(self._market_row(original, observations.get(key), True)
+                           for key, original in selected.items() if key not in ad_keys)
+        if competitor_profile is not None:
+            # The competitor endpoint is a bounded sample.  If it explicitly
+            # returns rank records, attach them only to the queried keyword;
+            # never spread one keyword's rank across the whole report.
+            rank_by_keyword = {
+                _keyword(row.get("keyword")): row
+                for row in (competitor_profile.get("rank_rows") or [])
+                if isinstance(row, Mapping) and isinstance(row.get("keyword"), str)
+            }
+            for row in market_rows:
+                rank = rank_by_keyword.get(_keyword(row.get("keyword")))
+                if not rank:
+                    continue
+                for field in ("organic_rank", "ad_rank", "benchmark_asins", "rank_change_7d",
+                              "rank_change_14d", "rank_change_30d"):
+                    if field in rank:
+                        row[field] = deepcopy(rank[field])
+                row["provider_observations"] = dict(row.get("provider_observations") or {})
+                row["provider_observations"]["rankSnapshot"] = deepcopy(rank)
+                row["missing_fields"] = sorted(field for field in MARKET_FIELDS if row.get(field) is None)
         # A local content digest, not an assertion about the live server version.
         version_input = {"contract": CONTRACT_VERSION, "country": self._country,
                          "asin": self._asin, "selected": list(selected.values()),
@@ -313,8 +415,11 @@ class XiyouLiveEnricher:
                                          separators=(",", ":")).encode("utf-8")).hexdigest()
         result = {"market_rows": market_rows,
                   "provider_snapshot_version": "snapshot-xiyou-" + digest, "usage": usage}
+        provider_usage = {"xiyou": dict(usage)}
         if competitor_profile is not None:
             result["competitor_profile"] = competitor_profile
+            if isinstance(competitor_profile.get("provider_usage"), Mapping):
+                provider_usage["sorftime"] = dict(competitor_profile["provider_usage"])
             category_features = getattr(self._catalog_adapter, "last_category_features", None)
             if isinstance(category_features, Mapping):
                 result["category_features"] = dict(category_features)
@@ -323,6 +428,33 @@ class XiyouLiveEnricher:
                     result["buyer_checklist"] = evidence["buyer_checklist"]
                 if evidence["text_evidence"] is not None:
                     result["text_evidence"] = evidence["text_evidence"]
+                if self._visual_adapter is not None:
+                    try:
+                        visual = self._visual_adapter.enrich(
+                            self_product=competitor_profile.get("self_product") or {},
+                            competitors=competitor_profile.get("competitors") or [],
+                            expected_elements=category_features.get("features") or [],
+                        )
+                        if isinstance(visual, Mapping):
+                            for key in ("visual_evidence", "checklist_evaluations", "competitor_comparisons", "image_briefs"):
+                                if key in visual:
+                                    result[key] = deepcopy(visual[key])
+                            if isinstance(visual.get("provider_usage"), Mapping):
+                                provider_usage["doubao"] = dict(visual["provider_usage"])
+                    except Exception as exc:
+                        # A visual failure must not turn an otherwise valid
+                        # market snapshot into fabricated image judgements.
+                        result["visual_provider_error"] = type(exc).__name__
+                        usage_snapshot = getattr(getattr(self._visual_adapter, "budget", None), "snapshot", None)
+                        if callable(usage_snapshot):
+                            snapshot = usage_snapshot()
+                            provider_usage["doubao"] = {
+                                "actual_calls": int(snapshot.get("actual_calls") or 0),
+                                "cache_hits": int(getattr(self._visual_adapter, "cache_hits", 0) or 0),
+                                "output_tokens": int(snapshot.get("output_tokens") or 0),
+                                "failures": int(getattr(self._visual_adapter, "failures", 0) or 0),
+                            }
+        result["provider_usage"] = provider_usage
         if self._cache is not None:
             try:
                 self._cache.set(cache_key, provider="xiyou-live-enricher",
@@ -355,7 +487,8 @@ class XiyouLiveEnricher:
                 "priority": index,
             })
         version = self._checklist_version or self._confirmation_version
-        checklist = build_buyer_checklist(candidates=candidates, confirmation_version=version)
+        checklist = build_buyer_checklist(candidates=candidates, confirmation_version=version,
+                                          confirmation=self._confirmation)
         products = []
         own = competitor_profile.get("self_product")
         if isinstance(own, Mapping):
@@ -367,11 +500,11 @@ class XiyouLiveEnricher:
             text_evidence = build_text_evidence_matrix(
                 features, products,
                 confirmed_feature_ids=ids,
-                confirmation_version=self._feature_review_version or self._confirmation_version or "unconfirmed",
+                confirmation_version=self._feature_review_version or (version if checklist.get("confirmation_valid") else None) or "unconfirmed",
             )
-            if version is None:
+            if checklist.get("status") != "ready":
                 text_evidence["status"] = "draft"
-                text_evidence["reason"] = "confirmation_required"
+                text_evidence["reason"] = checklist.get("reason", "confirmation_required")
         return {"buyer_checklist": checklist, "text_evidence": text_evidence}
 
     def _cache_key(self, selected: Mapping[str, str]) -> str:
@@ -404,12 +537,39 @@ class XiyouLiveEnricher:
         reserved = 1
         try:
             with self._budget._lock:
-                self._budget._reserve(reserved, usage)
-                usage["actual_calls"] += 1
-                response = self._transport.call(COMPETITOR_TOOL_NAME, {
-                    "keyword": keyword, "country": self._country, "page": 1,
-                    "page_size": 5, "sort_field": "traffic", "sort_order": "desc",
-                })
+                for attempt in range(self._retry_policy.max_retries + 1):
+                    self._budget._reserve(reserved, usage)
+                    usage["actual_calls"] += 1
+                    usage["retries"] += int(attempt > 0)
+                    arguments = {"keyword": keyword, "country": self._country, "page": 1,
+                                 "page_size": 5, "sort_field": "traffic", "sort_order": "desc"}
+                    request_sha256 = _digest(arguments)
+                    try:
+                        response = self._transport.call(COMPETITOR_TOOL_NAME, arguments)
+                    except Exception as exc:
+                        status = getattr(exc, "status_code", None)
+                        usage["call_receipts"].append({"provider": "xiyou", "tool": COMPETITOR_TOOL_NAME,
+                            "attempt": attempt + 1, "request_sha256": request_sha256,
+                            "response_sha256": None, "status": status, "outcome": "transport_error"})
+                        if status == 429:
+                            usage["rate_limited"] += 1
+                        if status in self._retry_policy.retryable_statuses and attempt < self._retry_policy.max_retries:
+                            fallback = self._retry_policy.backoff_seconds[min(attempt, len(self._retry_policy.backoff_seconds) - 1)] if self._retry_policy.backoff_seconds else 0
+                            self._sleep_fn(retry_delay(self._transport, fallback))
+                            continue
+                        raise
+                    status = self._response_status(response)
+                    usage["call_receipts"].append({"provider": "xiyou", "tool": COMPETITOR_TOOL_NAME,
+                        "attempt": attempt + 1, "request_sha256": request_sha256,
+                        "response_sha256": _digest(response), "status": status,
+                        "outcome": "response" if status not in self._retry_policy.retryable_statuses else "retryable_response"})
+                    if status == 429:
+                        usage["rate_limited"] += 1
+                    if status in self._retry_policy.retryable_statuses and attempt < self._retry_policy.max_retries:
+                        fallback = self._retry_policy.backoff_seconds[min(attempt, len(self._retry_policy.backoff_seconds) - 1)] if self._retry_policy.backoff_seconds else 0
+                        self._sleep_fn(retry_delay(self._transport, fallback))
+                        continue
+                    break
                 structured = self._envelope(response, usage)
                 self._budget._settle(structured.get("cost_credits"), reserved, usage)
                 if structured.get("status") != 200:
@@ -440,6 +600,7 @@ class XiyouLiveEnricher:
                     "competitors": rows,
                     "self_product": own,
                     "snapshot_version": "snapshot-xiyou-competitors-v1",
+                    "rank_rows": self._rank_rows(keyword, entries),
                 }
                 if self._requested_competitor_asins:
                     found = {row["asin"] for row in rows}
@@ -450,6 +611,34 @@ class XiyouLiveEnricher:
             # The market keyword call remains usable even when the optional
             # competitor endpoint has no result or changes schema.
             return None
+
+    def _rank_rows(self, keyword: str, entries: list[Any]) -> list[dict[str, Any]]:
+        """Project only explicit position records from the competitor sample."""
+        observed: list[dict[str, Any]] = []
+        for entry in entries:
+            if not isinstance(entry, Mapping):
+                continue
+            asin = entry.get("asin")
+            if not isinstance(asin, str) or not re.fullmatch(r"[A-Z0-9]{10}", asin, re.I):
+                continue
+            try:
+                ranks = normalize_ranks(entry.get("ranks"))
+            except (TypeError, ValueError):
+                continue
+            observed.append({"asin": asin.upper(), **ranks})
+        own = next((row for row in observed if row["asin"] == self._asin), None)
+        if own is None:
+            return []
+        benchmarks = [{"asin": row["asin"], "organic_rank": row["organic_rank"]}
+                      for row in observed
+                      if row["asin"] != self._asin and row.get("organic_rank") is not None]
+        benchmarks.sort(key=lambda row: (row["organic_rank"], row["asin"]))
+        return [{"keyword": keyword, "asin": self._asin,
+                 "organic_rank": own.get("organic_rank"), "ad_rank": own.get("ad_rank"),
+                 "benchmark_asins": benchmarks[:3],
+                 "provider_source": "xiyou:get_keyword_asin_analysis",
+                 "rank_scope": {"keyword": keyword, "country": self._country}}
+                ]
 
     @staticmethod
     def _product_row(entry: Any, *, role: str) -> dict[str, Any] | None:
@@ -472,13 +661,23 @@ class XiyouLiveEnricher:
         return row
 
     @staticmethod
+    def _response_status(response: Any) -> int | None:
+        """Read only an explicit outer or structured HTTP-like status."""
+        if not isinstance(response, Mapping):
+            return None
+        status = response.get("status")
+        if status is not None:
+            return status
+        result = response.get("result")
+        structured = result.get("structuredContent") if isinstance(result, Mapping) else None
+        return structured.get("status") if isinstance(structured, Mapping) else None
+
+    @staticmethod
     def _envelope(response: Any, usage: dict[str, int]) -> Mapping[str, Any]:
         if not isinstance(response, Mapping):
             _fail("INVALID_MCP_RESPONSE", usage)
         status = response.get("status")
         if status is not None:
-            if type(status) is int and status == 429:
-                usage["rate_limited"] += 1
             if type(status) is not int or status != 200:
                 _fail("HTTP_STATUS_FAILED", usage)
         if response.get("jsonrpc") != "2.0" or "error" in response:

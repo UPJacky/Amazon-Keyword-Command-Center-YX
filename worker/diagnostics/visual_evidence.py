@@ -36,8 +36,18 @@ def build_visual_evidence(*, image_ids: Iterable[str], observations: Iterable[Ma
     if len(keys) != len(rows):
         errors.append("duplicate_image_element")
     missing = sorted(expected_keys - keys)
-    not_judged = [row for row in rows if row["answer_mode"] == "unknown" or row["prominence"] == "unknown" or row["legibility"] == "unreadable" or not row.get("evidence_region") or not isinstance(row.get("source_refs"), list) or not row.get("source_refs")]
+    for row in rows:
+        row["judgement_eligible"] = (
+            row["answer_mode"] != "unknown" and row["prominence"] != "unknown"
+            and row["legibility"] == "clear" and row["confidence"] in {"high", "medium"}
+            and isinstance(row.get("evidence_region"), str) and bool(row["evidence_region"].strip())
+            and isinstance(row.get("source_refs"), list) and bool(row["source_refs"])
+            and all(isinstance(ref, str) and bool(ref.strip()) for ref in row["source_refs"])
+        )
+    not_judged = [row for row in rows if not row["judgement_eligible"]]
     if not_judged:
         errors.append("observation_not_judged")
     status = "ready" if not errors and not missing else "partial" if rows else "failed"
-    return {"schema_version": "visual-evidence-0.1", "status": status, "reason": "complete_observation" if status == "ready" else "observation_incomplete", "expected_image_ids": expected_images, "expected_element_ids": expected_elements, "observations": rows, "missing_image_element": [[image, element] for image, element in missing], "errors": errors, "provider_calls": 0}
+    judged_keys = {(row["image_id"], row["element_id"]) for row in rows if row["judgement_eligible"]}
+    return {"schema_version": "visual-evidence-0.1", "status": status, "reason": "complete_observation" if status == "ready" else "observation_incomplete", "expected_image_ids": expected_images, "expected_element_ids": expected_elements, "observations": rows, "missing_image_element": [[image, element] for image, element in missing], "errors": errors, "provider_calls": 0,
+            "coverage": {"expected": len(expected_keys), "observed": len(keys), "judged": len(judged_keys)}}

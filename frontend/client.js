@@ -3,11 +3,35 @@
   const SESSION_KEY = 'kwcc_live_session';
   const DEMO_KEY = 'kwcc_demo_session';
   const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const REPORT_ARTIFACTS = Object.freeze([
+    'rank-benchmark.json', 'negative-keywords.json', 'competitors.json',
+    'category-features.json', 'buyer-checklist.json', 'text-evidence.json',
+    'listing-diagnostics.json', 'optimization-plan.json',
+  ]);
+  const BUNDLE_ARTIFACTS = new Set([...REPORT_ARTIFACTS,
+    'rules-snapshot.json', 'run-meta.json', 'provider-usage.json']);
   const stages = ['new', 'growth', 'stable', 'clearance', 'seasonal_restart'];
   class ClientError extends Error {
     constructor(code, message, status = 0, details = null) { super(message); this.code = code; this.status = status; this.details = details; }
   }
   const fail = (code, message, status, details) => { throw new ClientError(code, message, status, details); };
+  function canonicalJSON(value) {
+    const normalize = input => {
+      if (input === null || typeof input === 'string' || typeof input === 'boolean') return input;
+      if (typeof input === 'number') {
+        if (!Number.isFinite(input)) fail('RESPONSE_INVALID', '报告证据包含无效数字');
+        return input;
+      }
+      if (Array.isArray(input)) return input.map(normalize);
+      if (input && typeof input === 'object') {
+        const output = {};
+        for (const key of Object.keys(input).sort()) output[key] = normalize(input[key]);
+        return output;
+      }
+      fail('RESPONSE_INVALID', '报告证据结构无效');
+    };
+    return JSON.stringify(normalize(value));
+  }
   function jwtPayload(value) {
     try {
       const part = value.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
@@ -69,6 +93,48 @@
         clear('expired'); fail('SESSION_EXPIRED', '会话已过期，请重新登录');
       }
       return session;
+    }
+    async function sha256JSON(value) {
+      const cryptoImpl = options.crypto || globalThis.crypto;
+      if (!cryptoImpl?.subtle || typeof TextEncoder !== 'function')
+        fail('CRYPTO_REQUIRED', '浏览器需要 HTTPS 和 SHA-256 支持');
+      const bytes = new TextEncoder().encode(canonicalJSON(value));
+      const digest = await cryptoImpl.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+    async function validateEvidenceManifest(content, taskId, runId, requestedArtifact = null) {
+      const manifest = content?.evidence_manifest;
+      if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest))
+        fail('REPORT_INVALID', '报告证据清单缺失或格式无效');
+      if (manifest.schema_version !== 'report-evidence-0.1'
+        || manifest.task_id !== taskId || manifest.run_id !== runId
+        || typeof manifest.input_sha256 !== 'string' || !/^[a-f0-9]{64}$/i.test(manifest.input_sha256)
+        || manifest.hash_encoding !== 'utf8-json-sort-keys-compact-ensure-ascii-false'
+        || !manifest.artifacts || typeof manifest.artifacts !== 'object' || Array.isArray(manifest.artifacts)
+        || typeof manifest.manifest_sha256 !== 'string' || !/^[a-f0-9]{64}$/i.test(manifest.manifest_sha256))
+        fail('REPORT_INVALID', '报告证据清单身份或格式无效');
+      const artifactNames = Object.keys(manifest.artifacts);
+      if (artifactNames.some(name => !BUNDLE_ARTIFACTS.has(name)))
+        fail('REPORT_INVALID', '报告包含未注册的证据文件');
+      for (const name of artifactNames) {
+        const entry = manifest.artifacts[name];
+        if (!entry || typeof entry !== 'object' || Array.isArray(entry)
+          || typeof entry.sha256 !== 'string' || !/^[a-f0-9]{64}$/i.test(entry.sha256)
+          || !Number.isInteger(entry.bytes) || entry.bytes < 0)
+          fail('REPORT_INVALID', '报告证据条目无效');
+      }
+      if (requestedArtifact !== null && !Object.prototype.hasOwnProperty.call(manifest.artifacts, requestedArtifact))
+        fail('REPORT_INVALID', '报告模块未登记在证据清单中');
+      const unsigned = { ...manifest };
+      delete unsigned.manifest_sha256;
+      if ((await sha256JSON(unsigned)).toLowerCase() !== manifest.manifest_sha256.toLowerCase())
+        fail('REPORT_INVALID', '报告证据清单校验失败');
+      if (requestedArtifact !== null) {
+        const module = content.modules?.[requestedArtifact];
+        if ((await sha256JSON(module)).toLowerCase() !== manifest.artifacts[requestedArtifact].sha256.toLowerCase())
+          fail('REPORT_INVALID', '报告模块内容校验失败');
+      }
+      return manifest;
     }
     async function request(path, { method = 'GET', body, rawBody, contentType, token, rest = false } = {}) {
       if (typeof options.fetch !== 'function') fail('TRANSPORT_MISSING', '未配置请求 transport');
@@ -375,6 +441,8 @@
           || !Array.isArray(content.rows) || !content.rows.every(row => row && typeof row === 'object' && !Array.isArray(row))
           || ('task_id' in content && content.task_id !== taskId) || ('run_id' in content && content.run_id !== runId))
           fail('RESPONSE_INVALID', '报告结构或运行绑定无效');
+        if ((content.report_scope && content.report_scope !== 'ad_only') || content.evidence_manifest)
+          await validateEvidenceManifest(content, taskId, runId);
         check();
         return { task_id: taskId, run_id: runId, report_path: run.report_path, content };
       },
@@ -382,12 +450,14 @@
         requireSession();
         const stamp = generation;
         [taskId, runId] = reportIds(taskId, runId);
-        if (!['rank-benchmark.json', 'negative-keywords.json', 'competitors.json', 'category-features.json', 'buyer-checklist.json', 'text-evidence.json', 'listing-diagnostics.json', 'optimization-plan.json'].includes(name))
+        if (!REPORT_ARTIFACTS.includes(name))
           fail('INPUT_INVALID', '未知报告模块');
         // 004 authorizes only task_runs.report_path: modules must come from that same bundle.
         const report = await liveReports.read(taskId, runId);
         if (stamp !== generation) fail('SESSION_CHANGED', '会话已改变，报告已丢弃');
         requireSession();
+        if ((report.content.report_scope && report.content.report_scope !== 'ad_only') || report.content.evidence_manifest)
+          await validateEvidenceManifest(report.content, taskId, runId, name);
         const modules = report.content.modules;
         if (modules === undefined || modules === null)
           fail('REPORT_NOT_GENERATED', '该模块尚未生成可读取的真实报告');
@@ -423,7 +493,7 @@
     for (const client of Object.values(clients)) if (client.mode !== config.mode) fail('MODE_MISMATCH', '拒绝跨模式 client');
     return Object.freeze({ mode: config.mode, ...clients });
   }
-  const api = { createClient, validateConfig, ClientError };
+  const api = { createClient, validateConfig, ClientError, REPORT_ARTIFACTS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KWCCClient = api;
 })(globalThis);

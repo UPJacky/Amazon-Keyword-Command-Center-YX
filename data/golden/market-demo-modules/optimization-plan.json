@@ -40,8 +40,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -69,7 +81,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -82,6 +109,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持防守投放，复核自然位与成本边界",
       "observation_window": null,
       "rule_hits": [
@@ -121,8 +164,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -150,7 +205,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -163,6 +233,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -201,8 +287,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -230,7 +328,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -243,6 +356,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -281,8 +410,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -310,7 +451,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -323,6 +479,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -361,8 +533,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -390,7 +574,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -403,6 +602,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -441,8 +656,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -470,7 +697,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -483,6 +725,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -521,8 +779,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -550,7 +820,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "b0991q94kp",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -563,6 +848,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -601,8 +902,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -630,7 +943,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "luces led para cuarto",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -643,6 +971,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -681,8 +1025,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -710,7 +1066,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -723,6 +1094,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -761,8 +1148,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -790,7 +1189,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "leds",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -803,6 +1217,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -841,8 +1271,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -870,7 +1312,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -883,6 +1340,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -921,8 +1394,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -950,7 +1435,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led light strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -963,6 +1463,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1001,8 +1517,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1030,7 +1558,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1043,6 +1586,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1081,8 +1640,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1110,7 +1681,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "room lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1123,6 +1709,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1161,8 +1763,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1190,7 +1804,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1203,6 +1832,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1241,8 +1886,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1270,7 +1927,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights for room",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1283,6 +1955,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1321,8 +2009,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1350,7 +2050,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led strips",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1363,6 +2078,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1401,8 +2132,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1430,7 +2173,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "string lights indoor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1443,6 +2201,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1481,8 +2255,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1510,7 +2296,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "fairy lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1523,6 +2324,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1561,8 +2378,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1590,7 +2419,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "smart home",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1603,6 +2447,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1641,8 +2501,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1670,7 +2542,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "home decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1683,6 +2570,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1721,8 +2624,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1750,7 +2665,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "luces led",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1763,6 +2693,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1801,8 +2747,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1830,7 +2788,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "string lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1843,6 +2816,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1881,8 +2870,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1910,7 +2911,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "light strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -1923,6 +2939,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -1961,8 +2993,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -1990,7 +3034,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led strip lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2003,6 +3062,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2041,8 +3116,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2070,7 +3157,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "rgb led strip",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2083,6 +3185,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2121,8 +3239,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2150,7 +3280,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "bedroom lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2163,6 +3308,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2201,8 +3362,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2230,7 +3403,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led light strips",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2243,6 +3431,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2281,8 +3485,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2310,7 +3526,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led string lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2323,6 +3554,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2361,8 +3608,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2390,7 +3649,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led strip lights for home",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2403,6 +3677,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2441,8 +3731,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2470,7 +3772,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "b08b1f2gxy",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2483,6 +3800,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2521,8 +3854,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2550,7 +3895,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "rgb lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2563,6 +3923,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2601,8 +3977,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2630,7 +4018,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "outdoor led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2643,6 +4046,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2681,8 +4100,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2710,7 +4141,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "luces para cuarto",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2723,6 +4169,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2761,8 +4223,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2790,7 +4264,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "cutecore room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2803,6 +4292,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2841,8 +4346,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2870,7 +4387,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "home decor clearance",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2883,6 +4415,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -2921,8 +4469,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -2950,7 +4510,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "b07n1cmgqq",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -2963,6 +4538,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3001,8 +4592,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3030,7 +4633,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "leds lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3043,6 +4661,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3081,8 +4715,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3110,7 +4756,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led room lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3123,6 +4784,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3161,8 +4838,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3190,7 +4879,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "rope led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3203,6 +4907,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3241,8 +4961,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3270,7 +5002,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "rope lights indoor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3283,6 +5030,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3321,8 +5084,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3350,7 +5125,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "room stuff",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3363,6 +5153,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3401,8 +5207,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3430,7 +5248,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "b09kg2p1qq",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3443,6 +5276,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3481,8 +5330,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3510,7 +5371,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led rope light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3523,6 +5399,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3561,8 +5453,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3590,7 +5494,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "room lighting",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3603,6 +5522,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3641,8 +5576,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3670,7 +5617,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3683,6 +5645,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3721,8 +5699,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3750,7 +5740,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights battery operated",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3763,6 +5768,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3801,8 +5822,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3830,7 +5863,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "dorm decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3843,6 +5891,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3881,8 +5945,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3910,7 +5986,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led strip light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -3923,6 +6014,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -3961,8 +6068,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -3990,7 +6109,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "christmas decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4003,6 +6137,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4041,8 +6191,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4070,7 +6232,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led light strips with remote",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4083,6 +6260,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4121,8 +6314,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4150,7 +6355,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "tv lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4163,6 +6383,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4201,8 +6437,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4230,7 +6478,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4243,6 +6506,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4281,8 +6560,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4310,7 +6601,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "bedroom lighting",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4323,6 +6629,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4361,8 +6683,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4390,7 +6724,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led rope lights for bedroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4403,6 +6752,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4441,8 +6806,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4470,7 +6847,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "govee led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4483,6 +6875,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4521,8 +6929,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4550,7 +6970,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led strip lights battery powered",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4563,6 +6998,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4601,8 +7052,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4630,7 +7093,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "luz led",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4643,6 +7121,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4681,8 +7175,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4710,7 +7216,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "bedroom decor aesthetic",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4723,6 +7244,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4761,8 +7298,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4790,7 +7339,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "rope lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4803,6 +7367,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4841,8 +7421,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4870,7 +7462,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "100 ft led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4883,6 +7490,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -4921,8 +7544,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -4950,7 +7585,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led rope lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -4963,6 +7613,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5001,8 +7667,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5030,7 +7708,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "dorm room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5043,6 +7736,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5081,8 +7790,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5110,7 +7831,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights 100 ft",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5123,6 +7859,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5161,8 +7913,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5190,7 +7954,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "classroom lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5203,6 +7982,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5241,8 +8036,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5270,7 +8077,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "luz led para cuarto",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5283,6 +8105,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5321,8 +8159,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5350,7 +8200,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "b08m9c4mmm",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5363,6 +8228,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5401,8 +8282,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5430,7 +8323,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "100ft led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5443,6 +8351,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5481,8 +8405,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5510,7 +8446,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "grunge room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5523,6 +8474,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5561,8 +8528,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5590,7 +8569,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights for bathroom",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5603,6 +8597,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5641,8 +8651,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5670,7 +8692,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "cool things",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5683,6 +8720,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5721,8 +8774,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5750,7 +8815,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "￼led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5763,6 +8843,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5801,8 +8897,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5830,7 +8938,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "lighting & ceiling fans",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5843,6 +8966,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5881,8 +9020,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5910,7 +9061,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "battery powered led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -5923,6 +9089,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -5961,8 +9143,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -5990,7 +9184,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "bedroom decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6003,6 +9212,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6041,8 +9266,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6070,7 +9307,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "ksipze 100ft led strip lights rgb music sync",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6083,6 +9335,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6121,8 +9389,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6150,7 +9430,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "bedroom accessories",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6163,6 +9458,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6201,8 +9512,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6230,7 +9553,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "lights for room",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6243,6 +9581,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6281,8 +9635,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6310,7 +9676,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "outdoor led strip lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6323,6 +9704,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6361,8 +9758,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6390,7 +9799,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "outdoor led strip lights waterproof",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6403,6 +9827,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6441,8 +9881,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6470,7 +9922,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "rope light",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6483,6 +9950,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6521,8 +10004,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6550,7 +10045,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "luces",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6563,6 +10073,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6601,8 +10127,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6630,7 +10168,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led lights for tv",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6643,6 +10196,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6681,8 +10250,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6710,7 +10291,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "led light rope",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6723,6 +10319,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6761,8 +10373,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6790,7 +10414,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "indoor string lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6803,6 +10442,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6841,8 +10496,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6870,7 +10537,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "room led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6883,6 +10565,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "保持当前策略，进入下一周期复盘",
       "observation_window": null,
       "rule_hits": [
@@ -6928,8 +10626,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -6957,7 +10667,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "govee led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -6970,6 +10695,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "继续观察，不做强动作",
       "observation_window": null,
       "rule_hits": [
@@ -7015,8 +10756,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -7044,7 +10797,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "battery led lights",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -7057,6 +10825,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "继续观察，不做强动作",
       "observation_window": null,
       "rule_hits": [
@@ -7102,8 +10886,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -7131,7 +10927,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "spiderman bedroom decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -7144,6 +10955,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "继续观察，不做强动作",
       "observation_window": null,
       "rule_hits": [
@@ -7189,8 +11016,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -7218,7 +11057,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "hello kitty room decor",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -7231,6 +11085,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "继续观察，不做强动作",
       "observation_window": null,
       "rule_hits": [
@@ -7278,8 +11148,20 @@
           "entity_evaluation": null,
           "entity_status": "not_available",
           "exit_condition": {
+            "config_version": "stable-v1-template",
+            "missing_fields": [
+              "window",
+              "metric",
+              "operator",
+              "threshold",
+              "rollback_action",
+              "rule_version",
+              "scope"
+            ],
+            "reason": "monitoring_contract_missing_or_invalid",
+            "rule_version": "rule-v0.1",
             "status": "pending",
-            "value": "补齐广告实体与观察窗口后定义退出条件"
+            "value": null
           },
           "facts": {},
           "judgement": {
@@ -7307,7 +11189,22 @@
         }
       ],
       "entity_status": "not_available",
-      "exit_conditions": null,
+      "exit_conditions": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "keyword": "room accessories",
       "missing_entity_fields": [
         "ad_group_id/ad_group_name",
@@ -7320,6 +11217,22 @@
         "spend",
         "target_id/target"
       ],
+      "monitoring": {
+        "config_version": "stable-v1-template",
+        "missing_fields": [
+          "window",
+          "metric",
+          "operator",
+          "threshold",
+          "rollback_action",
+          "rule_version",
+          "scope"
+        ],
+        "reason": "monitoring_contract_missing_or_invalid",
+        "rule_version": "rule-v0.1",
+        "status": "pending",
+        "value": null
+      },
       "next_action_text": "调整竞价并复核 CPC / ACOS",
       "observation_window": null,
       "rule_hits": [

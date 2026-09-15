@@ -25,18 +25,18 @@ from worker.config.config_merge import config_version, effective_config
 from worker.pipeline.task_runner import ProviderEnricher, run_task
 from worker.providers.config_validation import validate_config
 from worker.rule_engine.engine import load_default_config
+from worker.storage.artifact_registry import EVIDENCE_ARTIFACTS, MODULE_ARTIFACTS, SUPPLEMENTARY_ARTIFACTS
 
 MAX_INPUT_BYTES = 10 * 1024 * 1024
 MAX_REPORT_BYTES = 16 * 1024 * 1024
 MAX_RPC_BYTES = 1024 * 1024
 _UUID = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 _REPORT = r"report-[0-9a-f]{48}\.json"
-_MODULE_ARTIFACTS = (
-    "rank-benchmark.json", "negative-keywords.json", "competitors.json",
-    "listing-diagnostics.json", "optimization-plan.json",
-)
-_SUPPLEMENTARY_ARTIFACTS = ("category-features.json", "buyer-checklist.json", "text-evidence.json")
-_RPC_NAMES = {"kwcc_claim_run", "kwcc_heartbeat_run", "kwcc_finish_run"}
+_MODULE_ARTIFACTS = MODULE_ARTIFACTS
+_SUPPLEMENTARY_ARTIFACTS = SUPPLEMENTARY_ARTIFACTS
+_EVIDENCE_ARTIFACTS = EVIDENCE_ARTIFACTS
+_RPC_NAMES = {"kwcc_preview_next_run", "kwcc_claim_run", "kwcc_claim_previewed_run",
+              "kwcc_heartbeat_run", "kwcc_finish_run"}
 _STAGE_TEMPLATES = {
     "new": "new_product_growth", "growth": "balanced_growth",
     "stable": "stable_profit", "clearance": "clearance",
@@ -104,6 +104,11 @@ def _encode(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
+def _sha256_json(value: Any) -> str:
+    """Return a stable digest for evidence identity without persisting payloads."""
+    return hashlib.sha256(_encode(value)).hexdigest()
+
+
 def _decode(raw: bytes, code: str) -> Any:
     def reject_constant(_value):
         raise ValueError("nonfinite JSON")
@@ -161,6 +166,13 @@ def _full_report_complete(master: Mapping[str, Any], modules: Mapping[str, Any],
     for name in _MODULE_ARTIFACTS:
         if name not in modules or states.get(name, {}).get("status") != "ready":
             return False
+    # These artifacts are the evidence behind the business modules.  A report
+    # with only the five top-level module files must remain partial; otherwise
+    # a copied/legacy bundle could claim complete listing evidence without the
+    # category scope, buyer confirmation and text proof used to produce it.
+    for name in _SUPPLEMENTARY_ARTIFACTS:
+        if name not in modules or states.get(name, {}).get("status") != "ready":
+            return False
     return True
 
 
@@ -172,6 +184,40 @@ def _uuid(value: Any, code: str = "INPUT_INVALID") -> str:
 
 def _positive(value: Any) -> bool:
     return type(value) in (int, float) and math.isfinite(value) and value > 0
+
+
+def _claim_business_confirmation(task: Mapping[str, Any], claim: Mapping[str, Any]) -> dict[str, Any] | None:
+    """Accept only the confirmation row bound to the claimed task identity.
+
+    The legacy queue may not return a confirmation yet, in which case the
+    downstream business modules stay draft.  If a queue does return one, a
+    malformed or cross-task row is an invalid claim rather than usable input.
+    """
+    raw = claim.get("business_confirmation")
+    if raw is None:
+        raw = claim.get("confirmation")
+    if raw is None:
+        return None
+    if not isinstance(raw, Mapping) or raw.get("status") != "confirmed":
+        raise RuntimeFailure("INPUT_INVALID")
+    expected = task.get("confirmation_version")
+    version = raw.get("version") or raw.get("confirmation_version")
+    if (not isinstance(expected, str) or not expected.strip()
+            or not isinstance(version, str) or version.strip() != expected.strip()):
+        raise RuntimeFailure("INPUT_INVALID")
+    for field in ("task_id", "store_id", "self_asin"):
+        if raw.get(field) != task.get(field):
+            raise RuntimeFailure("INPUT_INVALID")
+    object_id = raw.get("object_id")
+    input_hash = raw.get("input_hash")
+    if (not isinstance(object_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}", object_id)
+            or not isinstance(input_hash, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", input_hash)):
+        raise RuntimeFailure("INPUT_INVALID")
+    task_hash = task.get("input_file_hash")
+    if (not isinstance(task_hash, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", task_hash)
+            or input_hash.casefold() != task_hash.casefold()):
+        raise RuntimeFailure("INPUT_INVALID")
+    return dict(raw)
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -362,6 +408,13 @@ class ProductionWorker:
         self.lease_seconds, self.heartbeat_interval = lease_seconds, interval
         self.provider_enricher, self.competitor_profile = provider_enricher, competitor_profile
         self.provider_factory = provider_factory
+        # Optional composition-root guard. When present it is checked before
+        # claiming a queue run, so an exhausted local Provider budget cannot
+        # consume a lease and fail the task afterwards.
+        self.provider_claim_guard = None
+        # Composition roots set this only after a successful read-only
+        # preview. It binds the subsequent claim to the estimated task/run.
+        self.provider_claim_preview = None
         self.stop_event = stop_event if stop_event is not None else threading.Event()
 
     def _request(self, method, path, *, body=None, headers=None, limit=MAX_RPC_BYTES):
@@ -430,14 +483,38 @@ class ProductionWorker:
             # Keep the registry identical to _MODULE_ARTIFACTS and the frontend
             # allowlist. Listing diagnostics used to be generated locally but
             # silently omitted from the production bundle.
-            for name in ("rank-benchmark", "negative-keywords", "competitors", "listing-diagnostics", "optimization-plan", "category-features", "buyer-checklist", "text-evidence"):
-                artifact = root / f"{name}.json"
+            for name in (*_MODULE_ARTIFACTS, *_SUPPLEMENTARY_ARTIFACTS):
+                artifact = root / name
                 if artifact.exists():
                     if artifact.is_symlink():
                         raise ValueError()
-                    modules[f"{name}.json"] = _decode(artifact.read_bytes(), "REPORT_INVALID")
-                elif name not in {"competitors", "category-features", "buyer-checklist", "text-evidence"}:
+                    modules[name] = _decode(artifact.read_bytes(), "REPORT_INVALID")
+                elif name not in {"competitors.json", *_SUPPLEMENTARY_ARTIFACTS}:
                     raise ValueError()
+            evidence = {}
+            for name in _EVIDENCE_ARTIFACTS:
+                artifact = root / name
+                if artifact.is_symlink():
+                    raise ValueError()
+                if artifact.exists():
+                    evidence[name] = _decode(artifact.read_bytes(), "REPORT_INVALID")
+                elif name != "provider-usage.json" or provider_state.get("status") != "not_requested":
+                    raise ValueError()
+            manifest = {
+                "schema_version": "report-evidence-0.1", "task_id": task["task_id"],
+                "run_id": run["run_id"], "input_sha256": task["input_file_hash"].lower(),
+                "hash_encoding": "utf8-json-sort-keys-compact-ensure-ascii-false",
+                "artifacts": {},
+            }
+            for name, value in {**modules, **evidence}.items():
+                canonical = json.dumps(value, ensure_ascii=False, sort_keys=True,
+                                       separators=(",", ":"), allow_nan=False).encode("utf-8")
+                manifest["artifacts"][name] = {"sha256": hashlib.sha256(canonical).hexdigest(),
+                                               "bytes": len(canonical)}
+            # The manifest is itself part of the evidence.  Store its
+            # canonical digest after omitting the digest field so validators
+            # can detect a changed manifest without trusting dictionary order.
+            manifest["manifest_sha256"] = hashlib.sha256(_encode(manifest)).hexdigest()
             if (master.get("schema_version") != "report-0.2" or not isinstance(master.get("rows"), list)
                     or any(not isinstance(row, dict) for row in master["rows"])):
                 raise ValueError()
@@ -460,6 +537,7 @@ class ProductionWorker:
             }
             bundle = {**master, **metadata, "task_id": task["task_id"], "run_id": run["run_id"],
                       "modules": modules, "module_states": states,
+                      "evidence_artifacts": evidence, "evidence_manifest": manifest,
                       "provider_evidence": provider_state, "report_scope": report_scope,
                       "full_report_complete": complete}
             raw = _encode(bundle)
@@ -474,9 +552,26 @@ class ProductionWorker:
             return {"status": "disabled", "network_calls": 0}
         if self.stop_event.is_set():
             return {"status": "stopped"}
+        if callable(self.provider_claim_guard):
+            try:
+                allowed = self.provider_claim_guard()
+            except Exception:
+                allowed = False
+            if allowed is not True:
+                self.provider_claim_preview = None
+                return {"status": "blocked", "failure_reason": {"code": "PROVIDER_BUDGET_EXHAUSTED", "stage": "provider", "retryable": False}, "pending": True}
         try:
             claimed_at = time.monotonic()
-            claim = self._rpc("kwcc_claim_run", {"p_worker_id": self.worker_id, "p_lease_seconds": self.lease_seconds})
+            claim_name = "kwcc_claim_run"
+            claim_payload = {"p_worker_id": self.worker_id, "p_lease_seconds": self.lease_seconds}
+            preview = self.provider_claim_preview
+            if isinstance(preview, dict):
+                claim_name = "kwcc_claim_previewed_run"
+                claim_payload.update({"p_task_id": preview["task_id"], "p_run_id": preview["run_id"]})
+            # A preview is single-use. Never reuse it after a stale queue head
+            # or a transport error.
+            self.provider_claim_preview = None
+            claim = self._rpc(claim_name, claim_payload)
             if claim is None:
                 return {"status": "idle"}
             if not isinstance(claim, dict) or not isinstance(claim.get("run"), dict):
@@ -523,18 +618,29 @@ class ProductionWorker:
                     not isinstance(self.competitor_profile, Mapping)
                     or self.competitor_profile.get("self_asin") != task.get("self_asin")):
                 raise RuntimeFailure("COMPETITOR_PROFILE_INVALID")
+            business_confirmation = _claim_business_confirmation(task, claim)
             cfg = build_effective_config(task, claim["config"])
             raw, extension = self._input(task)
+            if (business_confirmation is not None
+                    and hashlib.sha256(raw).hexdigest().casefold()
+                    != business_confirmation["input_hash"].casefold()):
+                # _input already binds bytes to the task row.  This second
+                # comparison binds the bytes to the human-confirmed object as
+                # well, so a stale confirmation cannot be consumed silently.
+                raise RuntimeFailure("INPUT_HASH_MISMATCH")
             lease.check()
             enricher = self.provider_enricher
             if self.provider_factory is not None:
                 # Only metadata is handed to the factory; never operational lease credentials.
                 try:
-                    enricher = self.provider_factory({key: task.get(key) for key in
+                    factory_metadata = {key: task.get(key) for key in
                         ("task_id", "store_id", "self_asin", "product_stage", "marketplace",
                          "primary_core_keyword", "competitor_asins", "core_keywords",
                          "competitor_selection_version", "product_facts_version",
-                         "feature_review_version", "checklist_version", "confirmation_version")})
+                         "feature_review_version", "checklist_version", "confirmation_version")}
+                    if business_confirmation is not None:
+                        factory_metadata["business_confirmation"] = business_confirmation
+                    enricher = self.provider_factory(factory_metadata)
                     if not callable(enricher):
                         raise ValueError()
                 except Exception:
@@ -543,7 +649,15 @@ class ProductionWorker:
                 root = Path(directory)
                 source, storage = root / f"input{extension}", root / "artifacts"
                 source.write_bytes(raw)
-                provider_state = {"status": "not_requested", "real_provider_verified": False}
+                provider_state = {
+                    "status": "not_requested",
+                    "real_provider_verified": False,
+                    # Keep the confirmation traceable without copying its
+                    # object id, feature ids or other human-entered fields
+                    # into the report evidence.
+                    "confirmation_sha256": (_sha256_json(business_confirmation)
+                                             if business_confirmation is not None else None),
+                }
 
                 def enrich(parsed, config):
                     lease.check()
@@ -608,7 +722,7 @@ class ProductionWorker:
         if (not _positive(poll_interval) or (max_cycles is not None and
                 (type(max_cycles) is not int or max_cycles < 1))):
             raise RuntimeFailure("SETTINGS_INVALID")
-        stats = {"cycles": 0, "completed": 0, "failed": 0, "errors": 0, "idle": 0, "disabled": 0}
+        stats = {"cycles": 0, "completed": 0, "failed": 0, "errors": 0, "idle": 0, "disabled": 0, "blocked": 0}
         while not self.stop_event.is_set() and (max_cycles is None or stats["cycles"] < max_cycles):
             result = self.run_once()
             stats["cycles"] += 1
@@ -617,6 +731,8 @@ class ProductionWorker:
                 stats[key] += 1
             if on_cycle is not None:
                 on_cycle(result)
+            if key == "blocked":
+                break
             if max_cycles is not None and stats["cycles"] >= max_cycles:
                 break
             self.stop_event.wait(poll_interval)

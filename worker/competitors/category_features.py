@@ -107,10 +107,14 @@ def normalize_category_features(payload: Mapping[str, Any]) -> dict[str, Any]:
             invalid_share_count += 1
         if sales_share_raw is not None and monthly_sales_share is None:
             invalid_share_count += 1
+        english_name = _first(item, "english_name", "englishName", "name_en")
+        keywords = _first(item, "keywords", "search_terms", "searchTerms")
         description = _first(item, "feature_description", "description", "desc")
         row = {
             "feature_id": feature_id,
             "name": name,
+            "english_name": str(english_name).strip() if english_name is not None and str(english_name).strip() else None,
+            "keywords": [str(value).strip() for value in keywords if str(value).strip()] if isinstance(keywords, list) else [],
             "feature_description": str(description).strip() if description is not None and str(description).strip() else None,
             "product_count_share_raw": deepcopy(product_share_raw),
             "product_count_share": product_count_share,

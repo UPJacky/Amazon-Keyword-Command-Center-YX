@@ -1,5 +1,21 @@
 # Amazon-Keyword-Command-Center-YX 项目记忆
 
+## 2026-09-15 LUNU-05 R12 最新本地快照（当前优先）
+
+- 当前监督器为 `RUNNING`，已重新领取源码变更后的输入指纹 `sha256:97eedef47b8497249f264dde41e70c652a0cb8ec02a94303e3a3a93b641a9163`；LUNU-05 仍不能宣称完成。
+- R12 新增 `011_provider_claim_preview.sql` 只读领取前预览、`012_claim_previewed_run_atomically.sql` 预览身份原子领取、任务级最坏调用上界估算和预算不足整任务 fail-closed；六任务耗尽/恢复 fake Gate 通过，未领取任务保持 pending。
+- 当前本地证据：LUNU-05 行为 Gate 13 项、完整 UAT 21/21（Worker 372、前端 8、编排 25、连续 63、Pages 57/46、Supabase 静态 71、文档 15）通过；network_calls=0、external_calls=0、Secret=0。
+- 未闭合的 R12 是预算耗尽后的持久恢复/选择性重跑和跨 Provider 信用上限；真实六模块新 run、Supabase 新迁移/RLS/Storage、Worker 重启、CORS 和新截图仍未重新验收。
+
+## 2026-09-14 LUNU-05 纠正（当前优先）
+
+六模块业务验收未完成。旧46/46、E20 passed和通用UAT不能替代LUNU-05第6节；仍有本地实现缺口。监督器已领取 `lunu05-business-remediation`，继续读取 `LUNU-05-HANDOFF.md`，勿因旧完成快照停止。
+
+## 2026-09-15 LUNU-05 当前本地快照（优先）
+
+- 完整本地 UAT 21/21；Worker 371（跳过 12 项环境能力测试）、前端 8、编排 25、连续 63、Supabase 静态 70、Pages 57 文件/46 测试、文档 15；新增 R12 行为与迁移契约通过，network_calls=0、external_calls=0、Secret=0。
+- Sorftime 与 Xiyou 生产组合已补任务级未缓存调用估算、领取前只读预览、预算不足整任务不发请求、全缓存零调用放行和六任务耗尽后显式刷新恢复模拟；预览/claim 并发竞态、持久恢复/选择性重跑和跨 Provider 信用上限仍未闭合。真实六模块新 run、Supabase 新迁移/RLS/私有 Storage、Worker 重启、Pages 精确 CORS/新截图仍是独立 Gate。
+
 ## 2026-09-11 当前验证快照
 
 ## 2026-09-10 LUNU-04 完成快照（优先于历史记录）
@@ -11,9 +27,7 @@
 
 ### 当前验证快照（统计）
 
-- 完整 UAT 20/20 Gate：Worker 340 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 46 项构建验证、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
-
-- 完整 UAT 20/20 Gate：Worker 325 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
+- 完整 UAT 21/21 Gate：Worker 371 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件/46 项构建验证、文档契约 15 项；定向生产/Provider/视觉/西柚回归 110 项通过；network_calls=0、external_calls=0、Secret value 命中为0。此前的 20/20 统计保留在历史记录中，不作为当前快照。
 
 ## Phase 9 六模块补全重新开启（2026-09-07，优先于旧完成结论）
 
@@ -35,9 +49,13 @@
 
 - 2026-09-03：阶段 8 交付审计补齐真实任务报告随机对象名（48 位十六进制）、run-meta 相对路径追溯和解析器表头映射；演示黄金目录仍保留 `master-table.json` 作为离线 Pages fixture。6a 对账 91 行、五项差值零；完整 UAT Worker 207 项、前端 7 项、20/20 Gate 通过，network_calls=0、external_calls=0、Secret=0。
 
+## 上一轮验证快照（已归档）
+
+- 2026-09-15：完整 UAT 21/21 Gate，Worker 367 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0；新增 Supabase 确认绑定静态契约和 LUNU-05 六模块行为 Gate，均为本地验证。
+
 ## 当前验证快照
 
-- 2026-09-11：完整 UAT 20/20 Gate，Worker 340 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行契约 63 项、Pages 57 文件、文档契约 15 项；network_calls=0、external_calls=0、Secret value 命中为0。
+- 2026-09-15：完整 UAT 21/21 Gate，Worker 371 项（12 项环境能力跳过）、前端 8 项、UAT 编排契约 25 项、连续执行 63 项、Pages 57 文件、文档契约 15 项；定向生产/Provider/视觉/西柚回归 110 项通过；network_calls=0、external_calls=0、Secret value 命中为0；新增 Supabase 确认绑定静态契约、Sorftime/Xiyou 任务预检和 LUNU-05 六模块行为 Gate，均为本地验证。
 
 ## 历史验证快照
 

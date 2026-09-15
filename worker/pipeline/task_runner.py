@@ -23,11 +23,79 @@ from worker.storage.artifacts import run_root, write_json
 
 
 ProviderEnricher = Callable[[Mapping[str, Any], Mapping[str, Any]], Mapping[str, Any]]
-_USAGE_FIELDS = {"requested_keywords", "estimated_calls", "cache_hits", "actual_calls", "rate_limited", "failures", "requested_requests", "unique_requests", "duplicates_suppressed", "retries"}
+_USAGE_FIELDS = {"requested_keywords", "estimated_calls", "cache_hits", "actual_calls", "rate_limited", "failures", "requested_requests", "unique_requests", "duplicates_suppressed", "retries", "output_tokens", "max_output_tokens"}
+_USAGE_METADATA_FIELDS = {"provider", "adapter_version", "tool", "request_sha256", "response_sha256", "input_images_sha256", "outcome", "call_receipts"}
+_RECEIPT_FIELDS = {"provider", "adapter_version", "tool", "attempt", "request_sha256", "response_sha256", "status", "outcome"}
+_SHA256_RE = re.compile(r"[a-f0-9]{64}")
 
 
-def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str, int], Mapping[str, Any] | None, Mapping[str, Any] | None, Mapping[str, Mapping[str, Any]] | None, Mapping[str, Any] | None, list[Mapping[str, Any]] | None, list[Mapping[str, Any]] | None, Mapping[str, Any] | None, Mapping[str, Any] | None]:
-    allowed = {"market_rows", "provider_snapshot_version", "usage", "competitor_profile", "category_features", "buyer_checklist", "text_evidence", "visual_evidence", "checklist_evaluations", "competitor_comparisons", "image_briefs"}
+def _validate_call_receipts(value: Any) -> None:
+    """Validate privacy-preserving Provider receipts without accepting payloads.
+
+    Receipts are deliberately limited to identifiers, hashes, bounded attempt
+    metadata and status.  The allow-list prevents a provider adapter from
+    accidentally persisting request bodies, response bodies, URLs or secrets
+    in the report usage artifact.
+    """
+    if not isinstance(value, list) or len(value) > 1000:
+        raise ValueError("invalid provider call receipts")
+    for receipt in value:
+        if not isinstance(receipt, Mapping) or not set(receipt) <= _RECEIPT_FIELDS:
+            raise ValueError("invalid provider call receipt shape")
+        for field in ("provider", "tool", "adapter_version", "outcome"):
+            if field in receipt and (not isinstance(receipt[field], str)
+                                     or not receipt[field].strip()
+                                     or len(receipt[field]) > 200):
+                raise ValueError("invalid provider call receipt metadata")
+        if "attempt" in receipt and (type(receipt["attempt"]) is not int or receipt["attempt"] < 1):
+            raise ValueError("invalid provider call receipt attempt")
+        for field in ("request_sha256", "response_sha256"):
+            if field in receipt and receipt[field] is not None:
+                if not isinstance(receipt[field], str) or not _SHA256_RE.fullmatch(receipt[field]):
+                    raise ValueError("invalid provider call receipt hash")
+        if "status" in receipt and receipt["status"] is not None:
+            if type(receipt["status"]) is not int or not 100 <= receipt["status"] <= 599:
+                raise ValueError("invalid provider call receipt status")
+
+
+def _validate_usage_mapping(value: Any, *, require_actual_calls: bool, error: str) -> None:
+    if not isinstance(value, Mapping):
+        raise ValueError(error)
+    if require_actual_calls and "actual_calls" not in value:
+        raise ValueError(error)
+    if not set(value) <= (_USAGE_FIELDS | {"call_receipts"}):
+        raise ValueError(error)
+    for name, counter in value.items():
+        if name == "call_receipts":
+            _validate_call_receipts(counter)
+        elif type(counter) is not int or counter < 0:
+            raise ValueError("invalid provider usage counter")
+
+
+def _validate_provider_usage(value: Any) -> None:
+    if (not isinstance(value, Mapping)
+            or any(not isinstance(name, str) or not isinstance(stats, Mapping)
+                   for name, stats in value.items())):
+        raise ValueError("invalid provider usage by provider")
+    for stats in value.values():
+        if not set(stats) <= (_USAGE_FIELDS | _USAGE_METADATA_FIELDS):
+            raise ValueError("invalid provider usage by provider counters")
+        for name, item in stats.items():
+            if name in _USAGE_FIELDS:
+                if type(item) is not int or item < 0:
+                    raise ValueError("invalid provider usage by provider counter")
+            elif name == "call_receipts":
+                _validate_call_receipts(item)
+            elif name in {"request_sha256", "response_sha256", "input_images_sha256"}:
+                if item is not None and (not isinstance(item, str) or not _SHA256_RE.fullmatch(item)):
+                    raise ValueError("invalid provider usage digest")
+            elif name in {"provider", "adapter_version", "tool", "outcome"}:
+                if not isinstance(item, str) or not item.strip() or len(item) > 200:
+                    raise ValueError("invalid provider usage metadata")
+
+
+def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str, int], Mapping[str, Any] | None, Mapping[str, Any] | None, Mapping[str, Mapping[str, Any]] | None, Mapping[str, Any] | None, list[Mapping[str, Any]] | None, list[Mapping[str, Any]] | None, Mapping[str, Any] | None, Mapping[str, Any] | None, Mapping[str, Mapping[str, int]] | None]:
+    allowed = {"market_rows", "provider_snapshot_version", "usage", "provider_usage", "competitor_profile", "category_features", "buyer_checklist", "text_evidence", "visual_evidence", "checklist_evaluations", "competitor_comparisons", "image_briefs"}
     if not isinstance(value, Mapping) or not set(value) <= allowed or not {"market_rows", "provider_snapshot_version", "usage"} <= set(value):
         raise ValueError("invalid provider enrichment shape")
     rows, version, usage = value["market_rows"], value["provider_snapshot_version"], value["usage"]
@@ -35,10 +103,10 @@ def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str
         raise ValueError("provider market rows must be a list of objects")
     if not isinstance(version, str) or not re.fullmatch(r"(?:snapshot-|provider-batch-v1-)[A-Za-z0-9_.-]{1,100}", version):
         raise ValueError("invalid provider snapshot version")
-    if not isinstance(usage, Mapping) or "actual_calls" not in usage or not set(usage) <= _USAGE_FIELDS:
-        raise ValueError("invalid provider usage counters")
-    if any(type(counter) is not int or counter < 0 for counter in usage.values()):
-        raise ValueError("invalid provider usage counter")
+    _validate_usage_mapping(usage, require_actual_calls=True, error="invalid provider usage counters")
+    provider_usage = value.get("provider_usage")
+    if provider_usage is not None:
+        _validate_provider_usage(provider_usage)
     # Reject non-JSON/NaN payloads before they can reach report artifacts.
     json.dumps(rows, allow_nan=False)
     competitor_profile = value.get("competitor_profile")
@@ -90,7 +158,7 @@ def _provider_result(value: Any) -> tuple[list[Mapping[str, Any]], str, dict[str
     return (copy.deepcopy(rows), version, dict(usage), copy.deepcopy(competitor_profile),
             copy.deepcopy(visual_evidence), copy.deepcopy(checklist_evaluations), copy.deepcopy(category_features),
             copy.deepcopy(competitor_comparisons), copy.deepcopy(image_briefs),
-            copy.deepcopy(buyer_checklist), copy.deepcopy(text_evidence))
+            copy.deepcopy(buyer_checklist), copy.deepcopy(text_evidence), copy.deepcopy(provider_usage))
 
 
 @dataclass(frozen=True)
@@ -157,6 +225,7 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
     provider_image_briefs = None
     provider_buyer_checklist = None
     provider_text_evidence = None
+    provider_usage = None
     if competitor_profile is not None:
         try:
             validated_competitor_profile = build_competitor_profile(
@@ -183,7 +252,7 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
              provider_visual_evidence, provider_checklist_evaluations,
              provider_category_features, provider_competitor_comparisons,
              provider_image_briefs, provider_buyer_checklist,
-             provider_text_evidence) = _provider_result(enrichment)
+             provider_text_evidence, provider_usage) = _provider_result(enrichment)
             if provider_competitor_profile is not None:
                 validated_provider_profile = build_competitor_profile(
                     self_asin=str(provider_competitor_profile["self_asin"]),
@@ -195,11 +264,14 @@ def run_task(input_path: str | Path, storage_root: str | Path, task_id: str, run
                     requested_competitor_asins=provider_competitor_profile.get("requested_competitor_asins"),
                 )
                 validated_competitor_profile = validated_provider_profile
-            write_json(storage_root, task_id, run_id, "provider-usage.json", {
+            usage_receipt = {
                 "schema_version": "provider-usage-0.1",
                 "provider_snapshot_version": provider_snapshot_version,
                 "usage": usage,
-            })
+            }
+            if provider_usage is not None:
+                usage_receipt["providers"] = provider_usage
+            write_json(storage_root, task_id, run_id, "provider-usage.json", usage_receipt)
         except Exception:
             reason = {"code": "PROVIDER_ENRICHMENT_FAILED", "message": "Provider enrichment failed or returned an invalid contract; inspect the authorized provider separately", "stage": "provider", "retryable": False}
             _write(root / "failure.json", reason)

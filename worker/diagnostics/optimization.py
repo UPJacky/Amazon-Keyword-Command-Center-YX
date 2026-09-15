@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Any, Iterable, Mapping
 
 from worker.rule_engine.engine import evaluate_keyword
@@ -32,10 +33,89 @@ REQUIRED_ENTITY_GROUPS = (
     ("match_type",),
 )
 ENTITY_METRIC_FIELDS = ("impressions", "clicks", "spend", "orders", "sales")
+MONITORING_OPERATORS = {
+    "lt": "lt", "lte": "lte", "gt": "gt", "gte": "gte", "eq": "eq", "neq": "neq",
+    "<": "lt", "<=": "lte", ">": "gt", ">=": "gte", "=": "eq", "==": "eq", "!=": "neq",
+}
 
 
 def _present(value: Any) -> bool:
     return value is not None and not isinstance(value, bool) and str(value).strip() != ""
+
+
+def _monitoring_contract(row: Mapping[str, Any], config: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate the explicit next-cycle monitoring/exit contract.
+
+    A human-readable sentence or a version label is not an executable exit
+    condition.  The report must retain the observation window, measured
+    metric, comparison operator, numeric threshold, rollback action, scope,
+    and both rule/config versions.  Invalid input stays visible as pending so
+    the UI cannot accidentally present an unreviewed action as ready.
+    """
+    raw = row.get("monitoring")
+    if raw is None:
+        raw = row.get("exit_conditions")
+    if raw is None:
+        raw = row.get("exit_condition")
+    config_version = config.get("config_version", config.get("schema_version"))
+    if not isinstance(raw, Mapping):
+        return {
+            "status": "pending",
+            "value": raw,
+            "reason": "monitoring_contract_missing_or_invalid",
+            "missing_fields": ["window", "metric", "operator", "threshold", "rollback_action", "rule_version", "scope"],
+            "config_version": config_version,
+            "rule_version": row.get("rule_version"),
+        }
+
+    value = dict(raw)
+    missing: list[str] = []
+    window = value.get("window")
+    if not _present(window) and not (isinstance(window, Mapping) and bool(window)):
+        missing.append("window")
+    metric = value.get("metric")
+    if not _present(metric):
+        missing.append("metric")
+    operator_raw = value.get("operator")
+    operator_key = str(operator_raw).strip().lower() if _present(operator_raw) else ""
+    operator = MONITORING_OPERATORS.get(operator_key)
+    if operator is None:
+        missing.append("operator")
+    threshold = value.get("threshold")
+    if isinstance(threshold, bool) or not isinstance(threshold, (int, float)) or not math.isfinite(float(threshold)):
+        missing.append("threshold")
+    rollback_action = value.get("rollback_action")
+    if not _present(rollback_action):
+        missing.append("rollback_action")
+    rule_version = value.get("rule_version", row.get("rule_version"))
+    if not _present(rule_version):
+        missing.append("rule_version")
+    scope = str(value.get("scope") or "").strip().lower()
+    if scope not in {"keyword", "entity"}:
+        missing.append("scope")
+    if not _present(config_version):
+        missing.append("config_version")
+    if missing:
+        return {
+            "status": "pending",
+            "value": value,
+            "reason": "monitoring_contract_incomplete",
+            "missing_fields": sorted(set(missing)),
+            "config_version": config_version,
+            "rule_version": rule_version,
+        }
+    return {
+        "status": "ready",
+        "window": window,
+        "metric": str(metric).strip(),
+        "operator": operator,
+        "threshold": threshold,
+        "rollback_action": str(rollback_action).strip(),
+        "rule_version": str(rule_version).strip(),
+        "config_version": str(config_version).strip(),
+        "scope": scope,
+        "value": value,
+    }
 
 
 def _entity_contexts(row: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -65,7 +145,8 @@ def _entity_contexts(row: Mapping[str, Any]) -> list[dict[str, Any]]:
 
 
 def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], action: str,
-                      rule_hits: list[str], next_action: Any) -> tuple[list[dict[str, Any]], str, list[str]]:
+                      rule_hits: list[str], next_action: Any,
+                      config: Mapping[str, Any], monitoring: Mapping[str, Any]) -> tuple[list[dict[str, Any]], str, list[str]]:
     contexts = _entity_contexts(row)
     if not contexts:
         contexts = [{}]
@@ -84,13 +165,22 @@ def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], act
         statuses.append(entity_status)
         missing_union.update(missing)
         entity_evaluation = None
+        entity_facts = {field: context.get(field) for field in ENTITY_METRIC_FIELDS if field in context}
         if ready:
             entity_input = {"keyword": row.get("keyword")}
             for field in ("market_opportunity_score", "organic_rank", "keyword_role"):
                 if field in row:
                     entity_input[field] = row.get(field)
             entity_input.update({field: context.get(field) for field in ENTITY_METRIC_FIELDS})
-            entity_evaluation = evaluate_keyword(entity_input, row.get("config") if isinstance(row.get("config"), Mapping) else None)
+            for metric, numerator, denominator in (
+                ("ctr", "clicks", "impressions"), ("cpc", "spend", "clicks"),
+                ("cvr", "orders", "clicks"), ("acos", "spend", "sales"),
+                ("roas", "sales", "spend"),
+            ):
+                divisor = float(context[denominator])
+                entity_input[metric] = float(context[numerator]) / divisor if divisor > 0 else None
+                entity_facts[metric] = entity_input[metric]
+            entity_evaluation = evaluate_keyword(entity_input, config)
         if ready and entity_evaluation and entity_evaluation["action_group"] != "data_missing":
             judgement = {
                 "status": "judged",
@@ -116,11 +206,6 @@ def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], act
                 "action_type": ACTION_TYPES["data_missing"],
                 "text": "补齐广告活动、广告组、投放目标和匹配类型后再判断实体级动作",
             }
-        supplied_exit = row.get("exit_condition", row.get("exit_conditions"))
-        exit_condition = ({"status": "ready", "value": supplied_exit}
-                          if ready and _present(supplied_exit)
-                          else {"status": "pending", "value": "补齐广告实体与观察窗口后定义退出条件"})
-        entity_facts = {key: context.get(key) for key in (*ENTITY_METRIC_FIELDS, "ctr", "cpc", "cvr", "acos", "roas") if key in context}
         diagnoses.append({
             "entity_context": context,
             "entity_status": entity_status,
@@ -128,7 +213,7 @@ def _entity_diagnosis(row: Mapping[str, Any], data_facts: Mapping[str, Any], act
             "facts": entity_facts,
             "judgement": judgement,
             "recommended_action": recommendation,
-            "exit_condition": exit_condition,
+            "exit_condition": dict(monitoring),
             "entity_evaluation": entity_evaluation,
         })
     overall = "ready" if statuses and all(status == "ready" for status in statuses) else ("partial" if any(status == "partial" for status in statuses) else "not_available")
@@ -157,8 +242,10 @@ def build_optimization_plan(rows: Iterable[Mapping[str, Any]], config: Mapping[s
         action = str(row.get("action_group") or "data_missing")
         data_facts = {key: row.get(key) for key in ("impressions", "clicks", "spend", "orders", "sales", "ctr", "cpc", "cvr", "acos", "roas", "organic_rank", "ad_rank", "market_search_volume", "market_opportunity_score")}
         rule_hits = list(row.get("rule_hits") or [])
+        monitoring = _monitoring_contract(row, config)
         diagnoses, entity_status, missing_entity_fields = _entity_diagnosis(
-            row, data_facts, action, rule_hits, row.get("next_action_text"),
+            row, data_facts, action, rule_hits, row.get("next_action_text"), config,
+            monitoring,
         )
         result.append({
             "keyword": row.get("keyword"),
@@ -169,8 +256,9 @@ def build_optimization_plan(rows: Iterable[Mapping[str, Any]], config: Mapping[s
             "rule_hits": rule_hits,
             "config_refs": _config_refs(action, config),
             "next_action_text": row.get("next_action_text"),
-            "observation_window": row.get("observation_window"),
-            "exit_conditions": row.get("exit_conditions", row.get("exit_condition")),
+            "observation_window": monitoring.get("window"),
+            "exit_conditions": monitoring,
+            "monitoring": monitoring,
             "entity_contexts": [diagnosis["entity_context"] for diagnosis in diagnoses if diagnosis["entity_context"]],
             "entity_status": entity_status,
             "missing_entity_fields": missing_entity_fields,
@@ -186,6 +274,8 @@ def optimization_module_status(actions: Iterable[Mapping[str, Any]]) -> dict[str
     records = list(actions)
     ready = bool(records) and all(
         row.get("entity_status") == "ready"
+        and isinstance(row.get("monitoring"), Mapping)
+        and row["monitoring"].get("status") == "ready"
         and bool(row.get("entity_diagnoses"))
         and all(isinstance(item, Mapping)
                 and item.get("judgement", {}).get("status") == "judged"
@@ -198,5 +288,9 @@ def optimization_module_status(actions: Iterable[Mapping[str, Any]]) -> dict[str
         "status": "ready" if ready else "partial",
         "reason": "entity_judgement_complete" if ready else "entity_context_or_exit_incomplete",
         "coverage": {"total_actions": len(records),
-                      "entity_ready_actions": sum(row.get("entity_status") == "ready" for row in records)},
+                      "entity_ready_actions": sum(row.get("entity_status") == "ready" for row in records),
+                      "monitoring_ready_actions": sum(
+                          isinstance(row.get("monitoring"), Mapping) and row["monitoring"].get("status") == "ready"
+                          for row in records
+                      )},
     }

@@ -32,14 +32,21 @@ class SorftimeTransport:
         self._timeout = timeout
         self._open = opener or build_opener(_NoRedirect()).open
         self._request_id = 0
+        self._last_status = None
 
     def __repr__(self):
         return "SorftimeTransport(endpoint=<redacted>)"
+
+    @property
+    def last_status(self):
+        """Safe HTTP status only; never expose the credential-bearing URL."""
+        return self._last_status
 
     def call(self, tool_name, arguments):
         if not isinstance(tool_name, str) or not tool_name or not isinstance(arguments, dict):
             raise ValueError("Invalid Sorftime call")
         self._request_id += 1
+        self._last_status = None
         payload = ({"jsonrpc": "2.0", "id": self._request_id,
                     "method": "tools/list", "params": {}} if tool_name == "tools/list" else
                    {"jsonrpc": "2.0", "id": self._request_id, "method": "tools/call",
@@ -67,6 +74,7 @@ class SorftimeTransport:
                     raise ValueError("invalid RPC response")
                 return matches[0]["result"]
         except HTTPError as exc:
+            self._last_status = exc.code if isinstance(exc.code, int) else None
             raise RuntimeError(f"Sorftime HTTP {exc.code}") from None
         except Exception:
             # urllib errors may contain the full credential-bearing URL.

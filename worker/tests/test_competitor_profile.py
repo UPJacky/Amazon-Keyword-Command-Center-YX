@@ -4,6 +4,17 @@ from worker.competitors.profile import build_competitor_profile, competitor_cach
 
 
 class CompetitorProfileTests(unittest.TestCase):
+    def test_projection_preserves_evidence_and_recomputes_missing(self):
+        profile = build_competitor_profile(self_asin="B000000001", competitors=[],
+            requested_competitor_asins=[], provider_calls=4,
+            self_product={"title": "Filled", "missing_fields": ["title"],
+                          "source_refs": ["sorftime:product_detail"],
+                          "gallery": [{"source_image_id": "stable"}]})
+        self.assertEqual(4, profile["provider_calls"])
+        self.assertNotIn("title", profile["self_product"]["missing_fields"])
+        self.assertEqual(["sorftime:product_detail"], profile["self_product"]["source_refs"])
+        self.assertEqual("stable", profile["self_product"]["gallery"][0]["source_image_id"])
+
     def test_validates_up_to_three_unique_competitors(self):
         result = validate_competitor_set("B000000001", ["B000000002", "B000000003", "B000000004"])
         self.assertEqual(result["self_asin"], "B000000001")

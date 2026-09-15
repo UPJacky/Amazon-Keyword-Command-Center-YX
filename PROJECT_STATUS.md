@@ -2,19 +2,36 @@
 project: Amazon-Keyword-Command-Center-YX
 document_type: project_status
 version: 0.2
-updated_at: 2026-09-14
-current_phase: Phase 10 / LUNU-04 six-module business completion
-status: blocked_external
-execution_state: BLOCKED_EXTERNAL
-current_objective: "完成 LUNU-04 六模块业务审核验收；保留真实缺失字段，补齐本地生产接线并按外部 Gate 验收完整业务"
-next_safe_action: "等待外部 Gate 条件满足：网关将 CORS 的 Access-Control-Allow-Origin 改为精确的 GitHub Pages Origin，并由 Worker 生成一次包含排名、否定词、竞对、Listing/图片和广告优化上下文的完整生产新 run；条件满足后再领取 production-live-deployment 与 github-pages 做最终只读验收"
-stop_reason: "BLOCKED_EXTERNAL: 本地安全队列已清空；生产完整六模块新 run 的数据来源仍不齐，且 Supabase/Gateway OPTIONS 返回的 Allow-Origin 不是精确站点 Origin。现有报告已诚实标记 partial/not_generated，不能冒充完整。未读取、请求或输出任何密码/Secret"
-last_action_fingerprint: "supervisor-blocked-external-2026-09-14-cors-and-full-six-module-production-run"
-verified_gate_snapshot_current: "supervisor=BLOCKED_EXTERNAL,local_safe_queue=empty; github_pages=published_commit_4507185; live_pages_root_tool_report_client=200; supabase_anonymous=401_or_403; supabase_two_user_cross_store_rows=0; migrations_007_009=applied; supabase_rls_gate=passed; local_uat=20/20,worker=340,frontend=8,continuous=63,orchestration=25,pages=57,docs=15,secret_hits=0,network_calls=0,external_calls=0; production_files_sync=sha256_passed_for_tracked_files; production_restart=verified_active; lunu04=e01-e20; full_report_complete=false; reconciliation=passed,differences=zero; exact_cors=blocked; complete_six_module_run=blocked_external"
-local_safe_queue: empty
-external_blockers_only: true
-verified_gate_snapshot: "worker=340;frontend=8;orchestration=25;continuous=63;uat=20/20;pages=57;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts;full_report_complete=false;confirmation_binding=local_hardened;production_cache=local_verified;buyer_text_evidence=local_wired;frontend_contract=passed;secret_value_hits=0;supervisor=BLOCKED_EXTERNAL"
+updated_at: 2026-09-15
+current_phase: Phase 10 / LUNU-05 business remediation and acceptance
+status: in_progress
+execution_state: RUNNING
+current_objective: "完成 LUNU-05 R01-R15 修复及第6节逐项业务验收；撤销以旧E20回执替代业务完成的结论"
+next_safe_action: "lunu05-business-remediation：审计 R12 剩余持久恢复/选择性重跑与跨 Provider 信用上限，并准备 R07-R15 外部 Gate"
+stop_reason: ""
+last_action_fingerprint: "sha256:97eedef47b8497249f264dde41e70c652a0cb8ec02a94303e3a3a93b641a9163"
+verified_gate_snapshot_current: "supervisor=RUNNING,local_safe_queue=in_progress; lunu05_behavior_gate=13_passed; provider_claim_preview_gate=passed; atomic_previewed_claim_gate=passed; six_task_budget_recovery_gate=passed; full_uat=21/21; worker=372;frontend=8;orchestration=25;continuous=63;pages=57;pages_tests=46;supabase_static=71;docs=15;network_calls=0;external_calls=0;secrets=0;sorftime_task_preflight=passed;xiyou_task_preflight=passed;external_six_module_and_cors_gates=not_revalidated"
+local_safe_queue: in_progress
+external_blockers_only: false
+verified_gate_snapshot: "worker=372;frontend=8;orchestration=25;continuous=63;uat=21/21;pages=57;pages_tests=46;supabase_static=71;docs=15;network_calls=0;external_calls=0;secrets=0;local_fixes=confirmation_binding,provider_cache,provider_only_market_rows,buyer_text_artifacts,lunu05_behavior_gate,provider_claim_preview,atomic_previewed_claim,migration_011_provider_claim_preview,migration_012_claim_previewed_run_atomically,six_task_budget_recovery,stale_demo_refresh,provider_receipt_hash_validation,confirmation_hash,visual_input_hash,sorftime_task_preflight_cache_aware,xiyou_task_preflight_cache_aware,test_isolation;full_report_complete=false;external_six_module_run=not_revalidated;supervisor=RUNNING"
 ---
+
+## 2026-09-15 LUNU-05 R12 本地预算门禁补强（当前优先）
+
+- 监督器已按当前源码重新领取 `lunu05-business-remediation`，当前指纹为 `sha256:97eedef47b8497249f264dde41e70c652a0cb8ec02a94303e3a3a93b641a9163`；状态仍为 `RUNNING`，不能关闭阶段。
+- 新增 `supabase/migrations/011_provider_claim_preview.sql`：仅 service role 可调用的只读 `kwcc_preview_next_run()`，在领取前返回最小任务投影，不执行 claim、不写业务表；生产 RestrictedTransport 已纳入 allowlist。
+- 新增 `worker/runtime/provider_preflight.py` 与 `scripts/run_production_worker.py` 的统一领取前预算门禁：按任务最坏未缓存调用上界预估 Xiyou/Sorftime/视觉成本，预算不足时在 claim 前 fail-closed；空队列保持零 claim；任务内适配器仍在下载输入后按缓存重新校验。
+- 新增六任务预算耗尽/显式恢复模拟，证明前 3 个任务耗尽额度后仍有 3 个任务保持 pending，刷新预算后剩余任务可继续领取；本地 LUNU-05 行为 Gate 13 项通过，完整本地 UAT 21/21 通过：Worker 371、前端 8、编排 25、连续 63、Pages 57/46、Supabase 静态 70、文档 15，network_calls=0、external_calls=0、Secret=0。
+- 新增 012 原子领取 RPC：预览成功后锁定 task/run，若队列头变化则回滚嵌套 claim 并返回空，不会把预览预算错用于另一任务；完整本地 UAT 最新为 Worker 372、Supabase 静态 71，其余统计保持不变，network_calls=0、external_calls=0、Secret=0。
+- 尚未闭合：预算耗尽后的持久恢复/选择性重跑状态、跨 Provider 信用上限；预览/claim 并发身份边界已由本地静态/运行时测试覆盖。真实六模块新 run、011/012/010 线上迁移/RLS/私有 Storage、Worker 重启、精确 CORS 和新截图仍需独立外部 Gate。
+
+## 2026-09-14 LUNU-05 重新核验（优先于历史完成回执）
+
+- 当前业务验收未通过，仍有安全本地工作。旧 E19/E20 和通用 UAT 不证明 LUNU-05 完成。
+- 已领取 `lunu05-business-remediation`；下一步继续逐项复现附录反例并核对生产接线。顶部历史外部阻塞描述不再表示当前本地队列为空。
+- 新复现：实体判断忽略本次 config，零订单花费阈值设为200仍按默认50止损。已修复配置传递与实体自身 CTR/CVR/CPC/ACOS/ROAS；定向21项通过，尚未发布。
+- 已发现仍需实现：视觉生产调用、真正确认对象消费、持久证据；不得将这些缺口归因为 Provider 无结果。
+- 短交接见 `LUNU-05-HANDOFF.md`；完整目标仍是 R01-R15 与第6节，不能关闭阶段。
 
 ## 2026-09-12 生产同步复核
 

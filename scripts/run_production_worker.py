@@ -12,11 +12,62 @@ from threading import Event
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from worker.runtime.production import ProductionWorker, RestrictedTransport, RuntimeFailure
+from worker.runtime.provider_preflight import estimate_claim_requirements
 from worker.providers.mcp_http_transport import McpHttpTransport
 from worker.providers.sorftime_adapter import SorftimeCallBudget, SorftimeCatalogAdapter
 from worker.providers.sorftime_transport import SorftimeTransport
+from worker.providers.visual_doubao import DoubaoResponsesTransport, DoubaoVisualEvidenceAdapter, VisualCallBudget
+from worker.providers.base import RetryPolicy
 from worker.providers.xiyou_live_enrichment import XiyouCallBudget, XiyouLiveEnricher
 from worker.providers.cache import ProviderCache
+
+
+def _provider_claim_admission(worker, *, xiyou_budget, sorftime_budget,
+                              visual_budget, xiyou_enabled, sorftime_enabled,
+                              visual_enabled):
+    """Check the next task before claim, then let adapters re-check after input.
+
+    The cheap process-budget checks avoid a preview request when the process is
+    already exhausted.  A malformed or unavailable preview fails closed.  A
+    null preview means the queue is empty, so it is safe to let the normal
+    claim RPC return idle.
+    """
+    worker.provider_claim_preview = None
+    if xiyou_enabled and not xiyou_budget.can_accept_request(calls=1, credits=1):
+        return False
+    if sorftime_enabled and not sorftime_budget.can_accept_request(calls=1):
+        return False
+    if visual_enabled and not visual_budget.can_accept_request():
+        return False
+
+    preview = worker._rpc("kwcc_preview_next_run", {})
+    if preview is None:
+        return True
+    if not isinstance(preview, dict) or not isinstance(preview.get("task"), dict):
+        return False
+    task = preview["task"]
+    run = preview.get("run")
+    if (not isinstance(run, dict) or not isinstance(task.get("task_id"), str)
+            or not isinstance(run.get("run_id"), str)
+            or run.get("task_id") != task.get("task_id")):
+        return False
+    try:
+        required = estimate_claim_requirements(
+            task, xiyou_enabled=xiyou_enabled,
+            sorftime_enabled=sorftime_enabled, visual_enabled=visual_enabled,
+        )
+    except (TypeError, ValueError):
+        return False
+    allowed = (
+        (not xiyou_enabled or xiyou_budget.can_accept_request(
+            calls=required["xiyou_calls"], credits=required["xiyou_credits"]))
+        and (not sorftime_enabled or sorftime_budget.can_accept_request(
+            calls=required["sorftime_calls"]))
+        and (not visual_enabled or visual_budget.can_accept_request())
+    )
+    if allowed:
+        worker.provider_claim_preview = {"task_id": task["task_id"], "run_id": run["run_id"]}
+    return allowed
 
 
 def main(argv=None):
@@ -28,6 +79,9 @@ def main(argv=None):
     parser.add_argument("--max-provider-credits", type=int, help="required process-lifetime Xiyou credit ceiling")
     parser.add_argument("--sorftime-catalog", action="store_true", help="enable explicitly budgeted Sorftime product enrichment")
     parser.add_argument("--max-sorftime-calls", type=int, help="required process-lifetime Sorftime call ceiling")
+    parser.add_argument("--visual-model", help="explicitly enable the configured Doubao visual evidence adapter")
+    parser.add_argument("--max-visual-calls", type=int, help="required process-lifetime visual call ceiling")
+    parser.add_argument("--max-visual-tokens", type=int, help="required process-lifetime visual output-token ceiling")
     parser.add_argument("--provider-cache-dir", help="local persistent Provider cache directory; never contains credentials")
     parser.add_argument("--provider-cache-ttl", type=int, default=21600, help="Provider cache TTL in seconds")
     parser.add_argument("--worker-id", default="kwcc-worker")
@@ -60,6 +114,11 @@ def main(argv=None):
             raise RuntimeFailure("SETTINGS_INVALID")
         if not args.sorftime_catalog and args.max_sorftime_calls is not None:
             raise RuntimeFailure("SETTINGS_INVALID")
+        if args.visual_model is not None:
+            if not provider_enabled or not args.sorftime_catalog or type(args.max_visual_calls) is not int or args.max_visual_calls < 1 or type(args.max_visual_tokens) is not int or args.max_visual_tokens < 1:
+                raise RuntimeFailure("SETTINGS_INVALID")
+        elif args.max_visual_calls is not None or args.max_visual_tokens is not None:
+            raise RuntimeFailure("SETTINGS_INVALID")
         worker = ProductionWorker(worker_id=args.worker_id, lease_seconds=args.lease_seconds,
                                   heartbeat_interval=args.heartbeat_interval, stop_event=stop)
         if args.confirm_live:
@@ -76,18 +135,36 @@ def main(argv=None):
                 provider_transport = McpHttpTransport(os.environ.get("XYDC_MCP_URL", ""),
                                                       os.environ.get("XYDC_MCP_TOKEN", ""), timeout=args.timeout)
                 budget = XiyouCallBudget(args.max_provider_calls, args.max_provider_credits)
+                visual_adapter = None
+                visual_budget = None
+                if args.visual_model is not None:
+                    visual_budget = VisualCallBudget(args.max_visual_calls, args.max_visual_tokens)
+                    visual_adapter = DoubaoVisualEvidenceAdapter(
+                        transport=DoubaoResponsesTransport(
+                            base_url=os.environ.get("DOUBAO_BASE_URL", "https://ark.cn-beijing.volces.com/api/v3"),
+                            api_key=os.environ.get("DOUBAO_API_KEY", ""), timeout=args.timeout),
+                        model=args.visual_model, budget=visual_budget, cache=provider_cache,
+                        cache_namespace=os.environ.get("KWCC_PROVIDER_CACHE_NAMESPACE", "production"))
                 sorftime_budget = None
                 sorftime_transport = None
                 if args.sorftime_catalog:
                     sorftime_transport = SorftimeTransport(os.environ.get("SORFTIME_MCP_ENDPOINT", ""), timeout=args.timeout)
                     sorftime_budget = SorftimeCallBudget(args.max_sorftime_calls)
+                worker.provider_claim_guard = lambda: _provider_claim_admission(
+                    worker, xiyou_budget=budget, sorftime_budget=sorftime_budget,
+                    visual_budget=visual_budget, xiyou_enabled=True,
+                    sorftime_enabled=sorftime_budget is not None,
+                    visual_enabled=visual_budget is not None)
                 def factory(task):
                     catalog = None
                     if sorftime_transport is not None:
                         catalog = SorftimeCatalogAdapter(transport=sorftime_transport,
                                                          marketplace=task.get("marketplace"),
                                                          budget=sorftime_budget,
-                                                         max_calls=args.max_sorftime_calls)
+                                                         max_calls=args.max_sorftime_calls,
+                                                         cache=provider_cache,
+                                                         cache_namespace=os.environ.get("KWCC_PROVIDER_CACHE_NAMESPACE", "production"),
+                                                         preflight_whole_task=True)
                     return XiyouLiveEnricher(transport=provider_transport, country=task.get("marketplace"),
                                              asin=task.get("self_asin"), max_keywords=args.xiyou_keywords,
                                              budget=budget, enable_competitors=True,
@@ -99,7 +176,12 @@ def main(argv=None):
                                              cache_namespace=os.environ.get("KWCC_PROVIDER_CACHE_NAMESPACE", "production"),
                                              feature_review_version=task.get("feature_review_version"),
                                              checklist_version=task.get("checklist_version"),
-                                             confirmation_version=task.get("confirmation_version"))
+                                             confirmation_version=task.get("confirmation_version"),
+                                             confirmation=task.get("business_confirmation"),
+                                             visual_adapter=visual_adapter,
+                                             retry_policy=RetryPolicy(),
+                                             preflight_whole_task=True,
+                                             real_provider_verified=True)
                 worker.provider_factory = factory
         full_report_seen = False
 
@@ -113,7 +195,7 @@ def main(argv=None):
         print(json.dumps({"event": "worker_summary", "live": args.confirm_live,
                           "report_scope": "xiyou_keyword_metrics" if provider_enabled else "ad_only",
                           "full_report_complete": full_report_seen, **stats}), flush=True)
-        return 1 if stats["errors"] or stats["failed"] else 0
+        return 1 if stats["errors"] or stats["failed"] or stats.get("blocked") else 0
     except KeyboardInterrupt:
         stop.set()
         print(json.dumps({"event": "worker_stopped"}), flush=True)

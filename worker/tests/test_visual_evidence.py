@@ -8,6 +8,14 @@ def observation(image_id, element_id, answer_mode="direct_visual"):
 
 
 class VisualEvidenceTests(unittest.TestCase):
+    def test_low_confidence_has_request_coverage_but_no_judgement_coverage(self):
+        result = build_visual_evidence(image_ids=["img1"],
+            observations=[{**observation("img1", "f1"), "confidence": "low"}],
+            expected_element_ids=["f1"], evidence_version="v1")
+        self.assertEqual("partial", result["status"])
+        self.assertEqual({"expected": 1, "observed": 1, "judged": 0}, result["coverage"])
+        self.assertFalse(result["observations"][0]["judgement_eligible"])
+
     def test_complete_image_element_matrix_is_ready(self):
         result = build_visual_evidence(image_ids=["img1", "img2"], observations=[observation("img1", "f1"), observation("img2", "f1")], expected_element_ids=["f1"], evidence_version="v1")
         self.assertEqual("ready", result["status"])

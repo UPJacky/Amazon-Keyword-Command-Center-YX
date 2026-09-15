@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from copy import deepcopy
 from typing import Any, Iterable, Mapping
 
 
@@ -21,7 +22,9 @@ PRODUCT_FIELDS = (
     "brand", "title", "main_image_url", "image_urls", "price", "currency_code",
     "rating", "review_count", "monthly_sales", "category", "bsr", "variation_count",
     "variations", "bullet_points", "video_count", "aplus", "storefront",
+    "attributes", "description",
     "core_keywords", "source", "source_url", "sampled_at", "provider_sampled",
+    "source_refs", "gallery", "field_provenance", "provider_outcome", "missing_reasons",
 )
 COMPARISON_FIELDS = (
     "brand", "title", "main_image_url", "price", "rating", "review_count",
@@ -65,14 +68,20 @@ def _project_product(source: Mapping[str, Any], asin: str, *, role: str, core_ke
                 row[field] = [item for item in value if isinstance(item, str) and item.strip()]
             else:
                 row[field] = []
+        elif field == "attributes":
+            row[field] = deepcopy(value) if isinstance(value, Mapping) else {}
         else:
-            row[field] = value
+            row[field] = deepcopy(value)
     if "core_keywords" not in row:
         row["core_keywords"] = []
     row["core_keywords"] = sorted({str(value).strip() for value in (row["core_keywords"] or core_keywords) if str(value).strip()})
     if "image_urls" not in row:
         row["image_urls"] = []
-    missing = {str(value) for value in (source.get("missing_fields") or []) if isinstance(value, str) and value.strip()}
+    missing = set()
+    declared = source.get("missing_fields")
+    if isinstance(declared, list):
+        missing.update(value for value in declared if isinstance(value, str) and value.strip()
+                       and row.get(value) in (None, "", []))
     for field in COMPARISON_FIELDS:
         if field == "main_image_url" and row.get("main_image_url"):
             continue
@@ -84,7 +93,9 @@ def _project_product(source: Mapping[str, Any], asin: str, *, role: str, core_ke
     return row
 
 
-def build_competitor_profile(*, self_asin: str, competitors: Iterable[Mapping[str, Any]], core_keywords: Iterable[str] = (), marketplace: str = "US", snapshot_version: str | None = None, self_product: Mapping[str, Any] | None = None, requested_competitor_asins: Iterable[str] | None = None) -> dict[str, Any]:
+def build_competitor_profile(*, self_asin: str, competitors: Iterable[Mapping[str, Any]], core_keywords: Iterable[str] = (), marketplace: str = "US", snapshot_version: str | None = None, self_product: Mapping[str, Any] | None = None, requested_competitor_asins: Iterable[str] | None = None, provider_calls: int = 0, provider_outcomes: list | None = None) -> dict[str, Any]:
+    if type(provider_calls) is not int or provider_calls < 0:
+        raise ValueError("provider_calls must be a nonnegative integer")
     competitor_rows = list(competitors)
     requested = None if requested_competitor_asins is None else list(requested_competitor_asins)
     max_count = 3 if requested is None else 5
@@ -120,5 +131,6 @@ def build_competitor_profile(*, self_asin: str, competitors: Iterable[Mapping[st
         "missing_competitor_asins": missing_requested,
         "snapshot_version": snapshot_version,
         "cache_key": competitor_cache_key(marketplace=marketplace, self_asin=self_asin, competitor_asins=contract["competitor_asins"], core_keywords=core_keywords, max_count=max_count),
-        "provider_calls": 0,
+        "provider_calls": provider_calls,
+        "provider_outcomes": deepcopy(provider_outcomes or []),
     }

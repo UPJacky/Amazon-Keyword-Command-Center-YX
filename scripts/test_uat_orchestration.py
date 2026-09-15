@@ -19,7 +19,15 @@ class UatOrchestrationContractTests(unittest.TestCase):
         self.assertIn("phase8_audit.py", source)
         self.assertIn("build_pages_demo.py", source)
         self.assertIn("required_counts_present", source)
-        self.assertIn("EXPECTED_GATE_COUNT = 20", source)
+        self.assertIn("EXPECTED_GATE_COUNT = 21", source)
+        self.assertIn("scripts.test_lunu05_business_gate", source)
+        self.assertIn('migration / "009_confirmation_binding_hardening.sql"', source)
+        self.assertIn('migration / "010_claim_business_confirmation.sql"', source)
+        self.assertIn('migration / "011_provider_claim_preview.sql"', source)
+        self.assertIn('migration / "012_claim_previewed_run_atomically.sql"', source)
+        self.assertIn("supabase.test_task_business_inputs", source)
+        self.assertIn("supabase.test_confirmation_claim_contract", source)
+        self.assertIn("supabase.test_claim_preview", source)
         self.assertIn("gate_count_ok", source)
         self.assertIn("STRUCTURED_SUMMARY_GATES", source)
         self.assertIn("structured_summary_missing", source)
@@ -50,7 +58,7 @@ class UatOrchestrationContractTests(unittest.TestCase):
         sys.path.insert(0, str(ROOT))
         from scripts import run_uat
 
-        self.assertEqual(run_uat.EXPECTED_GATE_COUNT, 20)
+        self.assertEqual(run_uat.EXPECTED_GATE_COUNT, 21)
         with patch.object(run_uat, "run", return_value={"command": [], "passed": True, "timed_out": False, "test_counts": [], "stdout_tail": "", "stderr_tail": ""}), patch("builtins.print"):
             result = run_uat.main()
         self.assertEqual(result, 1)

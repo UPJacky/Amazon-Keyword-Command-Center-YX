@@ -2,7 +2,7 @@
 
 本清单约束主 Agent 和所有子 Agent 的协作行为。它解决的是项目执行流程，不替代业务 Gate，也不授权调用真实外部服务。
 
-UAT 编排固定汇总 20 个本地 Gate，并要求 `network_calls=0`、`external_calls=0`、`local_only=true`；其中连续执行状态机与持续目标 15 项、项目监督器 48 项合并为 63 项独立回归 Gate。单个 Gate 失败、超时或启动异常只记录为失败，不得提前结束后续 Gate。
+UAT 编排固定汇总 21 个本地 Gate，并要求 `network_calls=0`、`external_calls=0`、`local_only=true`；其中连续执行状态机与持续目标 15 项、项目监督器 48 项合并为 63 项独立回归 Gate，另含 LUNU-05 六模块行为 Gate。单个 Gate 失败、超时或启动异常只记录为失败，不得提前结束后续 Gate。
 
 子 Gate 摘要必须包含 `network_calls`、`external_calls`、`local_only` 三个字段；前两者必须是非负整数，后者必须是布尔值。缺失字段或类型错误记录到 `summary_contract_errors`，仍继续收集后续 Gate。
 

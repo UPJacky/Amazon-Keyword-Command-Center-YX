@@ -16,6 +16,8 @@ def _texts(product: Mapping[str, Any]) -> tuple[dict[str, Any], ...]:
     attributes = product.get("attributes")
     if isinstance(attributes, Mapping):
         rows.extend({"text": f"{key}: {value}", "location": "attribute", "index": index} for index, (key, value) in enumerate(attributes.items()) if str(value).strip())
+    if product.get("description") is not None:
+        rows.append({"text": str(product["description"]), "location": "description", "index": 0})
     return tuple(rows)
 
 

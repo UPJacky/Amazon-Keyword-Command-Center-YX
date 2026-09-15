@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_GATE_COUNT = 20
+EXPECTED_GATE_COUNT = 21
 DEFAULT_GATE_TIMEOUT_SECONDS = 120
 SUMMARY_REQUIRED_FIELDS = ("network_calls", "external_calls", "local_only")
 # Match executable gates only; the Pages unit-test gate has no JSON process summary.
@@ -160,6 +160,7 @@ def main() -> int:
         pages_output = Path(temporary_roots[4]) / "site"
         checks = [
             run_gate([python, "-m", "unittest", "discover", "-s", "worker/tests", "-v"]),
+            run_gate([python, "-m", "unittest", "scripts.test_lunu05_business_gate", "-v"]),
             run_gate([python, "-m", "unittest", "discover", "-s", "frontend", "-p", "test_*.py", "-v"]),
             run_gate([python, "frontend/contract_check.py"]),
             run_gate([python, "scripts/check_frontend_syntax.py"]),
@@ -170,7 +171,7 @@ def main() -> int:
             run_gate([python, "-m", "unittest", "scripts/test_uat_orchestration.py", "-v"]),
             run_gate([python, "rules/action_mapping_contract_check.py"]),
             run_gate([python, "supabase/migration_contract_check.py"]),
-            run_gate([python, "-m", "unittest", "supabase.test_migration_contract", "supabase.test_production_jobs", "supabase.test_strategy_versions", "supabase.test_business_inputs", "-v"]),
+            run_gate([python, "-m", "unittest", "supabase.test_migration_contract", "supabase.test_production_jobs", "supabase.test_strategy_versions", "supabase.test_business_inputs", "supabase.test_task_business_inputs", "supabase.test_confirmation_claim_contract", "supabase.test_claim_preview", "-v"]),
             run_gate([python, "scripts/smoke_test.py"]),
             run_gate([python, "scripts/build_phase4_modules.py", "--report", "data/golden/market-demo-report/master-table.json", "--output", str(phase4_output)]),
             run_gate([python, "scripts/build_competitor_profile.py", "--input", "data/golden/competitor-input-demo.json", "--output", str(competitor_output)]),
@@ -190,6 +191,10 @@ def main() -> int:
             migration / "006_strategy_versions.sql",
             migration / "007_task_business_inputs.sql",
             migration / "008_business_input_submission.sql",
+            migration / "009_confirmation_binding_hardening.sql",
+            migration / "010_claim_business_confirmation.sql",
+            migration / "011_provider_claim_preview.sql",
+            migration / "012_claim_previewed_run_atomically.sql",
         ]
         migration_passed = all(path.is_file() for path in required_migrations)
         security_hits: list[str] = []

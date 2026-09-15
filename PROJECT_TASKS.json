@@ -2,6 +2,47 @@
   "schema_version": 1,
   "tasks": [
     {
+      "id": "lunu05-business-remediation",
+      "title": "LUNU-05 R01-R15 逐项行为修复与最终验收",
+      "status": "running",
+      "execution": "local",
+      "depends_on": [],
+      "fingerprint_inputs": [
+        {
+          "kind": "path",
+          "path": "LUNU-05-项目审核验收与逐项修复执行清单-20260911.md"
+        },
+        {
+          "kind": "path",
+          "path": "worker"
+        },
+        {
+          "kind": "path",
+          "path": "frontend"
+        },
+        {
+          "kind": "path",
+          "path": "supabase"
+        },
+        {
+          "kind": "path",
+          "path": "scripts"
+        },
+        {
+          "kind": "path",
+          "path": "rules"
+        }
+      ],
+      "input_fingerprint": "sha256:97eedef47b8497249f264dde41e70c652a0cb8ec02a94303e3a3a93b641a9163",
+      "verified_fingerprint": "",
+      "acceptance": [
+        "R01-R15 每项具有当前实现路径、行为断言、产物证据和未验证范围；通用 UAT 不能替代专项证据。",
+        "附录 P01-P11 正确行为全部实际通过；R02-R14 必需能力贯通生产工厂和持久报告。",
+        "本地修复完成后拆分并领取第6.2节线上 Gate；线上验收未通过不得宣称项目完成。"
+      ],
+      "verification": []
+    },
+    {
       "id": "live-release-readiness",
       "title": "补齐精确 Origin 网关、私有上传、云端Worker与报告前端发布链",
       "status": "completed",

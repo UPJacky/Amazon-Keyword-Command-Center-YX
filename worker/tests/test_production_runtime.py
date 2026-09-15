@@ -32,6 +32,8 @@ USER = "33333333-3333-4333-8333-333333333333"
 RUN = "44444444-4444-4444-8444-444444444444"
 TOKEN = "55555555-5555-4555-8555-555555555555"
 RPC = "/rest/v1/rpc/kwcc_claim_run"
+PREVIEW_RPC = "/rest/v1/rpc/kwcc_preview_next_run"
+PREVIEWED_RPC = "/rest/v1/rpc/kwcc_claim_previewed_run"
 JSON_HEADERS = {"Content-Type": "application/json"}
 
 
@@ -68,6 +70,24 @@ class FakeTransport:
 
     def request(self, method, path, *, body=None, headers=None, max_response_bytes=None):
         self.calls.append((method, path, body, headers, max_response_bytes))
+        if path == PREVIEW_RPC:
+            if self.claim is None:
+                return encoded(None)
+            task = self.claim["task"]
+            run = self.claim["run"]
+            return encoded({"task": {
+                "task_id": task["task_id"], "store_id": task["store_id"],
+                "self_asin": task["self_asin"],
+                "competitor_asins": task.get("competitor_asins", []),
+                "core_keywords": task.get("core_keywords", []),
+                "primary_core_keyword": task.get("primary_core_keyword"),
+                "marketplace": "US",
+            }, "run": {"run_id": run["run_id"], "task_id": task["task_id"]}})
+        if path == PREVIEWED_RPC:
+            payload = json.loads(body)
+            assert payload["p_task_id"] == TASK
+            assert payload["p_run_id"] == RUN
+            return encoded(self.claim)
         if path == RPC:
             return encoded(self.claim)
         if path.endswith("kwcc_heartbeat_run"):
@@ -137,11 +157,17 @@ class ProductionRuntimeTests(unittest.TestCase):
         modules = {name: {"module_status": {"status": "ready", "reason": "fixture"}}
                    for name in ("rank-benchmark.json", "negative-keywords.json", "competitors.json",
                                 "listing-diagnostics.json", "optimization-plan.json")}
+        complete_modules = {**modules, **{
+            name: {"module_status": {"status": "ready", "reason": "fixture"}}
+            for name in ("category-features.json", "buyer-checklist.json", "text-evidence.json")}}
         states = _module_states(modules, "injected_provider_data")
         master = {"rows": [{"keyword": "led lights"}]}
         self.assertFalse(_full_report_complete(master, modules, states, "injected_provider_data",
                                                {"real_provider_verified": False}))
-        self.assertTrue(_full_report_complete(master, modules, states, "live_provider_data",
+        self.assertFalse(_full_report_complete(master, modules, states, "live_provider_data",
+                                               {"real_provider_verified": True}))
+        complete_states = _module_states(complete_modules, "live_provider_data")
+        self.assertTrue(_full_report_complete(master, complete_modules, complete_states, "live_provider_data",
                                               {"real_provider_verified": True}))
         self.assertFalse(_full_report_complete(master, {**modules, "optimization-plan.json": {}},
                                                _module_states({**modules, "optimization-plan.json": {}}, "live_provider_data"),
@@ -211,6 +237,33 @@ class ProductionRuntimeTests(unittest.TestCase):
         self.assertEqual(91, bundle["summary"]["keyword_count"])
         self.assertTrue(bundle["reconciliation"]["passed"])
 
+    def test_private_bundle_retains_rules_usage_and_run_evidence_after_cleanup(self):
+        fake = FakeTransport()
+        config_used = []
+        def provider(parsed, config):
+            config_used.append(copy.deepcopy(config))
+            return {"market_rows": [], "provider_snapshot_version": "snapshot-test",
+                    "usage": {"actual_calls": 0}}
+        result = ProductionWorker(fake, provider_enricher=provider).run_once()
+        self.assertEqual("completed", result["status"], result)
+        bundle = json.loads(fake.upload)
+        evidence = bundle["evidence_artifacts"]
+        self.assertEqual(config_used[0], evidence["rules-snapshot.json"]["effective_config"])
+        self.assertEqual(0, evidence["provider-usage.json"]["usage"]["actual_calls"])
+        self.assertEqual(RUN, evidence["run-meta.json"]["run_id"])
+        self.assertEqual(TASK, bundle["evidence_manifest"]["task_id"])
+        manifest = copy.deepcopy(bundle["evidence_manifest"])
+        manifest_hash = manifest.pop("manifest_sha256")
+        self.assertEqual(hashlib.sha256(json.dumps(manifest, ensure_ascii=False, sort_keys=True,
+                                                   separators=(",", ":"), allow_nan=False).encode("utf-8")).hexdigest(),
+                         manifest_hash)
+        for name, entry in bundle["evidence_manifest"]["artifacts"].items():
+            payload = evidence[name] if name in evidence else bundle["modules"][name]
+            canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True,
+                                   separators=(",", ":"), allow_nan=False).encode("utf-8")
+            self.assertEqual(hashlib.sha256(canonical).hexdigest(), entry["sha256"])
+        self.assertNotIn(TOKEN, json.dumps(bundle))
+
     def test_factory_receives_only_bound_task_metadata_after_hash_validation(self):
         fake = FakeTransport()
         fake.claim['task']['marketplace'] = 'US'
@@ -235,6 +288,51 @@ class ProductionRuntimeTests(unittest.TestCase):
         fake.claim['task']['input_file_hash'] = '0' * 64
         factory.reset_mock()
         self.assertEqual('failed', ProductionWorker(fake, provider_factory=factory).run_once()['status'])
+        factory.assert_not_called()
+
+    def test_factory_receives_only_a_claim_bound_structured_confirmation(self):
+        fake = FakeTransport()
+        fake.claim['business_confirmation'] = {
+            'confirmation_id': 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+            'object_id': 'buyer-checklist', 'version': 'confirm-v1', 'status': 'confirmed',
+            'task_id': TASK, 'store_id': STORE, 'self_asin': 'B012345678',
+            'input_hash': fake.claim['task']['input_file_hash'], 'confirmed_feature_ids': ['f1'],
+        }
+        callback = Mock(return_value={'market_rows': [], 'provider_snapshot_version': 'snapshot-test', 'usage': {'actual_calls': 0}})
+        factory = Mock(return_value=callback)
+        result = ProductionWorker(fake, provider_factory=factory).run_once()
+        self.assertEqual('completed', result['status'], result)
+        metadata = factory.call_args.args[0]
+        self.assertEqual(fake.claim['business_confirmation'], metadata['business_confirmation'])
+        self.assertNotIn('lease_token', json.dumps(metadata))
+        bundle = json.loads(fake.upload)
+        self.assertRegex(bundle['provider_evidence']['confirmation_sha256'], r"^[a-f0-9]{64}$")
+        self.assertNotIn('buyer-checklist', json.dumps(bundle['provider_evidence']))
+
+    def test_confirmation_with_a_different_input_hash_is_rejected_before_factory(self):
+        fake = FakeTransport()
+        fake.claim['business_confirmation'] = {
+            'object_id': 'buyer-checklist', 'version': 'confirm-v1', 'status': 'confirmed',
+            'task_id': TASK, 'store_id': STORE, 'self_asin': 'B012345678',
+            'input_hash': 'a' * 64,
+        }
+        factory = Mock(return_value=Mock())
+        result = ProductionWorker(fake, provider_factory=factory).run_once()
+        self.assertEqual('failed', result['status'])
+        self.assertEqual('INPUT_INVALID', fake.finishes[0]['p_failure_reason']['code'])
+        factory.assert_not_called()
+
+    def test_cross_task_business_confirmation_is_rejected_before_factory(self):
+        fake = FakeTransport()
+        fake.claim['business_confirmation'] = {
+            'object_id': 'buyer-checklist', 'version': 'confirm-v1', 'status': 'confirmed',
+            'task_id': '99999999-9999-4999-8999-999999999999', 'store_id': STORE,
+            'self_asin': 'B012345678', 'input_hash': 'a' * 64,
+        }
+        factory = Mock(return_value=Mock())
+        result = ProductionWorker(fake, provider_factory=factory).run_once()
+        self.assertEqual('failed', result['status'])
+        self.assertEqual('INPUT_INVALID', fake.finishes[0]['p_failure_reason']['code'])
         factory.assert_not_called()
 
     def test_factory_failure_has_safe_reason_and_never_uploads(self):
@@ -522,6 +620,31 @@ class ProductionRuntimeTests(unittest.TestCase):
         stats = worker.run_loop(max_cycles=4, poll_interval=0.001, on_cycle=on_cycle)
         self.assertEqual(["failed", "idle"], events)
         self.assertTrue(stats["stopped"])
+
+    def test_exhausted_provider_guard_does_not_claim_a_run(self):
+        fake = FakeTransport()
+        worker = ProductionWorker(fake)
+        worker.provider_claim_guard = lambda: False
+        result = worker.run_once()
+        self.assertEqual("blocked", result["status"])
+        self.assertEqual("PROVIDER_BUDGET_EXHAUSTED", result["failure_reason"]["code"])
+        self.assertEqual([], fake.calls)
+        stats = worker.run_loop(max_cycles=6, poll_interval=0.001)
+        self.assertEqual(1, stats["cycles"])
+        self.assertEqual(1, stats["blocked"])
+        self.assertEqual([], fake.calls)
+
+    def test_preview_identity_routes_claim_to_atomic_previewed_rpc(self):
+        fake = FakeTransport()
+        worker = ProductionWorker(fake)
+        worker.provider_claim_preview = {"task_id": TASK, "run_id": RUN}
+        worker.provider_claim_guard = lambda: True
+        result = worker.run_once()
+        self.assertEqual("completed", result["status"], result)
+        paths = [path for _, path, *_ in fake.calls]
+        self.assertIn(PREVIEWED_RPC, paths)
+        self.assertNotIn(RPC, paths)
+        self.assertIsNone(worker.provider_claim_preview)
 
     def test_cli_bounded_process_defaults_to_zero_network(self):
         process = subprocess.run([sys.executable, "-B", str(ROOT / "scripts/run_production_worker.py"),

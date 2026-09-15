@@ -278,6 +278,25 @@ const reportContent = () => ({ schema_version: 'report-0.2', rows: [{ keyword: '
 const reportRun = () => ({ task_id: taskId, run_id: runId, status: 'completed', report_path: reportPath });
 const reportResponses = () => [response([{ task_id: taskId }]), response([reportRun()]), response(reportContent())];
 
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])]));
+  return value;
+}
+function signedBundle(modules) {
+  const manifest = {
+    schema_version: 'report-evidence-0.1', task_id: taskId, run_id: runId,
+    input_sha256: 'a'.repeat(64), hash_encoding: 'utf8-json-sort-keys-compact-ensure-ascii-false', artifacts: {},
+  };
+  for (const [name, module] of Object.entries(modules)) manifest.artifacts[name] = {
+    sha256: require('node:crypto').createHash('sha256').update(JSON.stringify(canonical(module))).digest('hex'),
+    bytes: Buffer.byteLength(JSON.stringify(canonical(module)), 'utf8'),
+  };
+  manifest.manifest_sha256 = require('node:crypto').createHash('sha256')
+    .update(JSON.stringify(canonical(manifest))).digest('hex');
+  return { ...reportContent(), report_scope: 'injected_provider_data', modules, evidence_manifest: manifest };
+}
+
 test('private reports authorize task, then exact run, then exact bound object using the same ordinary token', async () => {
   const { client, calls } = setup([...loginResponses(), ...reportResponses()]);
   await signIn(client);
@@ -319,6 +338,19 @@ test('private reports require session and strict UUIDs before any lookup', async
     await assert.rejects(client.reports.read(taskId, bad), { code: 'INPUT_INVALID' });
   }
   assert.equal(calls.length, 2);
+});
+
+test('new private bundles verify the evidence manifest and module hash before rendering', async () => {
+  const modules = { 'rank-benchmark.json': { rows: [{ keyword: 'signed bundle' }] } };
+  const content = signedBundle(modules);
+  const { client } = setup([...loginResponses(), response([{ task_id: taskId }]), response([reportRun()]), response(content)], { crypto: require('node:crypto').webcrypto });
+  await signIn(client);
+  assert.deepEqual(await client.reports.readModule(taskId, runId, 'rank-benchmark.json'), modules['rank-benchmark.json']);
+
+  const tampered = { ...content, modules: { ...modules, 'rank-benchmark.json': { rows: [{ keyword: 'tampered' }] } } };
+  const rejected = setup([...loginResponses(), response([{ task_id: taskId }]), response([reportRun()]), response(tampered)], { crypto: require('node:crypto').webcrypto });
+  await signIn(rejected.client);
+  await assert.rejects(rejected.client.reports.readModule(taskId, runId, 'rank-benchmark.json'), { code: 'REPORT_INVALID' });
 });
 
 test('empty, duplicated, malformed or cross-task/run authorization never reaches Storage', async () => {

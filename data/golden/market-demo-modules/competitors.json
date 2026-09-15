@@ -104,6 +104,7 @@
   },
   "network_calls": 0,
   "provider_calls": 0,
+  "provider_outcomes": [],
   "requested_competitor_asins": null,
   "schema_version": "competitors-0.2",
   "self_asin": "B000000001",

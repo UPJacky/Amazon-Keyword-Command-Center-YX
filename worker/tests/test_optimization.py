@@ -10,6 +10,24 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class OptimizationTests(unittest.TestCase):
+    def test_entity_uses_run_config_and_own_conversion_rates(self):
+        config = load_default_config()
+        config["config_version"] = "review-custom-budget"
+        config["stop_loss"]["zero_order_spend"] = 200
+        row = {"keyword": "led", "action_group": "scale_up",
+               "market_opportunity_score": .9, "cvr": .9,
+               "ad_entities": [{"campaign_id": "A", "ad_group_id": "G",
+                                "target_id": "T", "match_type": "EXACT",
+                                "impressions": 1000, "clicks": 100,
+                                "spend": 100, "orders": 0, "sales": 0}]}
+        diagnosis = build_optimization_plan([row], config)[0]["entity_diagnoses"][0]
+        self.assertEqual("optimize_listing", diagnosis["recommended_action"]["action_group"])
+        self.assertEqual("review-custom-budget", diagnosis["entity_evaluation"]["effective_config_version"])
+        self.assertEqual(0, diagnosis["facts"]["cvr"])
+        self.assertEqual(.1, diagnosis["facts"]["ctr"])
+        self.assertEqual(1, diagnosis["facts"]["cpc"])
+        self.assertIsNone(diagnosis["facts"]["acos"])
+
     def test_module_status_is_partial_when_entity_judgement_is_missing(self):
         actions = build_optimization_plan([{"keyword": "led light", "action_group": "scale_up"}], load_default_config())
         self.assertEqual("partial", optimization_module_status(actions)["status"])
@@ -33,7 +51,11 @@ class OptimizationTests(unittest.TestCase):
             "keyword": "led light", "action_group": "defend_rank", "ui_conclusion": "defend",
             "rule_hits": ["organic_rank_in_defense_zone"], "next_action_text": "保持自然位防守",
             "clicks": 10, "impressions": 100,
-            "exit_condition": "next cycle",
+            "rule_version": "rule-v0.1",
+            "monitoring": {
+                "window": "next 7 days", "metric": "acos", "operator": "lte", "threshold": 0.3,
+                "rollback_action": "恢复上一版本出价并暂停扩量", "scope": "entity",
+            },
             "ad_entities": [{"campaign_name": "Campaign A", "ad_group_name": "Group A", "target": "led light", "match_type": "精准", "impressions": 100, "clicks": 10, "spend": 1, "orders": 2, "sales": 10}],
         }
         result = build_optimization_plan([row], load_default_config())[0]
@@ -42,8 +64,35 @@ class OptimizationTests(unittest.TestCase):
         self.assertEqual(diagnosis["judgement"]["status"], "judged")
         self.assertEqual(diagnosis["recommended_action"]["status"], "ready")
         self.assertEqual(diagnosis["exit_condition"]["status"], "ready")
+        self.assertEqual(diagnosis["exit_condition"]["operator"], "lte")
+        self.assertEqual(diagnosis["exit_condition"]["threshold"], 0.3)
         self.assertEqual(diagnosis["entity_context"]["match_type"], "精准")
         self.assertEqual(diagnosis["facts"]["spend"], 1)
+
+    def test_human_sentence_or_version_label_cannot_make_monitoring_ready(self):
+        row = {
+            "keyword": "led light", "action_group": "defend_rank", "rule_version": "rule-v0.1",
+            "exit_condition": "next cycle", "ad_entities": [{
+                "campaign_name": "A", "ad_group_name": "GA", "target": "led light", "match_type": "精准",
+                "impressions": 100, "clicks": 10, "spend": 1, "orders": 2, "sales": 10,
+            }],
+        }
+        result = build_optimization_plan([row], load_default_config())[0]
+        self.assertEqual(result["monitoring"]["status"], "pending")
+        self.assertIn("window", result["monitoring"]["missing_fields"])
+        self.assertEqual("partial", optimization_module_status([result])["status"])
+
+    def test_monitoring_contract_requires_all_fields_and_explicit_scope(self):
+        row = {
+            "keyword": "led light", "action_group": "defend_rank", "rule_version": "rule-v0.1",
+            "monitoring": {"window": "7d", "metric": "acos", "operator": "lte", "threshold": 0.3,
+                           "rollback_action": "pause", "scope": "campaign"},
+            "ad_entities": [{"campaign_name": "A", "ad_group_name": "GA", "target": "led light", "match_type": "精准",
+                             "impressions": 100, "clicks": 10, "spend": 1, "orders": 2, "sales": 10}],
+        }
+        result = build_optimization_plan([row], load_default_config())[0]
+        self.assertEqual(result["monitoring"]["status"], "pending")
+        self.assertEqual(result["monitoring"]["missing_fields"], ["scope"])
 
     def test_entity_metrics_are_independent_and_identity_only_is_not_judged(self):
         row = {

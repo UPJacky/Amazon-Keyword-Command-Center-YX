@@ -132,6 +132,7 @@ def main() -> int:
             "Phase 3–7 / six-module-workbench",
             "Phase 9 / six-module-data-completion",
             "Phase 10 / LUNU-04 six-module business completion",
+            "Phase 10 / LUNU-05 business remediation and acceptance",
         },
         "status_uat_counts": current_counts_match and all(key in snapshot for key in ("worker", "frontend")),
         "memory_uat_counts": memory_counts_match(memory, snapshot),
@@ -152,7 +153,7 @@ def main() -> int:
                 "状态重读",
                 "本地任务清点",
                 "下一项安全工作",
-                "20 个本地 Gate",
+                "21 个本地 Gate",
                 "external_calls=0",
             )
         ),
