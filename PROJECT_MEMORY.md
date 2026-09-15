@@ -9,7 +9,7 @@ language: zh-CN
 
 ## 2026-09-15 外部访问探针快照
 
-- Worker 主机 22 端口可达，但 `ubuntu` 非交互认证拒绝；Supabase HTTPS 和 CUA 浏览器自动化探针不可用。浏览器技能层只发现 Chrome、未发现 Edge；公开报告地址的未登录跳转已只读确认。未执行远程命令、迁移、部署或 Provider 请求。
+- Worker 主机 22 端口可达，但 `ubuntu` 非交互认证拒绝；Supabase HTTPS 和 CUA 浏览器自动化探针不可用。BrowserSkill 本轮曾连接 Edge 并只读确认目标项目 Users 页有 2 个测试用户，清理会话后当前仅发现 Chrome；公开报告地址的未登录跳转已只读确认。未执行远程命令、迁移、部署或 Provider 请求。
 - 线上 Gate 仍保持未验证；恢复访问后按 `docs/acceptance/external-access-probe-20260915.md` 和 R12 决策记录继续。
 
 ## 2026-09-15 LUNU-05 R12 最新本地快照（优先于本文件旧段落）
