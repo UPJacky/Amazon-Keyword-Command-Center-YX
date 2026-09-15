@@ -9,8 +9,8 @@ language: zh-CN
 
 ## 2026-09-15 外部访问探针快照
 
-- Worker 主机 22 端口可达，但 `ubuntu` 非交互认证拒绝；Supabase HTTPS 和 CUA 浏览器自动化探针不可用。BrowserSkill 本轮曾连接 Edge 并只读确认目标项目 Users 页有 2 个测试用户，清理会话后当前仅发现 Chrome；公开报告地址的未登录跳转已只读确认。未执行远程命令、迁移、部署或 Provider 请求。
-- 线上 Gate 仍保持未验证；恢复访问后按 `docs/acceptance/external-access-probe-20260915.md` 和 R12 决策记录继续。
+- Worker 主机 22 端口可达，但 `ubuntu` 非交互认证拒绝；Supabase HTTPS 与 CUA 浏览器自动化探针不可用。BrowserSkill 已重新连接 Edge，确认目标项目 Users 页有 2 个测试用户、8 张 public 业务表、9 条 public RLS 策略和私有 `reports`/`inputs` bucket；公开报告地址的未登录跳转已只读确认。未执行远程命令或 Provider 请求。
+- 已通过 Edge SQL Editor 执行 010/011/012 DDL，并用独立查询确认 010 的 `kwcc_claim_run` 确认消费特征、011 的 `kwcc_preview_next_run`、012 的 `kwcc_claim_previewed_run` 已在线。`supabase_migrations.schema_migrations` 不存在，故仅记录函数/授权在线证据，不虚构迁移账本完成。Worker/Gateway、重启、CORS、普通用户 RLS 矩阵和全新六模块 run 仍未验证；恢复访问后按 `docs/acceptance/external-access-probe-20260915.md` 和 R12 决策记录继续。
 
 ## 2026-09-15 LUNU-05 R12 最新本地快照（优先于本文件旧段落）
 

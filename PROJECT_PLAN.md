@@ -10,8 +10,8 @@ language: zh-CN
 ## 2026-09-15 外部访问探针快照
 
 - `43.139.80.199:22` TCP 可达，但 `ubuntu` 的非交互 SSH 认证被拒；本轮没有执行远程命令，也没有写入服务器。
-- 本机 Supabase HTTPS 与 CUA 浏览器自动化仍不可用；BrowserSkill 本轮曾连接 Edge 并只读确认目标 Supabase 项目与 2 个测试用户，但会话清理后当前仅发现 Chrome。公开报告地址的未登录跳转已只读确认，但未取得登录后的线上 HTTP/业务结果，不能把迁移、Worker、CORS 或新六模块报告写成通过。
-- 脱敏记录见 `docs/acceptance/external-access-probe-20260915.md`；恢复后先做 Supabase 010/011/012、Worker/Gateway 只读核对，再创建全新六模块 run。
+- 本机 Supabase HTTPS 与 CUA 浏览器自动化仍不可用；BrowserSkill 已重新连接 Edge，确认目标项目 2 个测试用户、8 张 public 业务表、私有 `reports`/`inputs` Storage bucket，以及 9 条 public RLS 策略。公开报告地址的未登录跳转已只读确认，但未取得登录后的线上 HTTP/业务结果，不能把 Worker、CORS 或新六模块报告写成通过。
+- 已通过 Edge SQL Editor 执行仓库内 010/011/012 DDL；随后分别复核 `kwcc_claim_run` 的 010 确认消费特征、`kwcc_preview_next_run` 和 `kwcc_claim_previewed_run`，三项均有成功结果。迁移元表 `supabase_migrations.schema_migrations` 在该项目中不存在，因此这次只证明函数/授权已经在线，不证明 Supabase CLI 迁移账本已登记。脱敏记录见 `docs/acceptance/external-access-probe-20260915.md`；下一步先核对 Worker/Gateway，再创建全新六模块 run。
 
 ## 2026-09-15 LUNU-05 R12 本地补强快照（当前优先）
 
