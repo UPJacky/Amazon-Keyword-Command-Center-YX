@@ -65,6 +65,14 @@ where routine_schema = 'public' and routine_name like 'kwcc_%';
 
 当前 Edge 会话仅用于控制台核对，结束后应清理。
 
+## 2026-09-16 腾讯云 Edge 控制台复核
+
+- 已在 Edge 中完成腾讯云 Lighthouse 目标实例 `UpJacky-Ubantu` 的登录态确认，实例状态为 Running，目标地址仍为 `43.139.80.199`；本记录不保存登录凭据。
+- 已打开实例的“执行命令”弹窗，填写了一条只读诊断命令，用于检查执行身份、部署目录和 Git HEAD；执行记录上传保持关闭，未涉及 COS。
+- 弹窗中的 CodeMirror 命令编辑器能够显示命令，底部“执行命令”按钮也显示为可用；语义点击、编辑器 `Ctrl+Enter` 和一次 Tab→Enter 键盘路径均未产生新的执行记录，弹窗仍保持打开。随后已停止该 BrowserSkill 会话。
+- 因此本轮仍没有执行远程命令、没有重启 Worker/Gateway、没有读取环境变量或 Secret，也没有改变服务器文件。该结果是腾讯云控制台自动化提交链路阻塞，不是远程命令失败证据；不能据此推断 Worker/Gateway 状态。
+- CUA Edge 备用通道同时返回 `nodeRepl.fetch request failed`，所以不能用第二个浏览器控制通道补交同一命令。本条不再重复点击；恢复入口是用户在同一个已登录 Edge 弹窗中手动点击一次“执行命令”，或提供已授权的 SSH agent/密钥入口。
+
 ## 恢复后唯一入口
 
 1. 在可用的 Edge/Tencent 控制台会话中完成 `ubuntu` SSH 登录，或让本机 SSH agent 提供该服务器的已授权密钥；只需告诉执行环境“登录已完成”，不要在聊天发送 Secret。
