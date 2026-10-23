@@ -1,6 +1,6 @@
 {
-  "schema_version": "config-0.1",
-  "config_version": "stable-v1-template",
+  "schema_version": "config-0.2",
+  "config_version": "stable-v2-template",
   "product_stage": "stable",
   "evidence": {
     "insufficient_clicks_max": 9,
@@ -28,6 +28,7 @@
   },
   "diagnostics": {
     "low_ctr": 0.005,
-    "low_cvr": 0.05
+    "low_cvr": 0.05,
+    "high_spend_percentile": 0.75
   }
 }

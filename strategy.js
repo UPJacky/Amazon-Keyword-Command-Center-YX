@@ -23,22 +23,36 @@
     }],
     diagnostics: ['诊断（比例：0.05 表示 5%）', {
       low_ctr: ['低点击率边界', 0, 1], low_cvr: ['低转化率边界', 0, 1],
+      high_spend_percentile: ['否词高花费分位（0.75 表示第 75 百分位）', 0, 1],
     }],
   };
+  const legacyConfigDefaults = { diagnostics: { high_spend_percentile: 0.75 } };
   const stages = { new: '新品', growth: '成长', stable: '稳定', clearance: '清仓', seasonal_restart: '季节重启' };
   const ruleVersions = ['rule-v0.1', 'rules-1.0'];
   const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
   const clone = value => JSON.parse(JSON.stringify(value));
   const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
   const exactKeys = (value, keys) => object(value) && Object.keys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key));
+  const schemaFields = (section, schemaVersion) => Object.keys(groups[section][1])
+    .filter(key => key !== 'high_spend_percentile' || schemaVersion === 'config-0.2');
+  function nextSchemaConfig(config) {
+    const next = clone(config);
+    if (next.schema_version === 'config-0.1') {
+      next.schema_version = 'config-0.2';
+      next.diagnostics.high_spend_percentile = legacyConfigDefaults.diagnostics.high_spend_percentile;
+    }
+    return next;
+  }
   function validate(config) {
     if (!exactKeys(config, ['schema_version', 'config_version', 'product_stage', ...Object.keys(groups)])
-      || config.schema_version !== 'config-0.1' || !Object.hasOwn(stages, config.product_stage)
+      || !['config-0.1', 'config-0.2'].includes(config.schema_version) || !Object.hasOwn(stages, config.product_stage)
       || typeof config.config_version !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/.test(config.config_version))
       throw new Error('配置结构或版本不受支持；请联系管理员核对，不能编辑公式或未知字段。');
     for (const [section, [, fields]] of Object.entries(groups)) {
-      if (!exactKeys(config[section], Object.keys(fields))) throw new Error('配置字段缺失或包含未知字段。');
-      for (const [key, [label, min, max, integer]] of Object.entries(fields)) {
+      const keys = schemaFields(section, config.schema_version);
+      if (!exactKeys(config[section], keys)) throw new Error('配置字段缺失或包含未知字段。');
+      for (const key of keys) {
+        const [label, min, max, integer] = fields[key];
         const value = config[section][key];
         if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max || (integer && !Number.isInteger(value)))
           throw new Error(`${label}须为 ${min} 至 ${max} 的${integer ? '整数' : '数值'}。`);
@@ -112,7 +126,7 @@
       for (const [section, [title, labels]] of Object.entries(groups)) {
         const group = doc.createElement('fieldset'), legend = doc.createElement('legend');
         legend.textContent = title; group.append(legend);
-        for (const [key, value] of Object.entries(selected.config[section])) {
+      for (const [key, value] of Object.entries(nextSchemaConfig(selected.config)[section])) {
           const [labelText, min, max, integer] = labels[key];
           const label = doc.createElement('label'), input = doc.createElement('input');
           label.textContent = labelText;
@@ -166,6 +180,7 @@
       let config = clone(source.config);
       try {
         if (kind === 'save') {
+          config = nextSchemaConfig(config);
           for (const { section, key, input } of fields) {
             if (!input.value.trim()) throw new Error('所有配置数值均必填。');
             config[section][key] = Number(input.value);

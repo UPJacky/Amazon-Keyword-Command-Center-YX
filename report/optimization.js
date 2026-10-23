@@ -5,11 +5,19 @@
   const status = document.querySelector('#module-status');
   try {
     if (!ui || (await ui.ready) !== true) return;
-    const data = await ui.load('optimization-plan.json');
+    const lifecycleToken = ui.operationToken();
+    let data = null, actions = [], selected = 'all', search = null;
+    ui.onInvalidate(() => {
+      data = null; actions = []; selected = 'all';
+      if (search) search.value = '';
+      search = null;
+    });
+    data = await ui.load('optimization-plan.json');
+    ui.assertOperation(lifecycleToken);
     if (!data || !Array.isArray(data.actions) || data.actions.some(row => !row || typeof row !== 'object' || Array.isArray(row))) {
       throw new Error('优化方案结构无效：缺少 actions 行数组。');
     }
-    const actions = data.actions;
+    actions = data.actions;
     // Badge classes are selected only from this local mapping, never from data.
     const groups = {
       scale_up: ['加投候选', 'badge green'], defend_rank: ['核心防守', 'badge green'],
@@ -45,8 +53,46 @@
     const hasConfigValues = row => Object.entries(object(row.config_refs)).some(([key, value]) => key !== 'config_version' && hasValue(value));
     const completeTrace = row => Object.values(object(row.data_facts)).some(value => typeof value === 'number' && Number.isFinite(value)) && strings(row.rule_hits).length > 0 && hasConfigValues(row) && hasValue(row.next_action_text);
     const entityDiagnoses = row => Array.isArray(row.entity_diagnoses) ? row.entity_diagnoses.filter(item => item && typeof item === 'object' && !Array.isArray(item)) : [];
-    const monitoringContract = row => object(row.monitoring || row.exit_conditions);
+    const monitoringContract = row => {
+      const current = object(row.monitoring);
+      return hasValue(current) ? current : object(row.exit_conditions);
+    };
     const monitoringReady = row => monitoringContract(row).status === 'ready';
+    const monitoringEvaluationLabels = {
+      pending: '观察数据待补', within_bounds: '观察中 · 未触发回撤',
+      rollback_recommended: '达到回撤条件 · 人工复核', window_expired: '观察窗已结束 · 需要复核',
+    };
+    const monitoringReasonLabels = {
+      monitoring_contract_not_ready: '监控条件尚未通过完整性校验',
+      monitoring_snapshot_missing: '尚未采集本周期观察快照',
+      monitoring_snapshot_ambiguous: '当前实体对应多条观察快照，无法唯一匹配',
+      monitoring_scope_key_missing: '观察快照缺少实体标识',
+      monitoring_expected_scope_key_missing: '缺少用于核对的目标实体标识',
+      monitoring_scope_mismatch: '观察快照不属于当前实体或范围',
+      monitoring_cycle_id_missing: '观察快照缺少周期标识或目标周期',
+      monitoring_cycle_mismatch: '观察数据来自其他周期',
+      monitoring_rule_version_mismatch: '观察数据使用的规则版本不一致',
+      monitoring_config_version_mismatch: '观察数据使用的配置版本不一致',
+      monitoring_metric_mismatch: '观察指标与监控条件不一致',
+      monitoring_window_invalid: '监控窗口配置无效',
+      monitoring_timestamps_invalid: '观察时间缺失或无效',
+      monitoring_evaluation_time_invalid: '评估时间缺少时区信息',
+      monitoring_observation_outside_window: '观察时间不在规定窗口内',
+      monitoring_metric_missing_or_invalid: '观察指标缺失或不是有效数值',
+      monitoring_contract_invalid: '监控条件配置无效',
+      monitoring_window_expired: '观察窗口已结束，需要人工复核',
+      monitoring_trigger_condition_met: '已达到回撤复核条件',
+      monitoring_trigger_condition_not_met: '尚未达到回撤条件，可继续观察',
+      entity_monitoring_triggered: '至少一个广告实体达到回撤复核条件',
+      entity_monitoring_window_expired: '至少一个广告实体的观察窗口已结束',
+      all_entity_observations_within_bounds: '所有匹配到的广告实体均未触发回撤',
+      monitoring_snapshot_incomplete: '至少一个广告实体缺少可核对的观察快照',
+    };
+    function monitoringWindowText(window) {
+      if (!window || typeof window !== 'object' || !Number.isInteger(window.duration) || window.duration <= 0) return valueText(window);
+      const units = {minute: '分钟', minutes: '分钟', hour: '小时', hours: '小时', day: '天', days: '天', week: '周', weeks: '周'};
+      return `${window.duration}${units[window.unit] || ui.text(window.unit)}`;
+    }
     const entityTraceComplete = row => {
       const diagnoses = entityDiagnoses(row);
       return diagnoses.length > 0 && diagnoses.every(item => item.entity_status === 'ready'
@@ -95,7 +141,10 @@
           item.append(ui.el('p', fields.length ? fields.join(' · ') : '源数据未提供广告实体明细。'));
           const missing = strings(diagnosis.missing_fields);
           const exit = object(diagnosis.exit_condition);
-          item.append(ui.el('p', `判断：${valueText(diagnosis.judgement?.conclusion)} · 动作：${valueText(diagnosis.recommended_action?.text)} · 监控：${exit.status === 'ready' ? `${valueText(exit.metric)} ${valueText(exit.operator)} ${valueText(exit.threshold)}` : '待补完整契约'}`, 'muted'));
+          item.append(ui.el('p', `判断：${valueText(diagnosis.judgement?.conclusion)} · 动作：${valueText(diagnosis.recommended_action?.text)} · 监控：${exit.status === 'ready' ? `${monitoringWindowText(exit.window)} · ${valueText(exit.metric)} ${valueText(exit.operator)} ${valueText(exit.threshold)} · 触发时机 ${valueText(exit.trigger_when)}` : '待补完整契约'}`, 'muted'));
+          const observation = object(diagnosis.monitoring_evaluation);
+          const observationLabel = monitoringEvaluationLabels[observation.status] || '观察结果待复核';
+          item.append(ui.el('p', `本实体本期观察：${observationLabel} · ${monitoringReasonLabels[observation.reason] || '等待本周期实体快照'}`, observation.rollback_recommended ? 'notice' : 'muted'));
           if (missing.length) item.append(ui.el('small', `待补字段：${missing.join('、')}`));
           details.append(item);
         });
@@ -117,14 +166,24 @@
       const block = ui.el('div');
       const contract = monitoringContract(row);
       if (contract.status === 'ready') {
-        block.append(ui.el('strong', '观察与退出契约'), ui.el('p', `${valueText(contract.window)} · ${valueText(contract.metric)} ${valueText(contract.operator)} ${valueText(contract.threshold)}`));
+        block.append(ui.el('strong', '观察与退出契约'), ui.el('p', `${monitoringWindowText(contract.window)} · ${valueText(contract.metric)} ${valueText(contract.operator)} ${valueText(contract.threshold)} · 条件${contract.trigger_when === 'predicate_met' ? '满足时触发' : '不满足时触发'}`));
         block.append(ui.el('p', `回滚动作：${valueText(contract.rollback_action)} · 适用范围：${valueText(contract.scope)}`, 'muted'));
-        block.append(ui.el('small', `规则 ${valueText(contract.rule_version)} · 配置 ${valueText(contract.config_version)}；页面不会推算新的执行阈值。`));
+        block.append(ui.el('small', `规则 ${valueText(contract.rule_version)} · 配置 ${valueText(contract.config_version)}；系统只评估已提供的观察快照，不会对 Amazon 执行动作。`));
       } else {
         const missing = strings(contract.missing_fields);
         block.append(ui.el('strong', '观察与退出契约：待补'), ui.el('p', '当前产物没有可执行的完整监控契约，不能把动作标记为 ready。'));
         block.append(ui.el('small', `缺少：${missing.join('、') || 'window / metric / operator / threshold / rollback_action / rule_version / scope'}`));
       }
+      const evaluation = object(row.monitoring_evaluation);
+      const evaluationLabel = monitoringEvaluationLabels[evaluation.status] || '观察结果待复核';
+      const evaluationFacts = Number.isFinite(evaluation.metric_value)
+        ? ` · 实测 ${valueText(evaluation.metric_value)}，阈值 ${valueText(evaluation.operator)} ${valueText(evaluation.threshold)}` : '';
+      const scopeResults = Array.isArray(evaluation.scope_results) ? evaluation.scope_results : [];
+      const pendingScopes = scopeResults.filter(item => item?.status === 'pending').length;
+      const scopeCoverage = scopeResults.length ? ` · 实体快照 ${scopeResults.length - pendingScopes}/${scopeResults.length} 已评估，待补 ${pendingScopes}` : '';
+      block.append(ui.el('p', `本期结果：${evaluationLabel}${evaluationFacts}${scopeCoverage}`, evaluation.rollback_recommended ? 'notice' : 'muted'));
+      if (evaluation.reason) block.append(ui.el('small', `结果说明：${monitoringReasonLabels[evaluation.reason] || '观察结果待人工核对'}`));
+      if (evaluation.recommended_action) block.append(ui.el('small', `系统建议：${valueText(evaluation.recommended_action)}（仅供复核，不会自动执行）`));
       return block;
     }
     function review(row) {
@@ -152,16 +211,19 @@
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar');
     const label = ui.el('label', '搜索关键词 / 规则 ');
-    const search = ui.el('input'); search.type = 'search'; search.placeholder = '输入关键词或规则编号'; label.append(search);
+    search = ui.el('input'); search.type = 'search'; search.placeholder = '输入关键词或规则编号'; label.append(search);
     const filters = ui.el('div', undefined, 'filters'); filters.setAttribute('aria-label', '优化动作筛选');
-    let selected = 'all';
     const choices = [['all', '全部'], ...Object.entries(groups).map(([key, [title]]) => [key, title]), ['trace_missing', '追溯待补'], ['unknown', '未知动作']];
     const buttons = choices.map(([key, title]) => {
       const button = ui.el('button', title, 'filter'); button.type = 'button'; button.dataset.optimizationFilter = key;
-      button.addEventListener('click', () => { selected = key; render(); }); filters.append(button); return [key, button];
+      button.addEventListener('click', () => {
+        if (!ui.operationIsActive(lifecycleToken)) return;
+        selected = key; render();
+      }); filters.append(button); return [key, button];
     });
     const result = ui.el('div');
     function render() {
+      if (!ui.operationIsActive(lifecycleToken)) return;
       const query = search.value.trim().toLocaleLowerCase();
       const visible = actions.filter(row => (selected === 'all' || (selected === 'trace_missing' ? !completeTrace(row) : knownGroup(row) === selected)) && (!query || [ui.text(row.keyword), ...strings(row.rule_hits)].some(value => value.toLocaleLowerCase().includes(query))));
       buttons.forEach(([key, button]) => { button.className = key === selected ? 'filter active' : 'filter'; button.setAttribute('aria-pressed', String(key === selected)); });
@@ -181,7 +243,9 @@
       ) : ui.el('p', actions.length ? '没有符合筛选条件的优化动作。' : '暂无优化方案；等待规则引擎生成带事实与配置的动作。', 'table-empty'));
       status.textContent = `${ui.statusPrefix(data)} · ${globalThis.KWCC?.mode === 'live' ? '私有报告' : 'Demo'} · ${visible.length} / ${actions.length} 个动作 · 实体可判断 ${actions.filter(entityTraceComplete).length} · ${ui.text(data.schema_version)} · 来源 optimization-plan.json · 未执行 Amazon 写入`;
     }
-    search.addEventListener('input', render); toolbar.append(label, filters); panel.append(toolbar, result); body.append(panel); render();
+    search.addEventListener('input', () => {
+      if (ui.operationIsActive(lifecycleToken)) render();
+    }); toolbar.append(label, filters); panel.append(toolbar, result); body.append(panel); render();
   } catch (error) {
     if (ui) ui.showError(error);
     else { status.textContent = '报告公共组件加载失败，请刷新重试。'; body.replaceChildren(); }
