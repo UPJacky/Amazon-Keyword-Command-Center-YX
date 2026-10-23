@@ -5,20 +5,50 @@
   const status = document.querySelector('#module-status');
   try {
     if (!ui || (await ui.ready) !== true) return;
-    const data = await ui.load('listing-diagnostics.json');
+    const lifecycleToken = ui.operationToken();
+    let data = null, items = [], self = null, competitors = null, visualBrief = null;
+    let selected = 'all', comparisons = [], briefs = [];
+    ui.onInvalidate(() => {
+      data = null; items = []; self = null; competitors = null; visualBrief = null;
+      selected = 'all'; comparisons = []; briefs = [];
+    });
+    data = await ui.load('listing-diagnostics.json');
+    ui.assertOperation(lifecycleToken);
     const isRows = value => Array.isArray(value) && value.every(row => row && typeof row === 'object' && !Array.isArray(row));
     if (!data || !isRows(data.checklist?.items) || !isRows(data.self_images?.images) || !isRows(data.competitor_images?.images) || !isRows(data.conversion_diagnostics)) {
       throw new Error('Listing 报告结构无效：缺少 checklist、图组或转化诊断数组。');
     }
-    const items = data.checklist.items;
-    const self = data.self_images;
-    const competitors = data.competitor_images;
-    const visualBrief = data.visual_brief && typeof data.visual_brief === 'object' ? data.visual_brief : {
+    items = data.checklist.items;
+    self = data.self_images;
+    competitors = data.competitor_images;
+    visualBrief = data.visual_brief && typeof data.visual_brief === 'object' ? data.visual_brief : {
       module_status: { status: 'not_generated', reason: 'comparison_and_brief_not_available' },
       comparisons: [], briefs: [], coverage: {},
     };
     const strings = value => Array.isArray(value) ? value.filter(item => typeof item === 'string' && item.trim()) : [];
-    const values = value => value == null ? '—' : typeof value === 'object' ? JSON.stringify(value) : ui.text(value);
+    const statusLabels = {
+      ready: '完整', complete: '完整', completed: '已完成', partial: '部分完成',
+      not_requested: '未请求', not_generated: '未生成', failed: '失败', unknown: '未知',
+    };
+    const statusText = value => statusLabels[value] || ui.text(value || 'unknown');
+    const valueLabels = {
+      image_id: '图片编号', image_ids: '关联图片', element_id: '检查要素', dimension: '检查要素',
+      source: '来源', source_type: '来源类型', source_asin: '来源 ASIN', asin: 'ASIN',
+      finding: '观察结论', observation: '观察记录', status: '状态', confidence: '置信度',
+      evidence: '证据', quote: '原文', reason: '说明', sampled_at: '采样时间',
+    };
+    const privateField = /(?:token|secret|api.?key|authorization|password|cookie|header|raw|payload|response.?body|prompt|url)/i;
+    function values(value, depth = 0) {
+      if (value == null || value === '') return '—';
+      if (typeof value !== 'object') return ui.text(value);
+      if (depth >= 3) return '（嵌套证据已折叠）';
+      if (Array.isArray(value)) return value.map(item => values(item, depth + 1)).filter(item => item !== '—').join('；') || '—';
+      const entries = Object.entries(value)
+        .filter(([key, entry]) => !privateField.test(key) && entry != null && entry !== '')
+        .slice(0, 16)
+        .map(([key, entry]) => `${ui.text(valueLabels[key] || key)}：${values(entry, depth + 1)}`);
+      return entries.join('；') || '—';
+    }
     const states = { pass: ['通过', 'badge green'], fail: ['未通过', 'badge red'], unknown: ['待核验', 'badge gray'] };
     const stateOf = item => Object.hasOwn(states, item.status) ? item.status : 'unknown';
     const badge = item => { const [label, color] = states[stateOf(item)]; return ui.el('span', `${label} · ${stateOf(item)}`, color); };
@@ -40,16 +70,19 @@
       ['转化检查触发', ui.number(data.conversion_diagnostics.filter(row => row.triggered === true).length)],
     ]);
     body.replaceChildren();
-    body.append(ui.el('p', '状态与证据均来自报告。unknown 表示尚未核验，不计为通过。当前未请求视觉模型；不会根据占位图片生成观察结论。高机会、低转化只触发检查，不证明图片存在问题。', 'notice'));
+    const visualStatus = `图片观察状态（报告记录）：Checklist AI ${statusText(data.checklist.ai_status)}；自有图 ${statusText(self.observation_status)}；竞品图 ${statusText(competitors.observation_status)}；对比 / 改图 Brief ${statusText(visualBrief.module_status?.status)}。`;
+    body.append(ui.el('p', `状态与证据均来自报告。unknown 表示尚未核验，不计为通过。${visualStatus}页面只呈现报告中已绑定的观察和证据，不会根据占位图片自行生成结论。高机会、低转化只触发检查，不证明图片存在问题。`, 'notice'));
     const meta = ui.el('p', `Schema：${ui.text(data.schema_version)} · checklist：${ui.text(data.checklist.schema_version)} · AI：${ui.text(data.checklist.ai_status)} · 模块：${ui.text(data.module_status?.status || 'partial')} · 已记录 Provider 调用：${ui.number(data.provider_calls)}`, 'muted');
     body.append(meta);
     const panel = ui.el('section', undefined, 'panel table-panel');
     const toolbar = ui.el('div', undefined, 'toolbar'); toolbar.append(ui.el('h2', 'Checklist 与证据状态'));
     const filters = ui.el('div', undefined, 'filters'); filters.setAttribute('aria-label', 'Checklist 状态筛选');
-    let selected = 'all';
     const buttons = [['all', '全部'], ['unknown', '待核验'], ['fail', '未通过'], ['pass', '通过']].map(([key, title]) => {
       const button = ui.el('button', title, 'filter'); button.type = 'button'; button.dataset.listingFilter = key;
-      button.addEventListener('click', () => { selected = key; renderChecklist(); });
+      button.addEventListener('click', () => {
+        if (!ui.operationIsActive(lifecycleToken)) return;
+        selected = key; renderChecklist();
+      });
       filters.append(button); return [key, button];
     });
     const result = ui.el('div');
@@ -61,6 +94,7 @@
       return block;
     }
     function renderChecklist() {
+      if (!ui.operationIsActive(lifecycleToken)) return;
       const visible = items.filter(item => selected === 'all' || stateOf(item) === selected);
       buttons.forEach(([key, button]) => { button.className = key === selected ? 'filter active' : 'filter'; button.setAttribute('aria-pressed', String(key === selected)); });
       result.replaceChildren(visible.length ? ui.table(
@@ -82,9 +116,12 @@
         if (safe) {
           const load = ui.el('button', '加载图片（外部资源）', 'button secondary'); load.type = 'button';
           load.addEventListener('click', () => {
+            if (!ui.operationIsActive(lifecycleToken)) return;
             const img = ui.el('img'); img.alt = `${title} · ${ui.text(item.image_id)}`; img.width = 240; img.height = 180;
             img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
-            img.addEventListener('error', () => img.replaceWith(ui.el('p', '图片加载失败；不生成识别结论。', 'muted')), { once: true });
+            img.addEventListener('error', () => {
+              if (ui.operationIsActive(lifecycleToken)) img.replaceWith(ui.el('p', '图片加载失败；不生成识别结论。', 'muted'));
+            }, { once: true });
             img.src = safe; load.replaceWith(img);
           }, { once: true });
           const link = ui.el('a', '查看图片 URL'); link.href = safe; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.referrerPolicy = 'no-referrer';
@@ -100,8 +137,8 @@
     }
     body.append(renderImages(self, '自有图片组'), renderImages(competitors, '竞品图片组'));
     const matrix = ui.el('section', undefined, 'panel');
-    const comparisons = Array.isArray(visualBrief.comparisons) ? visualBrief.comparisons : [];
-    const briefs = Array.isArray(visualBrief.briefs) ? visualBrief.briefs : [];
+    comparisons = Array.isArray(visualBrief.comparisons) ? visualBrief.comparisons : [];
+    briefs = Array.isArray(visualBrief.briefs) ? visualBrief.briefs : [];
     const briefStatus = visualBrief.module_status?.status || 'not_generated';
     matrix.append(ui.el('h2', '卖点与图片对比矩阵'), ui.el('p', `状态：${ui.text(briefStatus)} · 每行只引用一家竞品，并明确自己哪张图与竞品哪张图对照；未知不等于未表达。`, briefStatus === 'ready' ? 'muted' : 'notice'));
     matrix.append(comparisons.length ? ui.table(

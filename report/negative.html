@@ -11,9 +11,9 @@
   <script src="shared.js" defer></script>
   <script src="negative.js" defer></script>
 </head>
-<body class="app-shell" data-page="report" data-login-url="../index.html" data-module="negative">
+<body class="app-shell" data-page="report" data-login-url="../index/" data-module="negative">
   <header class="topbar">
-    <a class="brand" href="../tool/index.html"><span class="brand-mark">YX</span><span>关键词作战总表</span></a>
+    <a class="brand" href="../tool/index.html"><span class="brand-mark">K</span><span>关键词作战台</span></a>
     <nav aria-label="主导航"><a href="../tool/index.html">工具</a><a class="active" href="index.html" aria-current="true">报告</a></nav>
     <button class="user-chip" id="logout" type="button">退出登录</button>
   </header>
@@ -21,10 +21,10 @@
     <aside class="report-sidebar" aria-label="报告模块导航"></aside>
     <div class="report-content">
       <section class="module-hero hero-row compact">
-        <div><div class="eyebrow">MODULE 03</div><h1>否定词清单</h1><p class="lede">从广告事实查看精准、词组、慎否与待确认候选；人工复核后再决定运营动作。</p><p id="module-status" class="muted" role="status" aria-live="polite">正在验证会话并加载报告…</p></div>
+        <div><div class="eyebrow">MODULE 03</div><h1>否定词清单</h1><p class="lede">逐条选择可导出候选并保存到 task/run 与报告版本；刷新后可恢复。复制和导出前会重新核对报告及确认，不会自动写入 Amazon。</p><p id="module-status" class="muted" role="status" aria-live="polite">正在验证会话并加载报告…</p></div>
       </section>
       <section id="module-metrics" class="module-metrics" aria-label="报告摘要"></section>
-      <section id="module-body" aria-label="否定词复核、保护冲突与精准/词组复制" aria-busy="true"><p class="table-empty">正在加载报告…</p></section>
+      <section id="module-body" aria-label="否词候选复核、持久确认与精准/词组纯文本导出" aria-busy="true"><p class="table-empty">正在加载报告…</p></section>
       <noscript><p class="notice">请启用 JavaScript 以验证会话并读取报告。</p></noscript>
     </div>
   </main>
